@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Playlist Maker</string>
+    <string name="title" translatable="false">Playlist maker</string>
+    <string name="settings" formatted="true" translatable="false">Настройки</string>
+    <string name="shareApp" translatable="false">Поделиться приложением</string>
+    <string name="supportMail" translatable="false">Написать в поддержку</string>
+    <string name="darkTheme" translatable="false">Темная тема</string>
+    <string name="termsOfUse" translatable="false">Пользовательское соглашение</string>
+    <string name="mediaLibrary" translatable="false">ТУТ БУДЕТ МЕДИАТЕКА</string>
+    <string name="search" translatable="false">ТУТ БУДЕТ ПОИСК</string>
+    <string name="bold_text" translatable="false"><![CDATA[Это <b>жирный</b> текст]]></string>
+
+
 </resources>

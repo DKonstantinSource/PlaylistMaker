@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="#3772E7"
+    android:background="@color/dark_mode"
     android:orientation="vertical">
 
     <FrameLayout
-        android:layout_height="56dp"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
 
         <RelativeLayout
             android:layout_width="304dp"
@@ -26,7 +26,7 @@
                 android:layout_height="30dp"
                 android:text="@string/title"
                 android:textSize="22sp"
-                android:textColor="#FFFFFF"/>
+                android:textColor="@color/white"/>
 
 
         </RelativeLayout>
@@ -41,7 +41,7 @@
         android:background="@drawable/button_search"
         >
         <Button
-            android:id="@+id/first_button"
+            android:id="@+id/first_button_dark"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             style="@style/TransparentButton"
@@ -59,7 +59,7 @@
         >
 
         <Button
-            android:id="@+id/second_button"
+            android:id="@+id/second_button_dark"
             style="@style/TransparentButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -76,7 +76,7 @@
         android:background="@drawable/button_setting"
         >
         <Button
-            android:id="@+id/third_button"
+            android:id="@+id/third_button_dark"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             style="@style/TransparentButton"
@@ -88,4 +88,3 @@
 
 
 </LinearLayout>
-
