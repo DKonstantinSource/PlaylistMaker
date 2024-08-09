@@ -17,10 +17,10 @@
 
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            app:icon="@drawable/button_back_light"
+            android:src="@drawable/button_back_light"
             app:iconGravity="textStart"
             app:iconPadding="24dp"
-            app:iconTint="@color/black"
+            app:icon="@color/white"
             >
         </ImageView>
 
