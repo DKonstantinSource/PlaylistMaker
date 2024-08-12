@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="headerTextSize">22sp</dimen>
+    <dimen name="normalTextSize">16sp</dimen>
+    <dimen name="mainCornerRadiusBtn">16dp</dimen>
+    <dimen name="mainIconPadding">8dp</dimen>
+</resources>
