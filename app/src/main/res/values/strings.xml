@@ -5,10 +5,10 @@
     <string name="shareApp" translatable="false">Поделиться приложением</string>
     <string name="supportMail" translatable="false">Написать в поддержку</string>
     <string name="darkTheme" translatable="false">Темная тема</string>
+    <string name="searchText">Поиск</string>
+    <string name="mediatec">Медиатека</string>
     <string name="termsOfUse" translatable="false">Пользовательское соглашение</string>
     <string name="mediaLibrary" translatable="false">ТУТ БУДЕТ МЕДИАТЕКА</string>
     <string name="search" translatable="false">ТУТ БУДЕТ ПОИСК</string>
-    <string name="bold_text" translatable="false"><![CDATA[Это <b>жирный</b> текст]]></string>
-
 
 </resources>

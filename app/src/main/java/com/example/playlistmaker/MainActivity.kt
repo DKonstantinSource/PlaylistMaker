@@ -15,15 +15,17 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // enableEdgeToEdge()
+        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        val searchView = findViewById<Button>(R.id.first_button)
-        val mediaLibraryView = findViewById<Button>(R.id.second_button)
-        val settingView = findViewById<Button>(R.id.third_button)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-        val searchViewDark = findViewById<Button>(R.id.first_button_dark)
-        val mediaLibraryViewDark = findViewById<Button>(R.id.second_button_dark)
-        val settingViewDark = findViewById<Button>(R.id.third_button_dark)
+        val searchView = findViewById<Button>(R.id.search)
+        val mediaLibraryView = findViewById<Button>(R.id.library)
+        val settingView = findViewById<Button>(R.id.settings)
 
         searchView.setOnClickListener {
             val displaySettingsActivity = Intent(this, SearchActivity::class.java)

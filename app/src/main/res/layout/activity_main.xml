@@ -1,91 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:background="#3772E7"
+    android:layout_height="match_parent"
+    android:background="@color/mainBackground"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_height="56dp"
-        android:layout_width="match_parent">
-
-        <RelativeLayout
-            android:layout_width="304dp"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:layout_marginEnd="52dp">
-            <TextView
-                android:lineHeight="25.78dp"
-                android:layout_width="wrap_content"
-                android:width="208dp"
-                android:height="50dp"
-                android:gravity="start"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="12dp"
-                android:textFontWeight="500"
-                android:layout_height="30dp"
-                android:text="@string/title"
-                android:textSize="22sp"
-                android:textColor="#FFFFFF"/>
-
-
-        </RelativeLayout>
-    </FrameLayout>
-
-    <RelativeLayout
-        android:layout_width="328dp"
-        android:layout_height="220dp"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/button_search"
-        >
-        <Button
-            android:id="@+id/first_button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="@style/TransparentButton"
-            >
-
-        </Button>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="328dp"
-        android:layout_height="220dp"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_mediatec"
-        >
-
-        <Button
-            android:id="@+id/second_button"
-            style="@style/TransparentButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </Button>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="328dp"
-        android:layout_height="220dp"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/button_setting"
-        >
+        android:paddingHorizontal="16dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            android:textColor="@color/white"
+            android:textFontWeight="600"
+            android:textSize="@dimen/headerTextSize" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="28dp">
+
         <Button
-            android:id="@+id/third_button"
+            android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="@style/TransparentButton"
-            >
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:letterSpacing="0"
+            android:text="@string/searchText"
+            android:textAllCaps="false"
+            android:textColor="@color/firstTextColor"
+            android:textFontWeight="600"
+            android:textSize="@dimen/headerTextSize"
+            app:cornerRadius="@dimen/mainCornerRadiusBtn"
+            app:icon="@drawable/ic_search"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/mainIconPadding"
+            app:iconTint="@color/firstTextColor" />
 
-        </Button>
-    </RelativeLayout>
+        <Button
+            android:id="@+id/library"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:letterSpacing="0"
+            android:text="@string/mediatec"
+            android:textAllCaps="false"
+            android:textColor="@color/firstTextColor"
+            android:textFontWeight="600"
+            android:textSize="@dimen/headerTextSize"
+            app:cornerRadius="@dimen/mainCornerRadiusBtn"
+            app:icon="@drawable/light_mode_mediatec"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/mainIconPadding"
+            app:iconTint="@color/firstTextColor" />
 
-
+        <Button
+            android:id="@+id/settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:letterSpacing="0"
+            android:text="@string/settings"
+            android:textAllCaps="false"
+            android:textColor="@color/firstTextColor"
+            android:textFontWeight="600"
+            android:textSize="@dimen/headerTextSize"
+            app:cornerRadius="@dimen/mainCornerRadiusBtn"
+            app:icon="@drawable/ic_settings"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/mainIconPadding"
+            app:iconTint="@color/firstTextColor" />
+    </LinearLayout>
 
 </LinearLayout>
-
