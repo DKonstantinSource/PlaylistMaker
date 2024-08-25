@@ -1,8 +1,7 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Playlist Maker</string>
     <string name="title" translatable="false">Playlist maker</string>
     <string name="settings" formatted="true" translatable="false">Настройки</string>
-    <string name="shareApp" translatable="false">Поделиться приложением</string>
     <string name="supportMail" translatable="false">Написать в поддержку</string>
     <string name="darkTheme" translatable="false">Темная тема</string>
     <string name="searchText">Поиск</string>
@@ -16,6 +15,8 @@
     <string name="emailSubtext">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="termOfUseRl">https://yandex.ru/legal/practicum_offer/</string>
     <string name="titleSearch">Поиск</string>
-    <style name="clear">Сбросить</style>
+    <string name="shareApp" >Поделиться приложением через</string>
+    <string name="shareAppLink">"https://practicum.yandex.ru/android-developer/?from=catalog"</string>
+
 
 </resources>

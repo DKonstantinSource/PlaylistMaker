@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
     private lateinit var resetButton: Button
-    var searchQuery: String = ""
+    private var searchQuery: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,6 +33,8 @@ class SearchActivity : AppCompatActivity() {
         searchEditText.setText(searchQuery)
         resetButton = findViewById<Button>(R.id.reset_button)
 
+
+        // TODO "Посмотреть решение задачи фокуса, по лучше, без задержки  "
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 searchEditText.postDelayed({
@@ -70,16 +72,19 @@ class SearchActivity : AppCompatActivity() {
 
 
     }
-
+    companion object {
+        const val searchKeyOnState = "search_query"
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("search_query", searchQuery) // Сохраняем текст из EditText в Bundle
+        outState.putString(searchKeyOnState, searchQuery)  // -
     }
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchQuery = savedInstanceState.getString("search_query", "") // Извлекаем текст из Bundle
-        searchEditText.setText(searchQuery) // Устанавливаем восстановленное значение в EditText
+        searchQuery = savedInstanceState.getString(searchKeyOnState, "")
+        searchEditText.setText(searchQuery)
     }
+
 
 }

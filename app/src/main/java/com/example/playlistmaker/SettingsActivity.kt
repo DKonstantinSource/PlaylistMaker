@@ -50,12 +50,6 @@ class SettingsActivity : AppCompatActivity() {
         textViewEmail.setOnClickListener { sendSupportEmail() }
         imageViewEmail.setOnClickListener { sendSupportEmail() }
 
-        val isLoading = AtomicBoolean()
-        if (isLoading.compareAndSet(false, true)) {
-            // todo
-        } else {
-            isLoading.set(false)
-        }
 
         val switchTheme = findViewById<SwitchCompat>(R.id.switchDarkTheme)
         switchTheme.isChecked = when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
@@ -84,14 +78,13 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun shareNameApp() {
-        val linkUrl = "https://practicum.yandex.ru/android-developer/?from=catalog"
+        val linkUrl = getString(R.string.appLinkUrl)
         val intentShare = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, linkUrl)
             type = "text/plain"
         }
-        val chooser = Intent.createChooser(intentShare, "Поделиться приложением через")
-        startActivity(chooser)
+        startActivity(Intent.createChooser(intentShare, getString(R.string.shareApp)))
     }
 
 
