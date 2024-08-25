@@ -10,5 +10,12 @@
     <string name="termsOfUse" translatable="false">Пользовательское соглашение</string>
     <string name="mediaLibrary" translatable="false">ТУТ БУДЕТ МЕДИАТЕКА</string>
     <string name="search" translatable="false">ТУТ БУДЕТ ПОИСК</string>
+    <string name="appLinkUrl" >https://practicum.yandex.ru/android-developer/?from=catalog</string>
+    <string name="emailUrl">flxugerax@gmail.com</string>
+    <string name="emailTitleText">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="emailSubtext">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="termOfUseRl">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="titleSearch">Поиск</string>
+    <style name="clear">Сбросить</style>
 
 </resources>
