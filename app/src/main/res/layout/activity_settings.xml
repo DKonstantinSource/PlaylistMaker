@@ -1,34 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/backgroundColorSettings">
+
 
     <LinearLayout
         android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:padding="4dp">
+        android:padding="4dp"
+        style="@style/smallContainerSetting">
 
         <ImageButton
+            android:id="@+id/backButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="12dp"
-            android:backgroundTint="@color/backArrow"
-            android:src="@drawable/button_back_light" />
-
+            android:src="@drawable/button_back_light"
+            style="@style/buttonDarkTheme"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/settings"
-            android:textColor="@color/firstTextColor"
-            android:textFontWeight="600"
-            android:textSize="@dimen/headerTextSize" />
+            style="@style/titleSettings"
+            />
 
     </LinearLayout>
 
@@ -36,28 +37,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp">
+        android:paddingHorizontal="16dp"
+        style="@style/smallContainerSetting">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:minHeight="61dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            style="@style/smallContainerSetting"
+            tools:ignore="UseSwitchCompatOrMaterialXml"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center"
                 android:text="@string/darkTheme"
-                android:textColor="@color/firstTextColor"
-                android:textSize="@dimen/normalTextSize" />
+                style="@style/smallContainerSetting" />
 
-            <Switch
-                tools:ignore="UseSwitchCompatOrMaterialXml"
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchDarkTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center" />
+                android:layout_gravity="end|center"
+                tools:ignore="UseSwitchCompatOrMaterialXml">
+
+            </androidx.appcompat.widget.SwitchCompat>
         </FrameLayout>
 
         <FrameLayout
@@ -65,21 +72,24 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:minHeight="61dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            style="@style/smallContainerSetting">
 
             <TextView
+                android:id="@+id/shareAppText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center"
                 android:text="@string/shareApp"
-                android:textColor="@color/firstTextColor"
-                android:textSize="@dimen/normalTextSize" />
+                style="@style/smallContainerSetting" />
 
             <ImageView
+                android:id="@+id/shareAppImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
-                android:src="@drawable/share_light_mode" />
+                android:src="@drawable/share_light_mode"
+                style="@style/backgroundColorSettings"/>
         </FrameLayout>
 
         <FrameLayout
@@ -87,21 +97,25 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:minHeight="61dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            style="@style/smallContainerSetting">
 
             <TextView
+                android:id="@+id/supportText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center"
                 android:text="@string/supportMail"
-                android:textColor="@color/firstTextColor"
-                android:textSize="@dimen/normalTextSize" />
+                style="@style/smallContainerSetting"
+                />
 
             <ImageView
+                android:id="@+id/supportImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
-                android:src="@drawable/support_light_mode" />
+                android:src="@drawable/support_light_mode"
+                style="@style/backgroundColorSettings"/>
         </FrameLayout>
 
         <FrameLayout
@@ -109,21 +123,25 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:minHeight="61dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            style="@style/smallContainerSetting">
 
             <TextView
+                android:id="@+id/termOfUseText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center"
                 android:text="@string/termsOfUse"
-                android:textColor="@color/firstTextColor"
-                android:textSize="@dimen/normalTextSize" />
+                style="@style/smallContainerSetting" />
 
             <ImageView
+                android:id="@+id/termOfUseImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
-                android:src="@drawable/arrow_light_mode" />
+                android:src="@drawable/arrow_light_mode"
+                style="@style/backgroundColorSettings"/>
         </FrameLayout>
     </LinearLayout>
+
 </LinearLayout>

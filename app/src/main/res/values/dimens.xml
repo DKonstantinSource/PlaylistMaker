@@ -4,4 +4,5 @@
     <dimen name="normalTextSize">16sp</dimen>
     <dimen name="mainCornerRadiusBtn">16dp</dimen>
     <dimen name="mainIconPadding">8dp</dimen>
+    <dimen name="search_end_icon_padding">32dp</dimen>
 </resources>

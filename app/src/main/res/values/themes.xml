@@ -1,11 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
 
-    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
+    <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar" >
+        <item name="colorPrimary">@color/colorWhiteBackground</item>
+        <item name="colorOnPrimary">@color/colorWhiteBackground</item>
+        <item name="colorSecondaryVariant">@color/mainBackground</item>
+        <item name="android:src">@drawable/button_back_light</item>
+        <item name="colorSecondary">@color/colorWhiteText</item>
+        <item name="colorOnSecondary">@color/colorBlackText</item>
+        <item name="colorAccent">@color/ic_cross_color</item>
+    </style>>
+
 
     <style name="title">
         <item name="android:textSize">22sp</item>
@@ -15,4 +19,6 @@
         <item name="android:background">#80FF0000</item>
         <item name="android:alpha">0</item>
     </style>
+
+
 </resources>

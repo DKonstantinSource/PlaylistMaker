@@ -1,7 +1,21 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<resources>
+    <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your dark theme here -->
+        <item name="colorPrimary">@color/colorBlackBackground</item>
+        <item name="colorOnPrimary">@color/colorWhiteText</item>
+        <item name="android:src">@drawable/button_back_light</item>
+        <item name="colorSecondaryVariant">@color/colorBlackBackground</item>
+        <item name="colorSecondary">@color/colorWhiteText</item>
+        <item name="colorOnSecondary">@color/colorWhiteText</item>
+        <item name="colorAccent">@color/colorBlackBackground</item>
+
+    </style>
+    <style name="title">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="TransparentButton">
+        <item name="android:background">#80FF0000</item>
+        <item name="android:alpha">0</item>
     </style>
 </resources>

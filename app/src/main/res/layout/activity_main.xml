@@ -4,8 +4,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBackground"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/backgroundColorMain">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,10 +18,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title"
-            android:textColor="@color/white"
-            android:textFontWeight="600"
-            android:textSize="@dimen/headerTextSize" />
+            style="@style/appNameMain"
+            />
 
     </LinearLayout>
 
@@ -34,57 +32,27 @@
 
         <Button
             android:id="@+id/search"
+            style="@style/mainButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:letterSpacing="0"
             android:text="@string/searchText"
-            android:textAllCaps="false"
-            android:textColor="@color/firstTextColor"
-            android:textFontWeight="600"
-            android:textSize="@dimen/headerTextSize"
-            app:cornerRadius="@dimen/mainCornerRadiusBtn"
-            app:icon="@drawable/ic_search"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/mainIconPadding"
-            app:iconTint="@color/firstTextColor" />
+            app:icon="@drawable/ic_search" />
 
         <Button
             android:id="@+id/library"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:letterSpacing="0"
             android:text="@string/mediatec"
-            android:textAllCaps="false"
-            android:textColor="@color/firstTextColor"
-            android:textFontWeight="600"
-            android:textSize="@dimen/headerTextSize"
-            app:cornerRadius="@dimen/mainCornerRadiusBtn"
             app:icon="@drawable/light_mode_mediatec"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/mainIconPadding"
-            app:iconTint="@color/firstTextColor" />
+            style="@style/mainButton"/>
 
         <Button
             android:id="@+id/settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:letterSpacing="0"
             android:text="@string/settings"
-            android:textAllCaps="false"
-            android:textColor="@color/firstTextColor"
-            android:textFontWeight="600"
-            android:textSize="@dimen/headerTextSize"
-            app:cornerRadius="@dimen/mainCornerRadiusBtn"
             app:icon="@drawable/ic_settings"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/mainIconPadding"
-            app:iconTint="@color/firstTextColor" />
+            style="@style/mainButton"/>
     </LinearLayout>
 
 </LinearLayout>
