@@ -8,6 +8,7 @@
         <item name="colorSecondary">@color/colorWhiteText</item>
         <item name="colorOnSecondary">@color/colorBlackText</item>
         <item name="colorAccent">@color/ic_cross_color</item>
+        <item name="colorTertiary">@color/backArrow</item>
     </style>>
 
 

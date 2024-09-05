@@ -7,7 +7,8 @@
         <item name="colorSecondaryVariant">@color/colorBlackBackground</item>
         <item name="colorSecondary">@color/colorWhiteText</item>
         <item name="colorOnSecondary">@color/colorWhiteText</item>
-        <item name="colorAccent">@color/colorBlackBackground</item>
+        <item name="colorAccent">@color/colorWhiteBackground</item>
+        <item name="colorTertiary">@color/colorWhiteBackground</item>
 
     </style>
     <style name="title">

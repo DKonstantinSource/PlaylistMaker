@@ -66,4 +66,24 @@
         <item name="iconTint">@color/colorBlackText</item>
         <item name="font">@font/ys_display_medium</item>
     </style>
+
+
+    <style name="trackName">
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">@dimen/normalTextSize</item>
+        <item name="android:textColor">?attr/colorTertiary</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="trackDescription" >
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">@dimen/track_description_11dp</item>
+        <item name="android:textColor">?attr/colorAccent</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+
 </resources>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp"
+    android:showDividers="middle">
+
+    <ImageView
+        android:id="@+id/track_image"
+        android:layout_width="@dimen/track_image_dp"
+        android:layout_height="@dimen/track_image_dp"
+        android:contentDescription="@string/track_image"
+        tools:background="@color/ic_cross_color" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingStart="8dp"
+        android:orientation="vertical"
+        tools:ignore="RtlSymmetry">
+
+        <TextView
+            android:id="@+id/track_name"
+            style="@style/trackName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/track_name" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/name_artist"
+                style="@style/trackDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="@string/track_author" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_dot_item"
+                app:tint="?attr/colorAccent" />
+
+            <TextView
+                android:id="@+id/track_time"
+                style="@style/trackDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/track_timing" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/go_over"
+        android:src="@drawable/ic_arrow_forward"
+        app:tint="?attr/colorOnSecondary" />
+
+</LinearLayout>
