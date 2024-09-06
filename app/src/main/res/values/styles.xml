@@ -80,7 +80,7 @@
     <style name="trackDescription" >
         <item name="android:textFontWeight">400</item>
         <item name="android:textSize">@dimen/track_description_11dp</item>
-        <item name="android:textColor">?attr/colorAccent</item>
+        <item name="android:textColor">?attr/colorOnContainer</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>

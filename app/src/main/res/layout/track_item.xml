@@ -50,7 +50,8 @@
                 android:layout_height="wrap_content"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_dot_item"
-                app:tint="?attr/colorAccent" />
+                app:tint="?attr/colorOnContainer"
+                tools:ignore="PrivateResource" />
 
             <TextView
                 android:id="@+id/track_time"

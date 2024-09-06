@@ -21,24 +21,14 @@ class TracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         if (NetworkUtil.isNetworkAvailable(itemView.context)) {
             Glide.with(itemView)
-                .load(model.art_image)
+                .load(model.artImage)
                 .fitCenter()
                 .placeholder(R.drawable.light_mode_search)
                 .centerCrop()
                 .transform(RoundedCorners(Utils.dpToPx(2f, itemView.context)))
                 .into(trackLogo)
         } else {
-            trackLogo.setImageResource(R.drawable.ic_launcher_background)
+            trackLogo.setImageResource(R.drawable.image_placeholder)
         }
-
-
-//        Glide.with(itemView)
-//            .load(model.art_image)
-//            .fitCenter()
-//            .placeholder(R.drawable.light_mode_search)
-//            .centerCrop()
-//            .transform(RoundedCorners(Utils.dpToPx(2f, itemView.context)))
-//            .into(trackLogo)
-//    }
     }
 }

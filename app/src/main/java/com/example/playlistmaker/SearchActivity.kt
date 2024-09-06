@@ -69,7 +69,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-        var backOnMainActivity = findViewById<ImageView>(R.id.backButton)
+        val backOnMainActivity = findViewById<ImageView>(R.id.backButton)
         backOnMainActivity.setOnClickListener { finish()}
 
         Glide.with(applicationContext)
