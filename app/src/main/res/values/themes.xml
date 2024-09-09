@@ -4,7 +4,7 @@
         <item name="colorPrimary">@color/colorWhiteBackground</item>
         <item name="colorOnPrimary">@color/colorWhiteBackground</item>
         <item name="colorSecondaryVariant">@color/mainBackground</item>
-        <item name="android:src">@drawable/button_back_light</item>
+        <!-- <item name="android:src">@drawable/button_back_light</item> -->
         <item name="colorSecondary">@color/colorWhiteText</item>
         <item name="colorOnSecondary">@color/colorBlackText</item>
         <item name="colorAccent">@color/ic_cross_color</item>
