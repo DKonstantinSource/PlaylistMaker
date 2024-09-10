@@ -6,11 +6,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="firstTextColor">#1A1B22</color>
     <color name="iconTintLight">#AEAFB4</color>
-    <color name="backArrow">#00000000</color>
+    <color name="backArrow">#000000</color>
     <color name="colorBlackText">#1A1B22</color>
     <color name="colorWhiteBackground">#FFFFFFFF</color>
     <color name="colorBlackBackground">#1A1B22</color>
     <color name="colorWhiteText">#FFFFFFFF</color>
     <color name="background_search_field">#E6E8EB</color>
     <color name="ic_cross_color">#AEAFB4</color>
+    <color name="artist_track_text_color">#AEAFB4</color>
 </resources>

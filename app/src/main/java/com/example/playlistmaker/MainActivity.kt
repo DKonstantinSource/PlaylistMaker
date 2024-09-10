@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 
 class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -22,7 +24,6 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         val searchView = findViewById<Button>(R.id.search)
         val mediaLibraryView = findViewById<Button>(R.id.library)
         val settingView = findViewById<Button>(R.id.settings)
@@ -39,5 +40,6 @@ class MainActivity : AppCompatActivity() {
             val displaySettingsActivity = Intent(this, SettingsActivity::class.java)
             startActivity(displaySettingsActivity)
         }
+
     }
 }

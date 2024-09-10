@@ -3,11 +3,15 @@
         <!-- Customize your dark theme here -->
         <item name="colorPrimary">@color/colorBlackBackground</item>
         <item name="colorOnPrimary">@color/colorWhiteText</item>
-        <item name="android:src">@drawable/button_back_light</item>
+       <!-- <item name="android:src">@drawable/button_back_light</item> -->
         <item name="colorSecondaryVariant">@color/colorBlackBackground</item>
         <item name="colorSecondary">@color/colorWhiteText</item>
         <item name="colorOnSecondary">@color/colorWhiteText</item>
-        <item name="colorAccent">@color/colorBlackBackground</item>
+        <item name="colorAccent">@color/firstTextColor</item>
+        <item name="colorTertiary">@color/colorWhiteBackground</item>
+        <item name="colorPrimaryFixed">@color/mainBackground</item>
+        <item name="colorOnContainer">@color/colorWhiteBackground</item>
+
 
     </style>
     <style name="title">
