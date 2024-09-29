@@ -97,13 +97,14 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-        refreshButton.setOnClickListener{
+        refreshButton.setOnClickListener {
             lastQuery?.let { query ->
+                errorConnectionPlaceHolder.visibility = View.GONE
                 performSearch(query) { trackFound ->
                     if (trackFound) {
-                        errorConnectionPlaceHolder.visibility = View.GONE
+                        errorSearchNothing.visibility = View.GONE
                     } else {
-                        errorConnectionPlaceHolder.visibility = View.VISIBLE
+                        errorSearchNothing.visibility = View.VISIBLE
                     }
                 }
             }
@@ -171,8 +172,6 @@ class SearchActivity : AppCompatActivity() {
                         trackAdapter.updateData(tracks)
                         recyclerView.visibility = View.VISIBLE
                         errorSearchNothing.visibility = View.GONE
-                        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
                         callback(true)
                     } else {
                         recyclerView.visibility = View.GONE
@@ -189,8 +188,6 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 Log.e("SearchActivity", "Network Error: ${t.message}")
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
                 errorConnectionPlaceHolder.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
                 errorSearchNothing.visibility = View.GONE
