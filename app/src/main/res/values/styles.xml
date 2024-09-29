@@ -84,6 +84,26 @@
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
+    
+    <style name="errorText">
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">@dimen/text_on_error</item>
+        <item name="font">@font/ys_display_medium</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:textAlignment">center</item>
+    </style>
 
+    <style name="refreshButton">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:backgroundTint">?attr/colorOnSecondary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:text">@string/textOnRefresh</item>
+        <item name="backgroundColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="errorPlaceholder">
+        <item name="android:tint">?attr/colorTertiary</item>
+
+    </style>
 
 </resources>

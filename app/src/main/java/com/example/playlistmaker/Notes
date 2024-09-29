@@ -1,0 +1,7 @@
+//Glide.with(applicationContext)
+        //    .load("https://static1.anpoimages.com/wordpress/wp-content/uploads/2022/01/google-photos-motion-hero.jpg?q=70&fit=crop&w=1100&h=618&dpr=1")
+        //    .centerCrop()
+        //    .fitCenter()
+        //    .transform(RoundedCorners(10))
+
+        SearchActivity , если что то сломается, переписать, нет удалить

@@ -65,7 +65,8 @@
             android:textFontWeight="400"
             android:textSize="@dimen/normalTextSize"
             app:icon="@drawable/search_icon_16x16"
-
+            android:imeOptions="actionDone"
+            android:singleLine="true"
 
             />
 
@@ -87,9 +88,79 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tracks"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <LinearLayout
+        android:id="@+id/errorConnectionPlaceHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+        <ImageView
+
+            android:layout_gravity="center"
+            android:id="@+id/errorImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/icon_margin_error_placegolder"
+            android:layout_marginBottom="@dimen/mainCornerRadiusBtn"
+            android:src="@drawable/image_no_internet" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/errorToConnection"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            style="@style/errorText">
+        </TextView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/unloadFalse"
+            android:layout_gravity="center_vertical"
+            style="@style/errorText">
+        </TextView>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/refreshButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cornerRadius="@dimen/corner_radius_dp"
+            style="@style/refreshButton">
+        </com.google.android.material.button.MaterialButton>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/errorSearchNothing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <ImageView
+
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/icon_margin_error_placegolder"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/image_no_song"
+             />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nothingSearch"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="@dimen/mainCornerRadiusBtn"
+            style="@style/errorText">
+        </TextView>
+
+    </LinearLayout>
 
 
 </LinearLayout>
