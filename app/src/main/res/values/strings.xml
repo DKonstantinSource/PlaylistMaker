@@ -17,8 +17,13 @@
     <string name="titleSearch">Поиск</string>
     <string name="shareApp" >Поделиться приложением через</string>
     <string name="shareAppLink">"https://practicum.yandex.ru/android-developer/?from=catalog"</string>
-    <string name="imageLinkUrl">https://rytp.miraheze.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:%D0%A7%D1%91%D1%80%D0%BD%D1%8B%D0%B9_%D0%92%D0%BB%D0%B0%D1%81%D1%82%D0%B5%D0%BB%D0%B8%D0%BD.jpg</string>
+    
+    <string name="errorToConnection">Проблемы со связью</string>
+    <string name="unloadFalse">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="textOnRefresh">Обновить</string>
+    <string name="iTunesLink">https://itunes.apple.com</string>
 
+    <string name="nothingSearch">Ничего не нашлось</string>
 
     <string name="track_image">Обложка трека</string>
     <string name="go_over">Перейти</string>

@@ -7,4 +7,7 @@
     <dimen name="search_end_icon_padding">32dp</dimen>
     <dimen name="track_image_dp">45dp</dimen>
     <dimen name="track_description_11dp">11sp</dimen>
+    <dimen name="text_on_error">19sp</dimen>
+    <dimen name="corner_radius_dp">54dp</dimen>
+    <dimen name="icon_margin_error_placegolder">130dp</dimen>
 </resources>
