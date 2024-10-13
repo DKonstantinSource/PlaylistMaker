@@ -10,4 +10,5 @@
     <dimen name="text_on_error">19sp</dimen>
     <dimen name="corner_radius_dp">54dp</dimen>
     <dimen name="icon_margin_error_placegolder">130dp</dimen>
+    <dimen name="button_on_refresh">24dp</dimen>
 </resources>

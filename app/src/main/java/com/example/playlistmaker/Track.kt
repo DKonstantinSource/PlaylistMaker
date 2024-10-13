@@ -5,6 +5,7 @@ data class SearchResponse (
 )
 
 data class Track(
+     val trackId: Long,
      val trackName: String,
      val artistName: String,
      val trackTimeMillis: String,

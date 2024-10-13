@@ -11,15 +11,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,9 +35,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var errorSearchNothing: View
     private lateinit var errorConnectionPlaceHolder: View
+    private lateinit var refreshHistoryButton: Button
+    private lateinit var hiddenText: TextView
+    private lateinit var searchHistory: SearchHistory
 
 
-    @SuppressLint("ResourceType", "MissingInflatedId")
+    @SuppressLint("ResourceType", "MissingInflatedId", "CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -56,36 +58,17 @@ class SearchActivity : AppCompatActivity() {
         errorSearchNothing = findViewById(R.id.errorSearchNothing)
         errorConnectionPlaceHolder = findViewById(R.id.errorConnectionPlaceHolder)
         refreshButton = findViewById(R.id.refreshButton)
+        refreshHistoryButton = findViewById(R.id.clearHistoryButton)
+        hiddenText = findViewById(R.id.prevSearch)
+
+        val sharedPreferences = getSharedPreferences("search_history", MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPreferences)
+
+        val backOnMainActivity = findViewById<ImageView>(R.id.backButton)
+        backOnMainActivity.setOnClickListener { finish() }
 
 
 
-
-        searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
-            }
-        }
-        searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                resetButton.visibility = if (s.isNullOrEmpty()) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
-                if (s.isNullOrEmpty()) {
-                    recyclerView.visibility = View.GONE
-                    errorSearchNothing.visibility = View.GONE
-                } else {
-                    errorSearchNothing.visibility = View.GONE
-                }
-                searchQuery = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
 
         resetButton.setOnClickListener {
             searchEditText.text.clear()
@@ -111,15 +94,23 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-        val backOnMainActivity = findViewById<ImageView>(R.id.backButton)
-        backOnMainActivity.setOnClickListener { finish() }
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
 
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                refreshButton.visibility = View.VISIBLE
                 Log.d("SearchActivity", "Search query: $searchQuery")
                 performSearch(searchQuery) { trackFound ->
                     if (trackFound) {
                         errorSearchNothing.visibility = View.GONE
+                        refreshButton.visibility = View.VISIBLE
+
+
                     } else {
                         errorSearchNothing.visibility = View.VISIBLE
                     }
@@ -130,21 +121,89 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+
+        searchEditText = findViewById(R.id.searchEditText)
         recyclerView = findViewById(R.id.tracks)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        trackAdapter = TrackAdapter()
+
+
+        val historyTracks = searchHistory.getSearchHistory()
+
+
+
+        trackAdapter = TrackAdapter { track ->
+            searchHistory.addToHistory(track)
+        }
+
         recyclerView.adapter = trackAdapter
 
 
-        if (savedInstanceState != null) {
-            searchQuery = savedInstanceState.getString(searchKeyOnState, "")
-            searchEditText.setText(searchQuery)
+        fun updateHistory() {
+            if (historyTracks.isEmpty()) {
+                recyclerView.visibility = View.GONE
+                errorSearchNothing.visibility = View.GONE
+                hiddenText.visibility = View.GONE
+                refreshHistoryButton.visibility = View.GONE
+            } else {
+                trackAdapter.updateData(historyTracks)
+                hiddenText.visibility = View.VISIBLE
+                recyclerView.visibility = View.VISIBLE
+                errorSearchNothing.visibility = View.GONE
+                refreshHistoryButton.visibility = View.VISIBLE
+
+            }
         }
+        updateHistory()
+        refreshHistoryButton.setOnClickListener{
+            hiddenText.visibility = View.GONE
+            recyclerView.visibility = View.GONE
+            refreshHistoryButton.visibility = View.GONE
+            searchHistory.clearHistory()
+
+        }
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                resetButton.visibility = View.VISIBLE
+                Log.d("SearchActivity", "Search query: $searchQuery")
+                performSearch(searchQuery) { trackFound ->
+                    if (trackFound) {
+                        errorSearchNothing.visibility = View.GONE
+                        hiddenText.visibility = View.GONE
+                        refreshHistoryButton.visibility = View.GONE
+                    } else {
+                        errorSearchNothing.visibility = View.VISIBLE
+                    }
+                }
+                true
+
+
+            } else {
+                false
+            }
+        }
+
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, p3: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchQuery = s.toString()
+                resetButton.visibility = View.VISIBLE
+                hiddenText.visibility = View.GONE
+                refreshHistoryButton.visibility = View.GONE
+                if (searchQuery.isNotEmpty()) {
+                    performSearch(searchQuery) { trackFound ->
+                        if (trackFound) {
+                            errorSearchNothing.visibility = View.GONE
+                        } else {
+                            errorSearchNothing.visibility = View.VISIBLE
+                        }
+                    }
+                } else {
+                    trackAdapter.updateData(emptyList())
+                }
+            }
+        })
     }
-
-
-
-
 
     private fun performSearch(query: String, callback: (Boolean) -> Unit) {
         val retrofit = Retrofit.Builder()
@@ -156,7 +215,10 @@ class SearchActivity : AppCompatActivity() {
 
         val call = api.search(query)
         call.enqueue(object : Callback<SearchResponse> {
-            override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
+            override fun onResponse(
+                call: Call<SearchResponse>,
+                response: Response<SearchResponse>
+            ) {
                 Log.d("SearchActivity", "Response received for query: $query")
                 Log.d("SearchActivity", "Response Code: ${response.code()}")
                 errorConnectionPlaceHolder.visibility = View.GONE
@@ -167,7 +229,8 @@ class SearchActivity : AppCompatActivity() {
 
                     val tracks = trackResponse?.results ?: emptyList()
                     Log.d("SearchActivity", "Tracks found: ${tracks.size}")
-
+                    hiddenText.visibility = View.GONE
+                    refreshHistoryButton.visibility = View.GONE
                     if (tracks.isNotEmpty()) {
                         trackAdapter.updateData(tracks)
                         recyclerView.visibility = View.VISIBLE
@@ -178,9 +241,11 @@ class SearchActivity : AppCompatActivity() {
                         errorSearchNothing.visibility = View.VISIBLE
                         callback(false)
                     }
-
                 } else {
-                    Log.e("SearchActivity", "Response Error: ${response.code()} - ${response.errorBody()?.string()}")
+                    Log.e(
+                        "SearchActivity",
+                        "Response Error: ${response.code()} - ${response.errorBody()?.string()}"
+                    )
                     recyclerView.visibility = View.GONE
                     errorSearchNothing.visibility = View.VISIBLE
                 }
@@ -194,14 +259,15 @@ class SearchActivity : AppCompatActivity() {
                 lastQuery = searchQuery
             }
         })
-    }
 
+    }
     companion object {
         const val searchKeyOnState = "search_query"
-    }
 
+    }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(searchKeyOnState, searchQuery)
     }
+
 }
