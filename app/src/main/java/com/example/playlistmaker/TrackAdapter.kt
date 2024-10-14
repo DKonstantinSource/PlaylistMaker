@@ -47,7 +47,6 @@ class TrackAdapter(
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
         return TracksViewHolder(view)
@@ -61,6 +60,7 @@ class TrackAdapter(
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
             onTrackClick(tracks[position])
+
         }
     }
 

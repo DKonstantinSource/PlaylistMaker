@@ -73,6 +73,9 @@ class SearchActivity : AppCompatActivity() {
 
         trackAdapter = TrackAdapter { track ->
             searchHistory.addToHistory(track)
+            if (searchQuery.isEmpty()){
+                trackAdapter.updateData(searchHistory.getSearchHistory())
+            }
         }
 
 
@@ -88,10 +91,13 @@ class SearchActivity : AppCompatActivity() {
 
             if (historyTracks.isNotEmpty()) {
                 trackAdapter.updateData(historyTracks)
-                recyclerView.adapter = trackAdapter
+                recyclerView.adapter = this.trackAdapter
                 refreshHistoryButton.visibility = View.VISIBLE
+
             }
         }
+
+
 
 
         refreshButton.setOnClickListener {
