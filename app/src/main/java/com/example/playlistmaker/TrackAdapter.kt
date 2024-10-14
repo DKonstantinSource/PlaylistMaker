@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,11 +64,12 @@ class TrackAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newTracks: List<Track>) {
         tracks = newTracks
         notifyDataSetChanged()
     }
-
+//
 
 }
 

@@ -67,7 +67,13 @@ class SearchActivity : AppCompatActivity() {
         val backOnMainActivity = findViewById<ImageView>(R.id.backButton)
         backOnMainActivity.setOnClickListener { finish() }
 
+        var historyTracks = searchHistory.getSearchHistory()
 
+
+
+        trackAdapter = TrackAdapter { track ->
+            searchHistory.addToHistory(track)
+        }
 
 
         resetButton.setOnClickListener {
@@ -77,6 +83,14 @@ class SearchActivity : AppCompatActivity() {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
             resetButton.visibility = View.GONE
+
+            historyTracks = searchHistory.getSearchHistory()
+
+            if (historyTracks.isNotEmpty()) {
+                trackAdapter.updateData(historyTracks)
+                recyclerView.adapter = trackAdapter
+                refreshHistoryButton.visibility = View.VISIBLE
+            }
         }
 
 
@@ -127,14 +141,6 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
 
-        val historyTracks = searchHistory.getSearchHistory()
-
-
-
-        trackAdapter = TrackAdapter { track ->
-            searchHistory.addToHistory(track)
-        }
-
         recyclerView.adapter = trackAdapter
 
 
@@ -154,12 +160,14 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         updateHistory()
+
         refreshHistoryButton.setOnClickListener{
             hiddenText.visibility = View.GONE
             recyclerView.visibility = View.GONE
             refreshHistoryButton.visibility = View.GONE
             searchHistory.clearHistory()
-
+            historyTracks = emptyList()
+            updateHistory()
         }
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -184,7 +192,8 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, p3: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, p3: Int) {
+            }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s.toString()
                 resetButton.visibility = View.VISIBLE
@@ -195,11 +204,19 @@ class SearchActivity : AppCompatActivity() {
                         if (trackFound) {
                             errorSearchNothing.visibility = View.GONE
                         } else {
+                            trackAdapter.updateData(historyTracks)
+
                             errorSearchNothing.visibility = View.VISIBLE
                         }
                     }
                 } else {
-                    trackAdapter.updateData(emptyList())
+                    trackAdapter.updateData(historyTracks)
+                }
+                historyTracks = searchHistory.getSearchHistory()
+
+                if (historyTracks.isNotEmpty()){
+                    trackAdapter.updateData(historyTracks)
+                    updateHistory()
                 }
             }
         })
