@@ -192,31 +192,34 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, p3: Int) {
-            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, p3: Int) {}
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s.toString()
                 resetButton.visibility = View.VISIBLE
                 hiddenText.visibility = View.GONE
                 refreshHistoryButton.visibility = View.GONE
+
                 if (searchQuery.isNotEmpty()) {
                     performSearch(searchQuery) { trackFound ->
                         if (trackFound) {
                             errorSearchNothing.visibility = View.GONE
                         } else {
-                            trackAdapter.updateData(historyTracks)
-
                             errorSearchNothing.visibility = View.VISIBLE
                         }
                     }
                 } else {
-                    trackAdapter.updateData(historyTracks)
-                }
-                historyTracks = searchHistory.getSearchHistory()
-
-                if (historyTracks.isNotEmpty()){
-                    trackAdapter.updateData(historyTracks)
-                    updateHistory()
+                    historyTracks = searchHistory.getSearchHistory()
+                    if (historyTracks.isNotEmpty()) {
+                        trackAdapter.updateData(historyTracks)
+                        recyclerView.visibility = View.VISIBLE
+                        refreshHistoryButton.visibility = View.VISIBLE
+                        errorSearchNothing.visibility = View.GONE
+                        resetButton.visibility = View.GONE
+                    } else {
+                        recyclerView.visibility = View.GONE
+                    }
                 }
             }
         })
