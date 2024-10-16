@@ -70,34 +70,33 @@ class SearchActivity : AppCompatActivity() {
         var historyTracks = searchHistory.getSearchHistory()
 
 
-
         trackAdapter = TrackAdapter { track ->
             searchHistory.addToHistory(track)
-            if (searchQuery.isEmpty()){
+            if (searchQuery.isEmpty() or (searchQuery == "")) {
                 trackAdapter.updateData(searchHistory.getSearchHistory())
             }
         }
+
 
 
         resetButton.setOnClickListener {
             searchEditText.text.clear()
             searchQuery = ""
             searchEditText.clearFocus()
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
-            resetButton.visibility = View.GONE
+//            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+//            imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+//            resetButton.visibility = View.GONE
 
             historyTracks = searchHistory.getSearchHistory()
 
             if (historyTracks.isNotEmpty()) {
                 trackAdapter.updateData(historyTracks)
-                recyclerView.adapter = this.trackAdapter
+                recyclerView.adapter = trackAdapter
+                hiddenText.visibility = View.VISIBLE
                 refreshHistoryButton.visibility = View.VISIBLE
-
             }
+
         }
-
-
 
 
         refreshButton.setOnClickListener {
@@ -114,21 +113,15 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-        searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
-            }
-        }
 
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                refreshButton.visibility = View.VISIBLE
+                refreshButton.visibility = View.GONE
                 Log.d("SearchActivity", "Search query: $searchQuery")
                 performSearch(searchQuery) { trackFound ->
                     if (trackFound) {
                         errorSearchNothing.visibility = View.GONE
-                        refreshButton.visibility = View.VISIBLE
+                        refreshButton.visibility = View.GONE
 
 
                     } else {
@@ -140,91 +133,76 @@ class SearchActivity : AppCompatActivity() {
                 false
             }
         }
-
-
         searchEditText = findViewById(R.id.searchEditText)
         recyclerView = findViewById(R.id.tracks)
         recyclerView.layoutManager = LinearLayoutManager(this)
-
-
         recyclerView.adapter = trackAdapter
 
-
-        fun updateHistory() {
-            if (historyTracks.isEmpty()) {
-                recyclerView.visibility = View.GONE
-                errorSearchNothing.visibility = View.GONE
-                hiddenText.visibility = View.GONE
-                refreshHistoryButton.visibility = View.GONE
-            } else {
-                trackAdapter.updateData(historyTracks)
-                hiddenText.visibility = View.VISIBLE
-                recyclerView.visibility = View.VISIBLE
-                errorSearchNothing.visibility = View.GONE
-                refreshHistoryButton.visibility = View.VISIBLE
-
-            }
-        }
-        updateHistory()
-
-        refreshHistoryButton.setOnClickListener{
+        if (searchHistory.getSearchHistory().isNotEmpty()) {
+            hiddenText.visibility = View.VISIBLE
+            refreshHistoryButton.visibility = View.VISIBLE
+            trackAdapter.updateData(searchHistory.getSearchHistory())
+        } else {
             hiddenText.visibility = View.GONE
-            recyclerView.visibility = View.GONE
             refreshHistoryButton.visibility = View.GONE
-            searchHistory.clearHistory()
-            historyTracks = emptyList()
-            updateHistory()
         }
+
+
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                resetButton.visibility = View.VISIBLE
-                Log.d("SearchActivity", "Search query: $searchQuery")
-                performSearch(searchQuery) { trackFound ->
-                    if (trackFound) {
-                        errorSearchNothing.visibility = View.GONE
-                        hiddenText.visibility = View.GONE
-                        refreshHistoryButton.visibility = View.GONE
-                    } else {
-                        errorSearchNothing.visibility = View.VISIBLE
-                    }
-                }
-                true
+                val query = searchEditText.text.toString().trim()
 
-
-            } else {
-                false
-            }
-        }
-
-        searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, p3: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchQuery = s.toString()
-                resetButton.visibility = View.VISIBLE
-                hiddenText.visibility = View.GONE
-                refreshHistoryButton.visibility = View.GONE
-
-                if (searchQuery.isNotEmpty()) {
-                    performSearch(searchQuery) { trackFound ->
+                if (query.isNotEmpty()) {
+                    performSearch(query) { trackFound ->
                         if (trackFound) {
+                            searchQuery = query.trim()
+                            recyclerView.adapter = trackAdapter
                             errorSearchNothing.visibility = View.GONE
                         } else {
                             errorSearchNothing.visibility = View.VISIBLE
                         }
                     }
+                }
+                true
+            } else {
+                false
+            }
+        }
+
+
+        refreshHistoryButton.setOnClickListener {
+            searchHistory.clearHistory()
+            recyclerView.visibility = View.GONE
+            hiddenText.visibility = View.GONE
+            refreshHistoryButton.visibility = View.GONE
+        }
+
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchQuery = s.toString()
+                if (count != 0 && (searchQuery.isNotEmpty())) {
+
+
+                    hiddenText.visibility = View.GONE
+                    refreshHistoryButton.visibility = View.GONE
+                    resetButton.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
                 } else {
-                    historyTracks = searchHistory.getSearchHistory()
-                    if (historyTracks.isNotEmpty()) {
-                        trackAdapter.updateData(historyTracks)
-                        recyclerView.visibility = View.VISIBLE
-                        refreshHistoryButton.visibility = View.VISIBLE
-                        errorSearchNothing.visibility = View.GONE
+
+                    if (searchHistory.getSearchHistory().isNotEmpty()) {
                         resetButton.visibility = View.GONE
+                        trackAdapter.updateData(searchHistory.getSearchHistory())
+                        recyclerView.adapter = trackAdapter
+                        recyclerView.visibility = View.VISIBLE
+                        hiddenText.visibility = View.VISIBLE
+                        refreshHistoryButton.visibility = View.VISIBLE
                     } else {
-                        recyclerView.visibility = View.GONE
+                        resetButton.visibility = View.GONE
                     }
                 }
             }
@@ -236,9 +214,7 @@ class SearchActivity : AppCompatActivity() {
             .baseUrl(getString(R.string.iTunesLink))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
         val api = retrofit.create(ApiService::class.java)
-
         val call = api.search(query)
         call.enqueue(object : Callback<SearchResponse> {
             override fun onResponse(
@@ -251,14 +227,12 @@ class SearchActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     val trackResponse = response.body()
-                    Log.d("SearchActivity", "Response Body: ${trackResponse.toString()}")
-
                     val tracks = trackResponse?.results ?: emptyList()
-                    Log.d("SearchActivity", "Tracks found: ${tracks.size}")
                     hiddenText.visibility = View.GONE
                     refreshHistoryButton.visibility = View.GONE
                     if (tracks.isNotEmpty()) {
                         trackAdapter.updateData(tracks)
+                        recyclerView.adapter = trackAdapter
                         recyclerView.visibility = View.VISIBLE
                         errorSearchNothing.visibility = View.GONE
                         callback(true)
@@ -268,21 +242,16 @@ class SearchActivity : AppCompatActivity() {
                         callback(false)
                     }
                 } else {
-                    Log.e(
-                        "SearchActivity",
-                        "Response Error: ${response.code()} - ${response.errorBody()?.string()}"
-                    )
                     recyclerView.visibility = View.GONE
                     errorSearchNothing.visibility = View.VISIBLE
                 }
             }
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                Log.e("SearchActivity", "Network Error: ${t.message}")
                 errorConnectionPlaceHolder.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
                 errorSearchNothing.visibility = View.GONE
-                lastQuery = searchQuery
+                lastQuery = searchQuery.trim()
             }
         })
 
