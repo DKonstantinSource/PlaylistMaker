@@ -106,4 +106,29 @@
 
     </style>
 
+    <style name="prevSearch">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:text">@string/prevSearch</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:font">@font/ys_display_medium</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">@dimen/mainIconPadding</item>
+    </style>
+    <style name="buttonRefreshHistory" >
+        <item name="backgroundTint">?attr/colorTertiary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:text">@string/clearHistory</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:gravity">center</item>
+        <item name="android:font">@font/ys_display_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="textAllCaps">false</item>
+        <item name="lineHeight">16.41dp</item>
+        <item name="cornerRadius">@dimen/corner_radius_dp</item>
+    </style>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
-class TrackAdapter(private var tracks: List<Track> = listOf()) :
-    RecyclerView.Adapter<TrackAdapter.TracksViewHolder>() {
+class TrackAdapter(
+    private var tracks: List<Track> = listOf(),
+    private val onTrackClick: (Track) -> Unit
+) : RecyclerView.Adapter<TrackAdapter.TracksViewHolder>() {
 
     inner class TracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trackName: TextView = itemView.findViewById(R.id.track_name)
@@ -37,10 +40,13 @@ class TrackAdapter(private var tracks: List<Track> = listOf()) :
                 .centerCrop()
                 .transform(RoundedCorners(Utils.dpToPx(2f, itemView.context)))
                 .into(trackLogo)
+
+
+            itemView.setOnClickListener {
+                onTrackClick(model)
+            }
         }
-
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
         return TracksViewHolder(view)
@@ -52,11 +58,18 @@ class TrackAdapter(private var tracks: List<Track> = listOf()) :
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
         holder.bind(tracks[position])
+        holder.itemView.setOnClickListener {
+            onTrackClick(tracks[position])
+
+        }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newTracks: List<Track>) {
         tracks = newTracks
         notifyDataSetChanged()
     }
+//
+
 }
 

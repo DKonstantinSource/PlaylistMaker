@@ -57,14 +57,14 @@
                 android:text="@string/darkTheme"
                 style="@style/smallContainerSetting" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchDarkTheme"
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
                 tools:ignore="UseSwitchCompatOrMaterialXml">
 
-            </androidx.appcompat.widget.SwitchCompat>
+            </com.google.android.material.switchmaterial.SwitchMaterial>
         </FrameLayout>
 
         <FrameLayout

@@ -22,6 +22,8 @@
     <string name="unloadFalse">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="textOnRefresh">Обновить</string>
     <string name="iTunesLink">https://itunes.apple.com</string>
+    <string name="prevSearch">Вы искали</string>
+    <string name="clearHistory">Очистить историю</string>
 
     <string name="nothingSearch">Ничего не нашлось</string>
 

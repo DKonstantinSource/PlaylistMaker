@@ -1,177 +1,210 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    style="@style/backgroundColorSettings">
-
-
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/colorPrimary"
+    >
     <LinearLayout
-        android:layout_marginTop="@dimen/mainIconPadding"
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/backgroundColorSettings">
 
-        android:padding="4dp"
-        style="@style/smallContainerSetting">
 
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/button_back_light"
-            style="@style/buttonDarkTheme"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            style="@style/titleSearch"
-            />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp">
-
-        <EditText
-            android:id="@+id/searchEditText"
-            style="@style/searchField"
+        <LinearLayout
+            android:layout_marginTop="@dimen/mainIconPadding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/background_search_field"
-            android:background="@drawable/rounded_edit_text_background"
-            android:drawableStart="@drawable/search_icon_16x16"
-            android:drawablePadding="8dp"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:drawableTint="?attr/colorAccent"
-            android:fontFamily="@font/ys_display_regular"
-            android:hint="@string/titleSearch"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingVertical="8dp"
-            android:paddingStart="14dp"
-            android:paddingEnd="@dimen/search_end_icon_padding"
-            android:textColor="@color/firstTextColor"
-            android:textColorHint="?attr/colorAccent"
-            android:textFontWeight="400"
-            android:textSize="@dimen/normalTextSize"
-            app:icon="@drawable/search_icon_16x16"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
 
-            />
+            android:padding="4dp"
+            style="@style/smallContainerSetting">
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/button_back_light"
+                style="@style/buttonDarkTheme"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                style="@style/titleSearch"
+                />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <EditText
+                android:id="@+id/searchEditText"
+                style="@style/searchField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/background_search_field"
+                android:background="@drawable/rounded_edit_text_background"
+                android:drawableStart="@drawable/search_icon_16x16"
+                android:drawablePadding="8dp"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:drawableTint="?attr/colorAccent"
+                android:fontFamily="@font/ys_display_regular"
+                android:hint="@string/titleSearch"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingVertical="8dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="@dimen/search_end_icon_padding"
+                android:textColor="@color/firstTextColor"
+                android:textColorHint="?attr/colorAccent"
+                android:textFontWeight="400"
+                android:textSize="@dimen/normalTextSize"
+                app:icon="@drawable/search_icon_16x16"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/reset_button"
+                android:layout_width="40dp"
+                android:layout_height="36dp"
+                android:layout_gravity="end|center_vertical"
+                android:visibility="gone"
+                android:background="@android:color/transparent"
+                app:icon="@drawable/ic_cross_16x16"
+                app:iconGravity="end"
+                app:iconTint="?attr/colorAccent">
+
+            </com.google.android.material.button.MaterialButton>
 
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/reset_button"
-            android:layout_width="40dp"
-            android:layout_height="36dp"
-            android:layout_gravity="end|center_vertical"
+
+        </FrameLayout>
+
+        <TextView
             android:visibility="gone"
-            android:background="@android:color/transparent"
-            app:icon="@drawable/ic_cross_16x16"
-            app:iconGravity="end"
-            app:iconTint="?attr/colorAccent">
-
-        </com.google.android.material.button.MaterialButton>
-
-    </FrameLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tracks"
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    <LinearLayout
-        android:id="@+id/errorConnectionPlaceHolder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        >
-        <ImageView
-
-            android:layout_gravity="center"
-            android:id="@+id/errorImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/icon_margin_error_placegolder"
-            android:layout_marginBottom="@dimen/mainCornerRadiusBtn"
-            android:src="@drawable/image_no_internet" />
-        <TextView
+            android:id="@+id/prevSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/errorToConnection"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="16dp"
-            style="@style/errorText">
+            android:textAlignment="center"
+            style="@style/prevSearch"
+            >
+
         </TextView>
-        <TextView
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/unloadFalse"
-            android:layout_gravity="center_vertical"
-            style="@style/errorText">
-        </TextView>
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/refreshButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:cornerRadius="@dimen/corner_radius_dp"
-            style="@style/refreshButton">
-        </com.google.android.material.button.MaterialButton>
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tracks"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:ignore="MissingConstraints" />
+
+            <com.google.android.material.button.MaterialButton
+                android:visibility="visible"
+                android:id="@+id/clearHistoryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/button_on_refresh"
+                style="@style/buttonRefreshHistory"
+                >
+
+            </com.google.android.material.button.MaterialButton>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/errorConnectionPlaceHolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+            <ImageView
+
+                android:layout_gravity="center"
+                android:id="@+id/errorImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/icon_margin_error_placegolder"
+                android:layout_marginBottom="@dimen/mainCornerRadiusBtn"
+                android:src="@drawable/image_no_internet" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/errorToConnection"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="16dp"
+                style="@style/errorText">
+            </TextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/unloadFalse"
+                android:layout_gravity="center_vertical"
+                style="@style/errorText">
+            </TextView>
+            <com.google.android.material.button.MaterialButton
+
+                android:id="@+id/refreshButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cornerRadius="@dimen/corner_radius_dp"
+                style="@style/refreshButton">
+            </com.google.android.material.button.MaterialButton>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/errorSearchNothing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <ImageView
+
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/icon_margin_error_placegolder"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/image_no_song"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nothingSearch"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/mainCornerRadiusBtn"
+                style="@style/errorText">
+            </TextView>
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/errorSearchNothing"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-        <ImageView
-
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/icon_margin_error_placegolder"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/image_no_song"
-             />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/nothingSearch"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="@dimen/mainCornerRadiusBtn"
-            style="@style/errorText">
-        </TextView>
-
-    </LinearLayout>
-
-
-</LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
+</ScrollView>

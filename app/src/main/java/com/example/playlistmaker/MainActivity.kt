@@ -2,20 +2,26 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.bumptech.glide.Glide
+
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var searchView: Button
+    private lateinit var mediaLibraryView: Button
+    private lateinit var settingView: Button
+    private lateinit var displaySettingsActivity: Intent
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
@@ -24,22 +30,44 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val searchView = findViewById<Button>(R.id.search)
-        val mediaLibraryView = findViewById<Button>(R.id.library)
-        val settingView = findViewById<Button>(R.id.settings)
+        searchView = findViewById(R.id.search)
+        mediaLibraryView = findViewById(R.id.library)
+        settingView = findViewById(R.id.settings)
 
         searchView.setOnClickListener {
-            val displaySettingsActivity = Intent(this, SearchActivity::class.java)
+            displaySettingsActivity = Intent(this, SearchActivity::class.java)
             startActivity(displaySettingsActivity)
         }
         mediaLibraryView.setOnClickListener {
-            val displaySettingsActivity = Intent(this, MediaLibraryActivity::class.java)
+            displaySettingsActivity = Intent(this, MediaLibraryActivity::class.java)
             startActivity(displaySettingsActivity)
         }
         settingView.setOnClickListener {
-            val displaySettingsActivity = Intent(this, SettingsActivity::class.java)
+            displaySettingsActivity = Intent(this, SettingsActivity::class.java)
             startActivity(displaySettingsActivity)
         }
 
+        sharedPreferences = getSharedPreferences(THEME_PREFERENCE, MODE_PRIVATE)
+        val isNightMode = sharedPreferences
+            .getBoolean(KEY_SWITCH_THEME, false)
+        switchTheme(isNightMode)
+
+
+
+    }
+
+    private fun switchTheme(isNightMode: Boolean) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (isNightMode) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+        )
+    }
+
+    companion object{
+        const val KEY_SWITCH_THEME = "is_night_mode"
+        const val THEME_PREFERENCE = "theme_preference"
     }
 }
