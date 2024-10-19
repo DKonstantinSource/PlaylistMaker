@@ -11,4 +11,6 @@
     <dimen name="corner_radius_dp">54dp</dimen>
     <dimen name="icon_margin_error_placegolder">130dp</dimen>
     <dimen name="button_on_refresh">24dp</dimen>
+    <dimen name="track_footer_description">14sp</dimen>
+    <dimen name="content_description_footer">13sp</dimen>
 </resources>

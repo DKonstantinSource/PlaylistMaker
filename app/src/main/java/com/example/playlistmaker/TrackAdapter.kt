@@ -31,7 +31,7 @@ class TrackAdapter(
         fun bind(model: Track) {
             trackName.text = model.trackName
             artistName.text = model.artistName
-            trackTime.text = formatTrackTime(model.trackTimeMillis)
+            trackTime.text = formatTrackTime(model.trackTimeMillis.toString())
             artistName.requestLayout()
             Glide.with(itemView.context)
                 .load(model.artworkUrl100)
@@ -60,7 +60,6 @@ class TrackAdapter(
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
             onTrackClick(tracks[position])
-
         }
     }
 
