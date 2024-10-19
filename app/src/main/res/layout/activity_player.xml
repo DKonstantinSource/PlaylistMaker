@@ -111,7 +111,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="8dp"
-            android:background="@drawable/image_favorit_track"
+            android:background="@drawable/image_favorite_track"
             android:contentDescription="@string/add_to_favorite"
             app:layout_constraintBottom_toBottomOf="@id/playButton"
             app:layout_constraintEnd_toStartOf="@id/endBorder"
@@ -215,7 +215,7 @@
             app:layout_constraintBaseline_toBaselineOf="@id/collectionNameTitle"
             app:layout_constraintEnd_toStartOf="@id/endBorder"
             app:layout_constraintStart_toEndOf="@id/textsBarrier"
-            tools:text="The Razors Edge The Razors Edge  v The Razors Edge  v v v  "
+            tools:text="The Razors Edge "
 
             style="@style/TrackContent" />
 

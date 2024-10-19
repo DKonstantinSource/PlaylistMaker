@@ -11,6 +11,7 @@
         <item name="colorPrimaryFixed">@color/mainBackground</item>
         <item name="colorOnContainer">@color/artist_track_text_color</item>
         <item name="colorSurfaceDim">@color/backArrow</item>
+        <item name="colorBackgroundFloating">@color/colorBlackText</item>
     </style>>
 
     <style name="title">
