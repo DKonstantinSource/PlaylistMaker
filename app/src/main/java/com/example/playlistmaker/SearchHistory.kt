@@ -21,16 +21,14 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
 
     fun addToHistory(track: Track) {
         val history = getSearchHistory().toMutableList()
-
         history.removeAll { it.trackId == track.trackId }
-
         history.add(0, track)
-
         if (history.size > maxHistorySize) {
             history.removeAt(maxHistorySize)
         }
-
         saveHistory(history)
+
+
     }
 
     fun clearHistory() {

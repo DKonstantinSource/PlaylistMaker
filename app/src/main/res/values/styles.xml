@@ -131,4 +131,21 @@
         <item name="cornerRadius">@dimen/corner_radius_dp</item>
     </style>
 
+    <style name="TrackContentTitle">
+        <item name="android:layout_marginTop">@dimen/mainIconPadding</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/ic_cross_color</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">@dimen/content_description_footer</item>
+    </style>
+
+    <style name="TrackContent">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">?attr/colorSurfaceDim</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">@dimen/content_description_footer</item>
+        <item name="android:gravity">end</item>
+    </style>
+
+
 </resources>

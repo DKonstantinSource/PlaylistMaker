@@ -9,6 +9,8 @@
         <item name="colorTertiary">@color/colorWhiteBackground</item>
         <item name="colorPrimaryFixed">@color/mainBackground</item>
         <item name="colorOnContainer">@color/colorWhiteBackground</item>
+        <item name="colorSurfaceDim">@color/colorWhiteText</item>
+        <item name="colorBackgroundFloating">@color/colorWhiteText</item>
 
 
     </style>

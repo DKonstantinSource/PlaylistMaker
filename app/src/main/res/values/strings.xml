@@ -32,4 +32,22 @@
     <string name="track_author">Обратите внимание, что не только название трека может не помещаться на экране, но и имя артиста/группы.</string>
     <string name="track_timing">2:55</string>
     <string name="track_name">Smells Like Teen Spirit</string>
+
+
+    <string name="back_arrow_button">Back Button</string>
+    <string name="image_cover">image cover</string>
+
+
+    <string name="add_to_favorite">Добавить в любимое</string>
+    <string name="play">Начать воспроизведение</string>
+    <string name="add_to_collection">Список треков</string>
+    <string name="duration">Длительность</string>
+    <string name="country">Страна</string>
+    <string name="genre">Жанр</string>
+    <string name="year">Год</string>
+    <string name="collection">Альбом</string>
+    <string name="placeholderCurrentTrack">0:00</string>
+    <string name="album_logo">Обложка трека</string>
+
+
 </resources>

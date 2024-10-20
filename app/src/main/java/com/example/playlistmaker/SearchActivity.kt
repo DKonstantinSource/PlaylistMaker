@@ -1,18 +1,17 @@
 package com.example.playlistmaker
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -61,7 +60,7 @@ class SearchActivity : AppCompatActivity() {
         refreshHistoryButton = findViewById(R.id.clearHistoryButton)
         hiddenText = findViewById(R.id.prevSearch)
 
-        val sharedPreferences = getSharedPreferences("search_history", MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(SEARCH_HSITORY, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
         val backOnMainActivity = findViewById<ImageView>(R.id.backButton)
@@ -75,7 +74,13 @@ class SearchActivity : AppCompatActivity() {
             if (searchQuery.isEmpty() or (searchQuery == "")) {
                 trackAdapter.updateData(searchHistory.getSearchHistory())
             }
+
+            val intent = Intent(this, PlayerActivity::class.java).apply {
+                putExtra(TRACK_DATA, track)
+            }
+            startActivity(intent)
         }
+
 
 
 
@@ -83,10 +88,6 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.text.clear()
             searchQuery = ""
             searchEditText.clearFocus()
-//            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//            imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
-//            resetButton.visibility = View.GONE
-
             historyTracks = searchHistory.getSearchHistory()
 
             if (historyTracks.isNotEmpty()) {
@@ -117,7 +118,6 @@ class SearchActivity : AppCompatActivity() {
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 refreshButton.visibility = View.GONE
-                Log.d("SearchActivity", "Search query: $searchQuery")
                 performSearch(searchQuery) { trackFound ->
                     if (trackFound) {
                         errorSearchNothing.visibility = View.GONE
@@ -255,14 +255,17 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+
     }
     companion object {
-        const val searchKeyOnState = "search_query"
+        const val TRACK_DATA = "TRACK_DATA"
+        const val SEARCH_HSITORY = "search_history"
+        const val SEARCH_KEY_ON_STATE = "search_query"
 
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(searchKeyOnState, searchQuery)
+        outState.putString(SEARCH_KEY_ON_STATE, searchQuery)
     }
 
 }

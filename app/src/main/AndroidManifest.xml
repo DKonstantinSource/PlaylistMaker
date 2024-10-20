@@ -19,6 +19,9 @@
             android:name=".MediaLibraryActivity"
             android:exported="false" />
         <activity
+            android:name=".PlayerActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity
