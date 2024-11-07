@@ -3,6 +3,8 @@ package com.example.playlistmaker
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -11,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -37,12 +40,18 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var refreshHistoryButton: Button
     private lateinit var hiddenText: TextView
     private lateinit var searchHistory: SearchHistory
+    private lateinit var progressBar: ProgressBar
+
+    private val handler = Handler(Looper.getMainLooper())
 
 
     @SuppressLint("ResourceType", "MissingInflatedId", "CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        var isClickable = true
+        val handler = Handler(Looper.getMainLooper())
 
         setContentView(R.layout.activity_search)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -59,6 +68,8 @@ class SearchActivity : AppCompatActivity() {
         refreshButton = findViewById(R.id.refreshButton)
         refreshHistoryButton = findViewById(R.id.clearHistoryButton)
         hiddenText = findViewById(R.id.prevSearch)
+        progressBar = findViewById(R.id.progressBar)
+
 
         val sharedPreferences = getSharedPreferences(SEARCH_HSITORY, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
@@ -78,7 +89,12 @@ class SearchActivity : AppCompatActivity() {
             val intent = Intent(this, PlayerActivity::class.java).apply {
                 putExtra(TRACK_DATA, track)
             }
-            startActivity(intent)
+            if (isClickable) {
+                isClickable = false
+                startActivity(intent)
+                handler.postDelayed({ isClickable = true }, CLICK_DEBOUNCE_DELAY)
+            }
+
         }
 
 
@@ -122,10 +138,21 @@ class SearchActivity : AppCompatActivity() {
                     if (trackFound) {
                         errorSearchNothing.visibility = View.GONE
                         refreshButton.visibility = View.GONE
-
-
                     } else {
-                        errorSearchNothing.visibility = View.VISIBLE
+
+                        if (searchQuery.isNullOrEmpty()) {
+                            resetButton.visibility = View.GONE
+                            trackAdapter.updateData(searchHistory.getSearchHistory())
+                            recyclerView.adapter = trackAdapter
+                            recyclerView.visibility = View.VISIBLE
+                            hiddenText.visibility = View.VISIBLE
+                            refreshHistoryButton.visibility = View.VISIBLE
+                            errorSearchNothing.visibility = View.GONE
+                        } else {
+
+
+                            errorSearchNothing.visibility = View.VISIBLE
+                        }
                     }
                 }
                 true
@@ -145,30 +172,8 @@ class SearchActivity : AppCompatActivity() {
         } else {
             hiddenText.visibility = View.GONE
             refreshHistoryButton.visibility = View.GONE
+
         }
-
-
-        searchEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val query = searchEditText.text.toString().trim()
-
-                if (query.isNotEmpty()) {
-                    performSearch(query) { trackFound ->
-                        if (trackFound) {
-                            searchQuery = query.trim()
-                            recyclerView.adapter = trackAdapter
-                            errorSearchNothing.visibility = View.GONE
-                        } else {
-                            errorSearchNothing.visibility = View.VISIBLE
-                        }
-                    }
-                }
-                true
-            } else {
-                false
-            }
-        }
-
 
         refreshHistoryButton.setOnClickListener {
             searchHistory.clearHistory()
@@ -185,29 +190,38 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s.toString()
-                if (count != 0 && (searchQuery.isNotEmpty())) {
-
-
+                if (!searchQuery.isNullOrEmpty()) {
                     hiddenText.visibility = View.GONE
-                    refreshHistoryButton.visibility = View.GONE
-                    resetButton.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
                 } else {
-
-                    if (searchHistory.getSearchHistory().isNotEmpty()) {
-                        resetButton.visibility = View.GONE
-                        trackAdapter.updateData(searchHistory.getSearchHistory())
-                        recyclerView.adapter = trackAdapter
-                        recyclerView.visibility = View.VISIBLE
-                        hiddenText.visibility = View.VISIBLE
-                        refreshHistoryButton.visibility = View.VISIBLE
-                    } else {
-                        resetButton.visibility = View.GONE
-                    }
+                    resetButton.visibility = View.GONE
+                    trackAdapter.updateData(searchHistory.getSearchHistory())
+                    recyclerView.adapter = trackAdapter
+                    recyclerView.visibility = View.VISIBLE
+                    hiddenText.visibility = View.VISIBLE
+                    refreshHistoryButton.visibility = View.VISIBLE
                 }
+                searchDebounce()
             }
         })
     }
+
+    private val searchRunnable = Runnable {
+        performSearch(searchQuery) { success ->
+            if (!success) {
+                Log.d("UserSearch", "EnteryChar: $searchQuery")
+            }
+        }
+    }
+
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        if (!searchQuery.isNullOrEmpty()) {
+            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        }
+
+    }
+
 
     private fun performSearch(query: String, callback: (Boolean) -> Unit) {
         val retrofit = Retrofit.Builder()
@@ -216,6 +230,12 @@ class SearchActivity : AppCompatActivity() {
             .build()
         val api = retrofit.create(ApiService::class.java)
         val call = api.search(query)
+        errorSearchNothing.visibility = View.GONE
+        errorConnectionPlaceHolder.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        refreshHistoryButton.visibility = View.GONE
+
         call.enqueue(object : Callback<SearchResponse> {
             override fun onResponse(
                 call: Call<SearchResponse>,
@@ -225,7 +245,9 @@ class SearchActivity : AppCompatActivity() {
                 Log.d("SearchActivity", "Response Code: ${response.code()}")
                 errorConnectionPlaceHolder.visibility = View.GONE
 
+
                 if (response.isSuccessful) {
+                    progressBar.visibility = View.GONE
                     val trackResponse = response.body()
                     val tracks = trackResponse?.results ?: emptyList()
                     hiddenText.visibility = View.GONE
@@ -249,18 +271,22 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 errorConnectionPlaceHolder.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
                 recyclerView.visibility = View.GONE
                 errorSearchNothing.visibility = View.GONE
                 lastQuery = searchQuery.trim()
             }
         })
 
-
     }
+
+
     companion object {
         const val TRACK_DATA = "TRACK_DATA"
         const val SEARCH_HSITORY = "search_history"
         const val SEARCH_KEY_ON_STATE = "search_query"
+        const val CLICK_DEBOUNCE_DELAY = 1300L
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
 
     }
     override fun onSaveInstanceState(outState: Bundle) {
