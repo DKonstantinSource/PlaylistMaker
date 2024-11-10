@@ -1,22 +1,24 @@
 package com.example.playlistmaker
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.MediaPlayer
 import android.os.Bundle
-import android.widget.Button
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.SeekBar
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
+
     private lateinit var backButton: ImageButton
     private lateinit var coverImageView: ImageView
     private lateinit var trackNameTextView: TextView
@@ -29,12 +31,17 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageButton
     private lateinit var addToPlaylistButton: ImageButton
     private lateinit var addToFavoritesButton: ImageButton
+    private lateinit var currentTrackTime: TextView
+    private var mediaPlayer = MediaPlayer()
+    private var playerState = STATE_DEFAULT
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var screenReceiver: ScreenReceiver
 
-    @SuppressLint("MissingInflatedId")
+    private var songBridge: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
-
 
         backButton = findViewById(R.id.backButton)
         coverImageView = findViewById(R.id.cover)
@@ -48,17 +55,63 @@ class PlayerActivity : AppCompatActivity() {
         playButton = findViewById(R.id.playButton)
         addToPlaylistButton = findViewById(R.id.buttonAddCollection)
         addToFavoritesButton = findViewById(R.id.favorite_button)
+        currentTrackTime = findViewById(R.id.currentTrackTime)
+
+        screenReceiver = ScreenReceiver()
+        screenReceiver.playbackCallback = {
+            pausePlayer()
+        }
+        val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
+        registerReceiver(screenReceiver, filter)
 
 
         val track = intent.getSerializableExtra(TRACK_DATA) as? Track
 
         track?.let {
             updateUI(it)
+            preparePlayer()
         }
 
         backButton.setOnClickListener {
+            mediaPlayer.pause()
+            mediaPlayer.release()
+            handler.removeCallbacksAndMessages(null)
+
             onBackPressed()
         }
+
+        playButton.setOnClickListener {
+            playbackControl()
+            startCountdown()
+        }
+
+
+    }
+
+    private fun startCountdown() {
+        handler.post(object : Runnable {
+            @SuppressLint("DefaultLocale")
+            override fun run() {
+                if (mediaPlayer.isPlaying) {
+                    val currentPositionMillis = mediaPlayer.currentPosition
+                    val minutes = (currentPositionMillis / 1000) / 60
+                    val seconds = (currentPositionMillis / 1000) % 60
+                    val formattedTime = String.format("%02d:%02d", minutes, seconds)
+                    currentTrackTime.text = formattedTime
+                    handler.postDelayed(this, 1000)
+
+                    screenReceiver.playbackCallback = {
+                        pausePlayer()
+                    }
+
+                } else {
+                    handler.removeCallbacks(this)
+                    playButton.setBackgroundResource(R.drawable.image_play_button)
+                    currentTrackTime.text = getString(R.string.placeholderCurrentTrack)
+
+                }
+            }
+        })
     }
 
     private fun updateUI(track: Track) {
@@ -71,6 +124,9 @@ class PlayerActivity : AppCompatActivity() {
         countryTextView.text = track.country
         trackTimeTextView.text = formatTrackTime(track.trackTimeMillis.toLong())
 
+        songBridge = track.previewUrl
+
+
         val artworkUrl = track.getCoverArtwork()
         Glide.with(this)
             .load(artworkUrl)
@@ -78,16 +134,16 @@ class PlayerActivity : AppCompatActivity() {
             .into(coverImageView)
     }
 
-
     private fun formatReleaseDate(releaseDate: Date?): String {
         if (releaseDate == null) {
-            return "Не указано"
+            return getString(R.string.not_specified)
         }
 
         val dateFormat = SimpleDateFormat(PATTERN_DATE_FORMAT, Locale.getDefault())
         return dateFormat.format(releaseDate)
     }
 
+    @SuppressLint("DefaultLocale")
     private fun formatTrackTime(millis: Long): String {
         val seconds = (millis / 1000) % 60
         val minutes = (millis / (1000 * 60)) % 60
@@ -95,13 +151,63 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+
         super.onBackPressed()
         finish()
     }
 
+    private fun preparePlayer() {
+        if (!songBridge.isNullOrEmpty()) {
+            mediaPlayer.setDataSource(songBridge)
+            mediaPlayer.prepareAsync()
+            mediaPlayer.setOnPreparedListener {
+                playerState = STATE_PREPARED
+            }
+            mediaPlayer.setOnCompletionListener {
+                playerState = STATE_PREPARED
+            }
+        } else {
+            Log.e("CheckCmeURL", "URL is empty or null")
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playButton.setBackgroundResource(R.drawable.image_button_pause)
+        playerState = STATE_PLAYING
+    }
+
+    private fun pausePlayer() {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
+            playButton.setBackgroundResource(R.drawable.image_play_button)
+            playerState = STATE_PAUSED
+        }
+    }
+
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(screenReceiver)
+    }
     companion object {
         const val FORMAT_TIME_TS = "%02d:%02d"
         const val PATTERN_DATE_FORMAT = "yyyy"
         const val TRACK_DATA = "TRACK_DATA"
+        const val STATE_DEFAULT = 0
+        const val STATE_PREPARED = 1
+        const val STATE_PLAYING = 2
+        const val STATE_PAUSED = 3
     }
 }
