@@ -1,19 +1,20 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.R
+import com.example.playlistmaker.presentation.ui.search.SearchActivity
+import com.example.playlistmaker.presentation.ui.library.MediaLibraryActivity
+import com.example.playlistmaker.presentation.ui.settings.SettingsActivity
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var searchView: Button
     private lateinit var mediaLibraryView: Button
     private lateinit var settingView: Button
@@ -47,27 +48,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(displaySettingsActivity)
         }
 
-        sharedPreferences = getSharedPreferences(THEME_PREFERENCE, MODE_PRIVATE)
-        val isNightMode = sharedPreferences
-            .getBoolean(KEY_SWITCH_THEME, false)
-        switchTheme(isNightMode)
-
-
 
     }
 
-    private fun switchTheme(isNightMode: Boolean) {
-        AppCompatDelegate.setDefaultNightMode(
-            if (isNightMode) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
-    }
-
-    companion object{
-        const val KEY_SWITCH_THEME = "is_night_mode"
-        const val THEME_PREFERENCE = "theme_preference"
-    }
 }
