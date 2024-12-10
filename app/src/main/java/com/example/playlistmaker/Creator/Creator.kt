@@ -2,8 +2,9 @@ package com.example.playlistmaker.Creator
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.playlistmaker.data.impl.ManageSearchHistoryUseCaseImpl
-import com.example.playlistmaker.data.impl.SearchHistory
+import com.example.playlistmaker.data.impl.MediaPlayerUseCaseImpl
+import com.example.playlistmaker.domain.impl.ManageSearchHistoryInteractorImpl
+import com.example.playlistmaker.data.impl.SearchHistoryImpl
 import com.example.playlistmaker.data.impl.SettingsRepositoryImpl
 import com.example.playlistmaker.data.impl.TrackRepositoryImpl
 import com.example.playlistmaker.data.network.ApiService
@@ -11,31 +12,38 @@ import com.example.playlistmaker.data.network.RetrofitClient
 import com.example.playlistmaker.domain.repository.SearchHistoryRepository
 import com.example.playlistmaker.domain.repository.TrackRepository
 import com.example.playlistmaker.domain.api.SettingsInteractor
+import com.example.playlistmaker.domain.impl.MediaPlayerImpl
 import com.example.playlistmaker.domain.impl.SettingsInteractorImpl
 import com.example.playlistmaker.domain.use_case.ManageSearchHistoryUseCase
 
-import com.example.playlistmaker.domain.use_case.SearchTracksUseCase
+import com.example.playlistmaker.domain.impl.SearchTracksInteractorImpl
 
 
 object Creator {
-    fun createSearchHistoryRepository(sharedPreferences: SharedPreferences): SearchHistoryRepository {
-        return SearchHistory(sharedPreferences)
+
+    fun createPlayerUseCase(): MediaPlayerImpl {
+        val mediaPlayerRepository = MediaPlayerUseCaseImpl()
+        return MediaPlayerImpl(mediaPlayerRepository)
+    }
+
+    private fun createSearchHistoryRepository(sharedPreferences: SharedPreferences): SearchHistoryRepository {
+        return SearchHistoryImpl(sharedPreferences)
     }
 
     fun createManageSearchHistoryUseCase(sharedPreferences: SharedPreferences): ManageSearchHistoryUseCase {
         val repository = createSearchHistoryRepository(sharedPreferences)
-        return ManageSearchHistoryUseCaseImpl(repository)
+        return ManageSearchHistoryInteractorImpl(repository)
     }
 
     private val apiService: ApiService = RetrofitClient.createApiService()
 
-    fun createTrackRepository(): TrackRepository {
+    private fun createTrackRepository(): TrackRepository {
         return TrackRepositoryImpl(apiService)
     }
 
-    fun createSearchTracksUseCase(): SearchTracksUseCase {
+    fun createSearchTracksUseCase(): SearchTracksInteractorImpl {
         val repository = createTrackRepository()
-        return SearchTracksUseCase(repository)
+        return SearchTracksInteractorImpl(repository)
     }
 
     fun createSettingsInteractor(context: Context): SettingsInteractor {

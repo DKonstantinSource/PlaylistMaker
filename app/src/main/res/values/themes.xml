@@ -12,6 +12,10 @@
         <item name="colorOnContainer">@color/artist_track_text_color</item>
         <item name="colorSurfaceDim">@color/backArrow</item>
         <item name="colorBackgroundFloating">@color/colorBlackText</item>
+        <item name="trackColor">@color/switch_track_light</item>
+        <item name="thumbColor">@color/switch_thumb_light</item>
+
+
     </style>>
 
     <style name="title">

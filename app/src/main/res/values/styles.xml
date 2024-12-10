@@ -28,7 +28,10 @@
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">@dimen/normalTextSize</item>
         <item name="font">@font/ys_display_regular</item>
-        <item name="android:background">?attr/colorPrimary</item>
+
+        <item name="android:thumbTint">@color/switch_thumb_color</item>
+        <item name="android:trackTint">@color/switch_track_color</item>
+
     </style>
     <style name="buttonDarkTheme">
         <item name="android:iconTint">?attr/colorPrimary</item>

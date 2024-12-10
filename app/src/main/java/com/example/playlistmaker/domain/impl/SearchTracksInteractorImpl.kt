@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.use_case
+package com.example.playlistmaker.domain.impl
 
 import android.os.Handler
 import android.os.Looper
@@ -7,7 +7,7 @@ import com.example.playlistmaker.domain.repository.TrackRepository
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class SearchTracksUseCase(private val repository: TrackRepository) {
+class SearchTracksInteractorImpl(private val repository: TrackRepository) {
     private val executor: ExecutorService = Executors.newCachedThreadPool()
 
     fun execute(term: String, callback: (List<Track>?) -> Unit) {

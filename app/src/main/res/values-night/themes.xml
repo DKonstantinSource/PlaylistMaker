@@ -11,7 +11,8 @@
         <item name="colorOnContainer">@color/colorWhiteBackground</item>
         <item name="colorSurfaceDim">@color/colorWhiteText</item>
         <item name="colorBackgroundFloating">@color/colorWhiteText</item>
-
+        <item name="trackColor">@color/switch_track_dark</item>
+        <item name="thumbColor">@color/switch_thumb_dark</item>
 
     </style>
     <style name="title">

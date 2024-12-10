@@ -1,11 +1,11 @@
-package com.example.playlistmaker.data.impl
+package com.example.playlistmaker.domain.impl
 
 
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.repository.SearchHistoryRepository
 import com.example.playlistmaker.domain.use_case.ManageSearchHistoryUseCase
 
-class ManageSearchHistoryUseCaseImpl(private val repository: SearchHistoryRepository) :
+class ManageSearchHistoryInteractorImpl(private val repository: SearchHistoryRepository) :
     ManageSearchHistoryUseCase {
     override fun getSearchHistory(): List<Track> {
         return repository.getSearchHistory()

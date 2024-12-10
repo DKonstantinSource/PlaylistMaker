@@ -1,7 +1,11 @@
 package com.example.playlistmaker.presentation.ui.search
 
+import NetworkUtils
+import NetworkUtils.isConnected
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -28,13 +32,14 @@ import com.example.playlistmaker.Creator.Creator
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.use_case.ManageSearchHistoryUseCase
-import com.example.playlistmaker.domain.use_case.SearchTracksUseCase
+import com.example.playlistmaker.domain.impl.SearchTracksInteractorImpl
+import com.google.android.material.button.MaterialButton
 
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
     private lateinit var resetButton: Button
-    private lateinit var refreshButton: Button
+    private lateinit var refreshButton: MaterialButton
     private var searchQuery: String = ""
     private var lastQuery: String? = null
     private lateinit var recyclerView: RecyclerView
@@ -44,7 +49,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var refreshHistoryButton: Button
     private lateinit var hiddenText: TextView
     private lateinit var progressBar: ProgressBar
-    private lateinit var searchTracksUseCase: SearchTracksUseCase
+    private lateinit var searchTracksInteractorImpl: SearchTracksInteractorImpl
     private lateinit var manageSearchHistoryUseCase: ManageSearchHistoryUseCase
 
 
@@ -58,7 +63,7 @@ class SearchActivity : AppCompatActivity() {
 
         var isClickable = true
         val handler = Handler(Looper.getMainLooper())
-        searchTracksUseCase = Creator.createSearchTracksUseCase()
+        searchTracksInteractorImpl = Creator.createSearchTracksUseCase()
 
 
         setContentView(R.layout.activity_search)
@@ -85,6 +90,13 @@ class SearchActivity : AppCompatActivity() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         manageSearchHistoryUseCase = Creator.createManageSearchHistoryUseCase(sharedPreferences)
         val history = manageSearchHistoryUseCase.getSearchHistory()
+        searchEditText = findViewById(R.id.searchEditText)
+
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val isConnected = NetworkUtils.isConnected(connectivityManager)
+
+
 
         trackAdapter = TrackAdapter { track ->
             manageSearchHistoryUseCase.addToHistory(track)
@@ -118,92 +130,48 @@ class SearchActivity : AppCompatActivity() {
                 hiddenText.visibility = View.VISIBLE
                 refreshHistoryButton.visibility = View.VISIBLE
                 resetButton.visibility = View.GONE
+            } else {
+                trackAdapter.updateData(emptyList())
             }
 
         }
 
 
         refreshButton.setOnClickListener {
-            lastQuery?.let { query ->
-                searchTracksUseCase.execute(query) { tracks ->
-                    runOnUiThread {
-                        if (tracks.isNullOrEmpty()) {
+            searchTracksInteractorImpl.execute(searchQuery) { tracks ->
+                runOnUiThread {
+                    if (isConnected) {
+                        searchDebounce()
+                        if (tracks.isNullOrEmpty() and searchQuery.isNotBlank()) {
                             errorSearchNothing.visibility = View.VISIBLE
                             recyclerView.visibility = View.GONE
-                        } else {
-                            errorSearchNothing.visibility = View.GONE
-                            trackAdapter.updateData(tracks)
-                            recyclerView.adapter = trackAdapter
-                            recyclerView.visibility = View.VISIBLE
-                        }
-                    }
-                }
-            }
-        }
+                            resetButton.visibility = View.VISIBLE
+                        } else if (tracks.isNullOrEmpty() and searchQuery.isBlank()) {
+                            val tracksHistory = manageSearchHistoryUseCase.getSearchHistory()
 
-
-
-        searchEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                refreshButton.visibility = View.GONE
-                val query = searchEditText.text.toString()
-                if (query.isNotEmpty()) {
-                    resetButton.visibility = View.VISIBLE
-                } else {
-                    resetButton.visibility = View.GONE
-                }
-
-
-                searchTracksUseCase.execute(query) { tracks ->
-                    runOnUiThread {
-                        if (tracks.isNullOrEmpty()) {
-                            resetButton.visibility = View.GONE
-
-                            val result = manageSearchHistoryUseCase.getSearchHistory()
-                            trackAdapter.updateData(result)
-                            if (result.isNullOrEmpty() and query.isEmpty()) {
-                                recyclerView.visibility = View.GONE
-                                hiddenText.visibility = View.GONE
-                                refreshHistoryButton.visibility = View.GONE
-                            } else {
-                                recyclerView.visibility = View.VISIBLE
-                                hiddenText.visibility = View.VISIBLE
-                                refreshHistoryButton.visibility = View.VISIBLE
-                            }
-                            recyclerView.adapter = trackAdapter
-                            recyclerView.visibility = View.VISIBLE
-                            hiddenText.visibility = View.VISIBLE
-                            refreshHistoryButton.visibility = View.VISIBLE
-                            errorSearchNothing.visibility = View.GONE
-                            if (query.isBlank() and result.isEmpty()) {
-                                resetButton.visibility = View.GONE
-                                hiddenText.visibility = View.GONE
-                                refreshHistoryButton.visibility = View.GONE
-                            }
-                        } else {
-                            if (tracks.isNullOrEmpty() and query.isNotEmpty()) {
-                                errorSearchNothing.visibility = View.VISIBLE
-                            } else {
-                                errorSearchNothing.visibility = View.GONE
-                                trackAdapter.updateData(tracks)
+                            if (tracksHistory.isNotEmpty()) {
+                                trackAdapter.updateData(tracksHistory)
                                 recyclerView.adapter = trackAdapter
-                                recyclerView.visibility = View.VISIBLE
                                 hiddenText.visibility = View.VISIBLE
                                 refreshHistoryButton.visibility = View.VISIBLE
-
+                                resetButton.visibility = View.GONE
+                                errorSearchNothing.visibility = View.GONE
                             }
+
+                        } else if (!tracks.isNullOrEmpty() and !searchQuery.isBlank()) {
+                            errorSearchNothing.visibility = View.GONE
+                            trackAdapter.updateData(tracks!!)
+                            recyclerView.adapter = trackAdapter
+                            recyclerView.visibility = View.VISIBLE
                         }
+                    } else {
+                        searchDebounce()
+                        errorSearchNothing.visibility = View.GONE
                     }
+
                 }
-                true
-            } else {
-                false
             }
         }
-        searchEditText = findViewById(R.id.searchEditText)
-        recyclerView = findViewById(R.id.tracks)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = trackAdapter
 
         if (manageSearchHistoryUseCase.getSearchHistory().isNotEmpty()) {
             hiddenText.visibility = View.VISIBLE
@@ -222,6 +190,40 @@ class SearchActivity : AppCompatActivity() {
             refreshHistoryButton.visibility = View.GONE
         }
 
+        recyclerView = findViewById(R.id.tracks)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = trackAdapter
+
+
+
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val query = searchEditText.text.toString()
+
+                resetButton.visibility = if (query.isNotEmpty()) View.VISIBLE else View.GONE
+                searchQuery = query
+
+                if (isConnected) {
+                    val historySearch = manageSearchHistoryUseCase.getSearchHistory()
+                    searchTracksInteractorImpl.execute(query) { tracks ->
+                        runOnUiThread {
+                            if (!historySearch.isNullOrEmpty() && query.isBlank()) {
+                                trackAdapter.updateData(historySearch)
+                            } else {
+                                trackAdapter.updateData(tracks!!)
+                            }
+                        }
+                    }
+                } else {
+                    errorConnectionPlaceHolder.visibility = View.VISIBLE
+                }
+                true
+            } else {
+                false
+            }
+        }
+
+
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
@@ -229,11 +231,13 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s.toString()
-                resetButton.visibility =
-                    if (searchQuery.trim().isNotEmpty()) View.VISIBLE else View.GONE
+
 
                 if (searchQuery.isBlank()) {
+
                     errorSearchNothing.visibility = View.GONE
+                    errorConnectionPlaceHolder.visibility = View.GONE
+
                     val tracks = manageSearchHistoryUseCase.getSearchHistory()
                     if (!tracks.isNullOrEmpty()) {
                         trackAdapter.updateData(tracks)
@@ -242,29 +246,44 @@ class SearchActivity : AppCompatActivity() {
                         hiddenText.visibility = View.VISIBLE
                         refreshHistoryButton.visibility = View.VISIBLE
                         errorSearchNothing.visibility = View.GONE
+                    } else if (tracks.isNullOrEmpty() and searchQuery.isBlank()) {
+
+                        trackAdapter.updateData(emptyList())
                     } else {
                         errorSearchNothing.visibility = View.GONE
                     }
                     resetButton.visibility = View.GONE
                 } else {
+
                     hiddenText.visibility = View.GONE
                     recyclerView.visibility = View.GONE
                     refreshHistoryButton.visibility = View.GONE
                     resetButton.visibility = View.VISIBLE
                     searchDebounce()
                 }
+                errorConnectionPlaceHolder.visibility = View.GONE
             }
         })
 
     }
 
+
     private val searchRunnable = Runnable {
-        searchTracksUseCase = Creator.createSearchTracksUseCase()
-        searchTracksUseCase.execute(searchQuery) { tracks ->
+        searchTracksInteractorImpl = Creator.createSearchTracksUseCase()
+        searchTracksInteractorImpl.execute(searchQuery) { tracks ->
             runOnUiThread {
                 if (tracks.isNullOrEmpty()) {
                     Log.d("UserSearch", "No results found for: $searchQuery")
-                    if (searchQuery.isNotEmpty()) {
+
+                    if (!isConnected(getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)) {
+                        errorConnectionPlaceHolder.visibility = View.VISIBLE
+                        errorSearchNothing.visibility = View.GONE
+                    } else if (isConnected(getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager) and searchQuery.isBlank()) {
+                        errorConnectionPlaceHolder.visibility = View.GONE
+                        resetButton.visibility = View.GONE
+                        errorSearchNothing.visibility = View.GONE
+                    } else if (searchQuery.isNotBlank()) {
+                        errorConnectionPlaceHolder.visibility = View.GONE
                         errorSearchNothing.visibility = View.VISIBLE
                     }
                 } else {
@@ -275,18 +294,22 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
 
-
     private fun searchDebounce() {
-
+        if (!isConnected(getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)) {
+            errorConnectionPlaceHolder.visibility = View.VISIBLE
+        } else {
+            errorConnectionPlaceHolder.visibility = View.GONE
+        }
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        searchTracksUseCase.shutdown()
+        searchTracksInteractorImpl.shutdown()
     }
 
 

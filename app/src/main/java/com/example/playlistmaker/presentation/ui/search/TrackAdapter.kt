@@ -42,11 +42,6 @@ class TrackAdapter(
                 .centerCrop()
                 .transform(RoundedCorners(Utils.dpToPx(2f, itemView.context)))
                 .into(trackLogo)
-
-
-            itemView.setOnClickListener {
-                onTrackClick(model)
-            }
         }
     }
 
@@ -61,6 +56,9 @@ class TrackAdapter(
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
         holder.bind(tracks[position])
+        holder.itemView.setOnClickListener {
+            onTrackClick(tracks[position])
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

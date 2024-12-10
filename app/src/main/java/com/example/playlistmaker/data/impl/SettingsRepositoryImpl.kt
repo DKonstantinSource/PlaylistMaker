@@ -1,9 +1,10 @@
 package com.example.playlistmaker.data.impl
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.Constants.KEY_SWITCH_THEME
 import com.example.playlistmaker.Constants.THEME_PREFERENCE
-import com.example.playlistmaker.data.repository.SettingsRepository
+import com.example.playlistmaker.domain.repository.SettingsRepository
 
 class SettingsRepositoryImpl(context: Context) : SettingsRepository {
 
@@ -12,16 +13,33 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
 
     @Override
     override fun getTheme(): Boolean {
-        return sharedPreferences.getBoolean(KEY_SWITCH_THEME, false)
-    }
 
+        val isSystemDarkMode =
+            AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+
+        if (isSystemDarkMode) {
+            return true
+        }
+
+        return if (sharedPreferences.contains(KEY_SWITCH_THEME)) {
+            sharedPreferences.getBoolean(KEY_SWITCH_THEME, false)
+        } else {
+            false
+        }
+    }
 
     @Override
     override fun setTheme(darkTheme: Boolean) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkTheme) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+        )
 
         sharedPreferences.edit()
             .putBoolean(KEY_SWITCH_THEME, darkTheme)
             .apply()
     }
-
 }

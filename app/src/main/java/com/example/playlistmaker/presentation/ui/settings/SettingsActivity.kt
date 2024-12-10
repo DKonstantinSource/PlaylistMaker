@@ -10,7 +10,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import com.example.playlistmaker.Creator.Creator
 import com.example.playlistmaker.R
@@ -59,26 +58,18 @@ class SettingsActivity : AppCompatActivity() {
         settingsInteractor = Creator.createSettingsInteractor(this)
 
         val switchTheme = findViewById<SwitchCompat>(R.id.switchTheme)
+        val themePreference = settingsInteractor.getTheme()
+        switchTheme.isChecked = themePreference
 
-        switchTheme.isChecked = settingsInteractor.getTheme()
         switchTheme.setOnCheckedChangeListener { _, isChecked ->
             settingsInteractor.setTheme(isChecked)
-            switchTheme(isChecked)
+            switchTheme.isChecked = isChecked
         }
 
 
 
     }
 
-    private fun switchTheme(isNightMode: Boolean) {
-        AppCompatDelegate.setDefaultNightMode(
-            if (isNightMode) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
-    }
 
 
     private fun shareNameApp() {
