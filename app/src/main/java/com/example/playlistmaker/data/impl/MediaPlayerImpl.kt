@@ -1,9 +1,9 @@
 package com.example.playlistmaker.data.impl
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.domain.use_case.MediaPlayerUseCase
+import com.example.playlistmaker.domain.repository.MediaPlayerRepository
 
-class MediaPlayerUseCaseImpl : MediaPlayerUseCase {
+class MediaPlayerImpl : MediaPlayerRepository {
     private var mediaPlayer: MediaPlayer? = null
 
     override fun preparePlayer(url: String) {

@@ -31,7 +31,7 @@ import com.example.playlistmaker.Constants.SEARCH_DEBOUNCE_DELAY
 import com.example.playlistmaker.Creator.Creator
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.use_case.ManageSearchHistoryUseCase
+import com.example.playlistmaker.domain.api.ManageSearchHistory
 import com.example.playlistmaker.domain.impl.SearchTracksInteractorImpl
 import com.google.android.material.button.MaterialButton
 
@@ -50,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var hiddenText: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var searchTracksInteractorImpl: SearchTracksInteractorImpl
-    private lateinit var manageSearchHistoryUseCase: ManageSearchHistoryUseCase
+    private lateinit var manageSearchHistory: ManageSearchHistory
 
 
     private val handler = Handler(Looper.getMainLooper())
@@ -88,8 +88,8 @@ class SearchActivity : AppCompatActivity() {
         backOnMainActivity.setOnClickListener { finish() }
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        manageSearchHistoryUseCase = Creator.createManageSearchHistoryUseCase(sharedPreferences)
-        val history = manageSearchHistoryUseCase.getSearchHistory()
+        manageSearchHistory = Creator.createManageSearchHistoryUseCase(sharedPreferences)
+        val history = manageSearchHistory.getSearchHistory()
         searchEditText = findViewById(R.id.searchEditText)
 
         val connectivityManager =
@@ -99,9 +99,9 @@ class SearchActivity : AppCompatActivity() {
 
 
         trackAdapter = TrackAdapter { track ->
-            manageSearchHistoryUseCase.addToHistory(track)
+            manageSearchHistory.addToHistory(track)
             if (searchQuery.isEmpty() or (searchQuery == "")) {
-                trackAdapter.updateData(manageSearchHistoryUseCase.getSearchHistory())
+                trackAdapter.updateData(manageSearchHistory.getSearchHistory())
             }
 
             val intent = Intent(this, PlayerActivity::class.java).apply {
@@ -122,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.text.clear()
             searchQuery = ""
             searchEditText.clearFocus()
-            val tracksHistory = manageSearchHistoryUseCase.getSearchHistory()
+            val tracksHistory = manageSearchHistory.getSearchHistory()
 
             if (tracksHistory.isNotEmpty()) {
                 trackAdapter.updateData(tracksHistory)
@@ -147,7 +147,7 @@ class SearchActivity : AppCompatActivity() {
                             recyclerView.visibility = View.GONE
                             resetButton.visibility = View.VISIBLE
                         } else if (tracks.isNullOrEmpty() and searchQuery.isBlank()) {
-                            val tracksHistory = manageSearchHistoryUseCase.getSearchHistory()
+                            val tracksHistory = manageSearchHistory.getSearchHistory()
 
                             if (tracksHistory.isNotEmpty()) {
                                 trackAdapter.updateData(tracksHistory)
@@ -173,10 +173,10 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        if (manageSearchHistoryUseCase.getSearchHistory().isNotEmpty()) {
+        if (manageSearchHistory.getSearchHistory().isNotEmpty()) {
             hiddenText.visibility = View.VISIBLE
             refreshHistoryButton.visibility = View.VISIBLE
-            trackAdapter.updateData(manageSearchHistoryUseCase.getSearchHistory())
+            trackAdapter.updateData(manageSearchHistory.getSearchHistory())
         } else {
             hiddenText.visibility = View.GONE
             refreshHistoryButton.visibility = View.GONE
@@ -184,7 +184,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshHistoryButton.setOnClickListener {
-            manageSearchHistoryUseCase.clearHistory()
+            manageSearchHistory.clearHistory()
             recyclerView.visibility = View.GONE
             hiddenText.visibility = View.GONE
             refreshHistoryButton.visibility = View.GONE
@@ -204,7 +204,7 @@ class SearchActivity : AppCompatActivity() {
                 searchQuery = query
 
                 if (isConnected) {
-                    val historySearch = manageSearchHistoryUseCase.getSearchHistory()
+                    val historySearch = manageSearchHistory.getSearchHistory()
                     searchTracksInteractorImpl.execute(query) { tracks ->
                         runOnUiThread {
                             if (!historySearch.isNullOrEmpty() && query.isBlank()) {
@@ -238,7 +238,7 @@ class SearchActivity : AppCompatActivity() {
                     errorSearchNothing.visibility = View.GONE
                     errorConnectionPlaceHolder.visibility = View.GONE
 
-                    val tracks = manageSearchHistoryUseCase.getSearchHistory()
+                    val tracks = manageSearchHistory.getSearchHistory()
                     if (!tracks.isNullOrEmpty()) {
                         trackAdapter.updateData(tracks)
                         recyclerView.adapter = trackAdapter

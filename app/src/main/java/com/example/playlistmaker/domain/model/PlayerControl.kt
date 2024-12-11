@@ -20,7 +20,4 @@ data class PlayerControl(
         return currentState == PlayerState.PLAYING
     }
 
-//    fun isPaused(): Boolean {
-//        return currentState == PlayerState.PAUSED
-//    }
 }

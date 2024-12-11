@@ -1,6 +1,6 @@
-package com.example.playlistmaker.domain.use_case
+package com.example.playlistmaker.domain.repository
 
-interface MediaPlayerUseCase {
+interface MediaPlayerRepository {
     fun preparePlayer(url: String)
     fun play()
     fun pause()

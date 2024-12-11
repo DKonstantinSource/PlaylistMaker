@@ -1,8 +1,8 @@
-package com.example.playlistmaker.domain.use_case
+package com.example.playlistmaker.domain.api
 
 import com.example.playlistmaker.domain.model.Track
 
-interface ManageSearchHistoryUseCase {
+interface ManageSearchHistory {
     fun getSearchHistory(): List<Track>
     fun addToHistory(track: Track)
     fun clearHistory()

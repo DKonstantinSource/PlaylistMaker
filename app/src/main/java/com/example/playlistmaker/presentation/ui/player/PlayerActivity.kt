@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.Creator.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.impl.MediaPlayerImpl
+import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.model.PlayerState
 import com.example.playlistmaker.domain.model.Track
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
@@ -28,7 +28,7 @@ import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var mediaPlayerImpl: MediaPlayerImpl
+    private lateinit var mediaPlayerInteractorImpl: MediaPlayerInteractor
     private lateinit var screenReceiver: ScreenReceiver
     private lateinit var handler: Handler
     private var songBridge: String? = null
@@ -67,7 +67,7 @@ class PlayerActivity : AppCompatActivity() {
         addToPlaylistButton = findViewById(R.id.buttonAddCollection)
         addToFavoritesButton = findViewById(R.id.favorite_button)
 
-        mediaPlayerImpl = Creator.createPlayerUseCase()
+        mediaPlayerInteractorImpl = Creator.createPlayer()
         handler = Handler(Looper.getMainLooper())
 
         screenReceiver = ScreenReceiver()
@@ -81,7 +81,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         backButton.setOnClickListener {
-            mediaPlayerImpl.stop()
+            mediaPlayerInteractorImpl.stop()
             onBackPressed()
         }
 
@@ -97,8 +97,8 @@ class PlayerActivity : AppCompatActivity() {
         handler.post(object : Runnable {
             @SuppressLint("DefaultLocale")
             override fun run() {
-                if (mediaPlayerImpl.isPlaying()) {
-                    val currentPositionMillis = mediaPlayerImpl.getCurrentPosition()
+                if (mediaPlayerInteractorImpl.isPlaying()) {
+                    val currentPositionMillis = mediaPlayerInteractorImpl.getCurrentPosition()
                     val minutes = (currentPositionMillis / 1000) / 60
                     val seconds = (currentPositionMillis / 1000) % 60
                     val formattedTime = String.format("%02d:%02d", minutes, seconds)
@@ -163,7 +163,7 @@ class PlayerActivity : AppCompatActivity() {
         songBridge = track.previewUrl
 
         if (!songBridge.isNullOrEmpty()) {
-            mediaPlayerImpl.execute(track)
+            mediaPlayerInteractorImpl.execute(track)
             playerState = PlayerState.PREPARED
         } else {
             Log.e("CheckBridgeUrl", "Url is empty")
@@ -171,14 +171,14 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun startPlayer() {
-        mediaPlayerImpl.play()
+        mediaPlayerInteractorImpl.play()
         playButton.setBackgroundResource(R.drawable.image_button_pause)
         playerState = PlayerState.PLAYING
     }
 
     private fun pausePlayer() {
-        if (mediaPlayerImpl.isPlaying()) {
-            mediaPlayerImpl.pause()
+        if (mediaPlayerInteractorImpl.isPlaying()) {
+            mediaPlayerInteractorImpl.pause()
             playButton.setBackgroundResource(R.drawable.image_play_button)
             playerState = PlayerState.PAUSED
         }
@@ -197,7 +197,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
-        mediaPlayerImpl.stop()
+        mediaPlayerInteractorImpl.stop()
         try {
             unregisterReceiver(screenReceiver)
         } catch (e: IllegalArgumentException) {
