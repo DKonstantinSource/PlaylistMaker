@@ -1,12 +1,7 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.model
 
 import java.io.Serializable
 import java.util.Date
-
-data class SearchResponse (
-     val resultCount: Int,
-     val results: List<Track>
-)
 
 data class Track(
      val trackId: Int,
@@ -19,7 +14,6 @@ data class Track(
      val primaryGenreName: String,
      val country: String,
      val previewUrl: String
-
 ) : Serializable {
      fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 }

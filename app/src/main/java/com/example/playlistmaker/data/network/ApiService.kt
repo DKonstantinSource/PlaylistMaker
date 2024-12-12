@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.network
 
 
 import retrofit2.Call
@@ -7,5 +7,5 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("/search?entity=song")
-    fun search(@Query("term") text: String): Call<SearchResponse>
+    fun searchTracks(@Query("term") text: String): Call<SearchResponse>
 }

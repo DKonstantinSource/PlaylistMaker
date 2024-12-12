@@ -1,3 +1,5 @@
+package com.example.playlistmaker.presentation.ui.search
+
 import android.content.Context
 import android.util.TypedValue
 

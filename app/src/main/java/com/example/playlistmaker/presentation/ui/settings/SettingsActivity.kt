@@ -1,9 +1,7 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.settings
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
@@ -12,17 +10,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.widget.Switch
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
-import com.example.playlistmaker.MainActivity.Companion.KEY_SWITCH_THEME
-import com.example.playlistmaker.MainActivity.Companion.THEME_PREFERENCE
-import com.example.playlistmaker.R.string.termsOfUse
-import java.util.concurrent.atomic.AtomicBoolean
+import com.example.playlistmaker.Creator.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.SettingsInteractor
+
+
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var settingsInteractor: SettingsInteractor
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,31 +55,21 @@ class SettingsActivity : AppCompatActivity() {
         textViewEmail.setOnClickListener { sendSupportEmail() }
         imageViewEmail.setOnClickListener { sendSupportEmail() }
 
-        sharedPreferences = getSharedPreferences(THEME_PREFERENCE, MODE_PRIVATE)
-        val switchTheme = findViewById<SwitchCompat>(R.id.switchTheme)
+        settingsInteractor = Creator.createSettingsInteractor(this)
 
-        switchTheme.isChecked = sharedPreferences.getBoolean(KEY_SWITCH_THEME, false)
+        val switchTheme = findViewById<SwitchCompat>(R.id.switchTheme)
+        val themePreference = settingsInteractor.getTheme()
+        switchTheme.isChecked = themePreference
+
         switchTheme.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences
-                .edit()
-                .putBoolean(KEY_SWITCH_THEME, isChecked)
-                .apply()
-            switchTheme(isChecked)
+            settingsInteractor.setTheme(isChecked)
+            switchTheme.isChecked = isChecked
         }
 
 
 
     }
 
-    private fun switchTheme(isNightMode: Boolean) {
-        AppCompatDelegate.setDefaultNightMode(
-            if (isNightMode) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
-    }
 
 
     private fun shareNameApp() {
