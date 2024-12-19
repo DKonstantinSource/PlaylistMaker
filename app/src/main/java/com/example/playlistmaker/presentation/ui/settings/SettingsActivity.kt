@@ -1,103 +1,84 @@
 package com.example.playlistmaker.presentation.ui.settings
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.appcompat.widget.SwitchCompat
 import com.example.playlistmaker.Creator.Creator
-import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.api.SettingsInteractor
-
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.domain.settings.sharing.api.ExternalNavigatorInteractor
+import com.example.playlistmaker.presentation.view_model.settings.SettingsViewModel
+import com.example.playlistmaker.presentation.view_model.settings.SettingsViewModelFactory
 
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySettingsBinding
+    private val settingsViewModel: SettingsViewModel by viewModels {
+        SettingsViewModelFactory(
+            Creator.createSettingsInteractor()
+        )
+    }
+    private lateinit var externalNavigatorInteractor: ExternalNavigatorInteractor
+    private lateinit var viewModel: SettingsViewModel
 
-    private lateinit var settingsInteractor: SettingsInteractor
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+
+        externalNavigatorInteractor = Creator.createExternalNavigatorInteractor()
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        viewModel = settingsViewModel
+
         enableEdgeToEdge()
-        setContentView(R.layout.activity_settings)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        setupEdgeToEdge()
+        setupClickListeners()
+        setupThemeSwitch()
+    }
+
+    private fun setupEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
 
+    private fun setupClickListeners() {
+        binding.shareAppImage.setOnClickListener { shareNameApp() }
+        binding.shareAppText.setOnClickListener { shareNameApp() }
+        binding.supportText.setOnClickListener { sendSupportEmail() }
+        binding.supportImage.setOnClickListener { sendSupportEmail() }
+        binding.termOfUseText.setOnClickListener { openTermOfUse() }
+        binding.termOfUseImage.setOnClickListener { openTermOfUse() }
+        binding.backButton.setOnClickListener { finish() }
+    }
 
-        val shareViewImage = findViewById<ImageView>(R.id.shareAppImage)
-        val shareViewText = findViewById<TextView>(R.id.shareAppText)
+    private fun setupThemeSwitch() {
+        val switchTheme: SwitchCompat = binding.switchTheme
 
-        val textViewEmail= findViewById<TextView>(R.id.supportText)
-        val imageViewEmail= findViewById<ImageView>(R.id.supportImage)
-
-        val textTermOfUse = findViewById<TextView>(R.id.termOfUseText)
-        val imageTermOfUse = findViewById<ImageView>(R.id.termOfUseImage)
-
-        val backOnMainActivity = findViewById<ImageView>(R.id.backButton)
-        backOnMainActivity.setOnClickListener { finish()}
-
-        textTermOfUse.setOnClickListener {openTermOfUse()}
-        imageTermOfUse.setOnClickListener {openTermOfUse()}
-
-        shareViewImage.setOnClickListener { shareNameApp() }
-        shareViewText.setOnClickListener { shareNameApp() }
-
-        textViewEmail.setOnClickListener { sendSupportEmail() }
-        imageViewEmail.setOnClickListener { sendSupportEmail() }
-
-        settingsInteractor = Creator.createSettingsInteractor(this)
-
-        val switchTheme = findViewById<SwitchCompat>(R.id.switchTheme)
-        val themePreference = settingsInteractor.getTheme()
-        switchTheme.isChecked = themePreference
-
-        switchTheme.setOnCheckedChangeListener { _, isChecked ->
-            settingsInteractor.setTheme(isChecked)
+        settingsViewModel.themePreference.observe(this) { isChecked ->
             switchTheme.isChecked = isChecked
         }
 
-
-
+        switchTheme.setOnCheckedChangeListener { _, isChecked ->
+            settingsViewModel.setTheme(isChecked)
+        }
     }
-
-
 
     private fun shareNameApp() {
-        val linkUrl = getString(R.string.appLinkUrl)
-        val intentShare = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, linkUrl)
-            type = "text/plain"
-        }
-        startActivity(Intent.createChooser(intentShare, getString(R.string.shareApp)))
+        externalNavigatorInteractor.shareApp()
     }
-
-
-
 
     private fun sendSupportEmail() {
-
-        val emailIntent = Intent(Intent.ACTION_SENDTO)
-        emailIntent.setData(Uri.parse("mailto:"))
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.emailUrl)))
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.emailSubtext))
-        emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.emailTitleText))
-        startActivity(emailIntent)
+        externalNavigatorInteractor.openSupport()
     }
 
-
     private fun openTermOfUse() {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.termOfUseRl)))
-        startActivity(browserIntent)
+        externalNavigatorInteractor.openTermsOfUse()
     }
 }

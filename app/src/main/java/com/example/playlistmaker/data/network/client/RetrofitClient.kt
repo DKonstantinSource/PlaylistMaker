@@ -1,6 +1,7 @@
-package com.example.playlistmaker.data.network
+package com.example.playlistmaker.data.network.client
 
 import com.example.playlistmaker.Constants.BASE_URL_ITUNES
+import com.example.playlistmaker.data.network.API.ApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

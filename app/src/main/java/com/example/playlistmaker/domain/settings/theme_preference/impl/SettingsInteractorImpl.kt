@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.domain.settings.theme_preference.impl
 
-import com.example.playlistmaker.domain.repository.SettingsRepository
-import com.example.playlistmaker.domain.api.SettingsInteractor
+import com.example.playlistmaker.domain.settings.theme_preference.repository.SettingsRepository
+import com.example.playlistmaker.domain.settings.theme_preference.api.SettingsInteractor
 
 class SettingsInteractorImpl(private val settingsRepository: SettingsRepository) :
     SettingsInteractor {

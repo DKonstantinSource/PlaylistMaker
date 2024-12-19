@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.GlideUtils
 import com.example.playlistmaker.domain.model.Track
 
 class TrackAdapter(
@@ -40,7 +41,7 @@ class TrackAdapter(
                 .fitCenter()
                 .placeholder(R.drawable.image_placeholder)
                 .centerCrop()
-                .transform(RoundedCorners(Utils.dpToPx(2f, itemView.context)))
+                .transform(RoundedCorners(GlideUtils.dpToPx(2f, itemView.context)))
                 .into(trackLogo)
         }
     }

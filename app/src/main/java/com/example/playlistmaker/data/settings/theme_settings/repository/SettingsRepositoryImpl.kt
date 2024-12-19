@@ -1,15 +1,15 @@
-package com.example.playlistmaker.data.impl
-
+package com.example.playlistmaker.data.settings.theme_settings.repository
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.Constants.KEY_SWITCH_THEME
 import com.example.playlistmaker.Constants.THEME_PREFERENCE
-import com.example.playlistmaker.domain.repository.SettingsRepository
+import com.example.playlistmaker.Creator.Creator
+import com.example.playlistmaker.domain.settings.theme_preference.repository.SettingsRepository
 
 class SettingsRepositoryImpl(context: Context) : SettingsRepository {
 
     private val sharedPreferences =
-        context.getSharedPreferences(THEME_PREFERENCE, Context.MODE_PRIVATE)
+        Creator.context.getSharedPreferences(THEME_PREFERENCE, Context.MODE_PRIVATE)
 
     @Override
     override fun getTheme(): Boolean {
