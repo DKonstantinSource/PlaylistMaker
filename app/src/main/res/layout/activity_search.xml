@@ -78,7 +78,7 @@
                 />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/reset_button"
+                android:id="@+id/resetButton"
                 android:layout_width="40dp"
                 android:layout_height="36dp"
                 android:layout_gravity="end|center_vertical"
@@ -112,7 +112,7 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tracks"
+                android:id="@+id/recycleView"
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

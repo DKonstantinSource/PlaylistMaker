@@ -1,9 +1,9 @@
 package com.example.playlistmaker.data.impl
 
 import android.util.Log
-import com.example.playlistmaker.data.model.TrackMapper
-import com.example.playlistmaker.data.network.ApiService
-import com.example.playlistmaker.data.network.SearchResponse
+import com.example.playlistmaker.mapper.TrackMapper
+import com.example.playlistmaker.data.network.API.ApiService
+import com.example.playlistmaker.data.network.response.SearchResponse
 import com.example.playlistmaker.domain.repository.TrackRepository
 import retrofit2.Response
 import com.example.playlistmaker.domain.model.Track as DomainTrack

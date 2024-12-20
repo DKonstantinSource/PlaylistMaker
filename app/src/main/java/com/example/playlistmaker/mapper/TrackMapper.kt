@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.model
+package com.example.playlistmaker.mapper
 
 
 import com.example.playlistmaker.data.model.Track as DataTrack

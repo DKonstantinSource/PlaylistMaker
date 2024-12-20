@@ -16,4 +16,3 @@ object NetworkUtils {
                 hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
     }
 }
-// ВАЛЕРА НАСТАЛО ТВОЁ ВРЕМЯ, ТАК И ЗНАЛ ОНО ПРИДЁТ !!!

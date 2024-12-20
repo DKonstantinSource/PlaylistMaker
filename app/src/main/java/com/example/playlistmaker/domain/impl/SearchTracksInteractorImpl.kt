@@ -19,7 +19,4 @@ class SearchTracksInteractorImpl(private val repository: TrackRepository) {
         }
     }
 
-    fun shutdown() {
-        executor.shutdown()
-    }
 }
