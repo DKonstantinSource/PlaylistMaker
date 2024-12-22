@@ -12,7 +12,9 @@ import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.model.PlayerState
 import com.example.playlistmaker.domain.model.Track
 
-class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) : ViewModel() {
+class PlayerViewModel(
+    private val mediaPlayerInteractor: MediaPlayerInteractor
+) : ViewModel() {
 
     private val _trackInfo = MutableLiveData<Track>()
     val trackInfo: LiveData<Track> get() = _trackInfo

@@ -6,5 +6,5 @@ object Constants {
     const val THEME_PREFERENCE = "theme_preference"
     const val CLICK_DEBOUNCE_DELAY = 1300L
     const val SEARCH_DEBOUNCE_DELAY = 2000L
-    const val SEARCH_HSITORY = "search_history"
+    const val SEARCH_HISTORY = "search_history"
 }

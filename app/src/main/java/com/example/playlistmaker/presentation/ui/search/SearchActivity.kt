@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -13,24 +12,24 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Constants.CLICK_DEBOUNCE_DELAY
-import com.example.playlistmaker.Creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import com.example.playlistmaker.presentation.view_model.search.SearchViewModel
-import com.example.playlistmaker.presentation.view_model.search.SearchViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 @SuppressLint("ResourceType", "MissingInflatedId", "CutPasteId")
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var viewModel: SearchViewModel
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var binding: ActivitySearchBinding
     private var isClickable = true
+
+    private val viewModel: SearchViewModel by viewModel()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,17 +39,7 @@ class SearchActivity : AppCompatActivity() {
         val handler = Handler(
             Looper.getMainLooper()
         )
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val manageSearchHistory = Creator.createManageSearchHistoryUseCase(sharedPreferences)
-        val searchTracksInteractorImpl = Creator.createSearchTracksUseCase()
 
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModelFactory(
-                manageSearchHistory,
-                searchTracksInteractorImpl
-            )
-        ).get(SearchViewModel::class.java)
         recyclerView = binding.recycleView
 
         trackAdapter = TrackAdapter { track ->

@@ -9,7 +9,7 @@ import com.google.gson.reflect.TypeToken
 
 class SearchHistoryImpl(private val sharedPreferences: SharedPreferences) :
     SearchHistoryRepository {
-    private val historyKey = Constants.SEARCH_HSITORY
+    private val historyKey = Constants.SEARCH_HISTORY
     private val maxHistorySize = 10
     private val gson = Gson()
 
