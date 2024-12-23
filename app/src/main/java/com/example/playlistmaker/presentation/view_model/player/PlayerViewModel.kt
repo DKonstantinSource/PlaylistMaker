@@ -4,7 +4,6 @@ package com.example.playlistmaker.presentation.view_model.player
 import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +13,7 @@ import com.example.playlistmaker.domain.model.Track
 
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor
+
 ) : ViewModel() {
 
     private val _trackInfo = MutableLiveData<Track>()
@@ -38,7 +38,6 @@ class PlayerViewModel(
         }
     }
 
-
     private fun startPlayer() {
         mediaPlayerInteractor.play()
         startCountdown()
@@ -60,7 +59,6 @@ class PlayerViewModel(
             PlayerState.PLAYING -> pausePlayer()
             PlayerState.PREPARED, PlayerState.PAUSED -> startPlayer()
             PlayerState.DEFAULT -> {
-                Log.e("ErrorState", "PlayerErrorState")
             }
         }
     }

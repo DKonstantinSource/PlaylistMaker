@@ -2,6 +2,11 @@ package com.example.playlistmaker
 
 import android.app.Application
 import android.content.Intent
+import com.example.playlistmaker.data.historyListModule
+import com.example.playlistmaker.data.network.networkModule
+import com.example.playlistmaker.data.player.mediaPlayerModule
+import com.example.playlistmaker.data.settings.sharing.imp.externalNavigationModule
+import com.example.playlistmaker.data.settings.theme_settings.repository.themePreferenceModule
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.domain.settings.theme_preference.api.SettingsInteractor
 import com.example.playlistmaker.presentation.ui.main.MainActivity
@@ -17,7 +22,12 @@ class App : Application() {
 
         startKoin {
             androidContext(this@App)
-            modules(dataModule)
+            modules(
+                listOf(
+                    dataModule, mediaPlayerModule, networkModule, themePreferenceModule,
+                    externalNavigationModule, historyListModule
+                )
+            )
         }
 
         settingsInteractor.setTheme(settingsInteractor.getTheme())

@@ -1,18 +1,13 @@
 package com.example.playlistmaker.data.settings.theme_settings.repository
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.Constants.KEY_SWITCH_THEME
-import com.example.playlistmaker.Constants.THEME_PREFERENCE
 import com.example.playlistmaker.domain.settings.theme_preference.repository.SettingsRepository
-import org.koin.dsl.koinApplication
-import org.koin.java.KoinJavaComponent.get
-import org.koin.java.KoinJavaComponent.inject
 
-class SettingsRepositoryImpl(context: Context) : SettingsRepository {
 
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences(THEME_PREFERENCE, Context.MODE_PRIVATE)
+class SettingsRepositoryImpl(
+    private val sharedPreferences: SharedPreferences
+) : SettingsRepository {
 
     @Override
     override fun getTheme(): Boolean {

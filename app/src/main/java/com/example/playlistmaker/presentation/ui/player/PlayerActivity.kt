@@ -2,8 +2,6 @@ package com.example.playlistmaker.presentation.ui.player
 
 import NetworkUtils
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.IntentFilter
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.TypedValue
@@ -29,7 +27,6 @@ class PlayerActivity : AppCompatActivity() {
     private val viewModel: PlayerViewModel by viewModel<PlayerViewModel>()
     private val mediaPlayerInteractorImpl: MediaPlayerInteractor by inject()
     private val screenReceiver: ScreenReceiver by inject()
-    private val networkUtil: NetworkUtils by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,15 +47,16 @@ class PlayerActivity : AppCompatActivity() {
 
         binding.backButton.setOnClickListener {
             mediaPlayerInteractorImpl.stop()
+            viewModel.playbackControl()
             onBackPressed()
         }
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
-
             updatePlayButton()
         }
         updatePlayButton()
+        turnOffScreen()
     }
 
 
@@ -94,21 +92,25 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun turnOffScreen() {
+        screenReceiver.playbackCallback = { isScreenOff ->
+            if (isScreenOff) {
+                mediaPlayerInteractorImpl.stop()
+                viewModel.playbackControl()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayerInteractorImpl.stop()
+    }
     override fun onDestroy() {
         super.onDestroy()
         viewModel.cleanup()
         mediaPlayerInteractorImpl.stop()
     }
 
-    override fun onStart() {
-        super.onStart()
-        registerReceiver(screenReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
-    }
-
-    override fun onStop() {
-        super.onStop()
-        unregisterReceiver(screenReceiver)
-    }
 
     @Deprecated("This method use back button.")
     override fun onBackPressed() {
