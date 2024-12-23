@@ -1,13 +1,12 @@
 package com.example.playlistmaker.presentation.view_model.search
 
 
-import NetworkUtils
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.Creator.Creator
+import com.example.playlistmaker.Constants.SEARCH_DEBOUNCE_DELAY
 import com.example.playlistmaker.domain.api.ManageSearchHistory
 import com.example.playlistmaker.domain.impl.SearchTracksInteractorImpl
 import com.example.playlistmaker.domain.model.Track
@@ -31,7 +30,6 @@ class SearchViewModel(
     private var checkStateAfterSearch = false
 
     init {
-        searchTracksInteractorImpl = Creator.createSearchTracksUseCase()
         getHistoryTrack()
     }
 
@@ -67,7 +65,7 @@ class SearchViewModel(
         searchTracksInteractorImpl.execute(query) { tracks ->
             checkStateAfterSearch = true
             storyState = false
-            _tracks.value = tracks
+            _tracks.value = tracks!!
         }
     }
 
@@ -94,13 +92,10 @@ class SearchViewModel(
         return searchQuery
     }
 
-    private fun getHistoryTrack() {
+    private fun getHistoryTrack(): Unit {
         val historyTracks = manageSearchHistory.getSearchHistory()
         _tracks.value = historyTracks
         storyState = historyTracks.isNotEmpty()
     }
 
-    companion object {
-        const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
 }

@@ -1,43 +1,38 @@
 package com.example.playlistmaker.presentation.ui.player
 
+import NetworkUtils
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.IntentFilter
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.playlistmaker.Creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
-import com.example.playlistmaker.presentation.view_model.player.ViewModelFactory
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Date
 import java.util.Locale
 
 
 class PlayerActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityPlayerBinding
-    private lateinit var viewModel: PlayerViewModel
-    private lateinit var mediaPlayerInteractorImpl: MediaPlayerInteractor
-    private lateinit var screenReceiver: ScreenReceiver
+
+    private val viewModel: PlayerViewModel by viewModel<PlayerViewModel>()
+    private val mediaPlayerInteractorImpl: MediaPlayerInteractor by inject()
+    private val screenReceiver: ScreenReceiver by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        screenReceiver = ScreenReceiver()
-        mediaPlayerInteractorImpl = Creator.createPlayer()
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(mediaPlayerInteractorImpl)
-        ).get(PlayerViewModel::class.java)
+
 
         val track = intent.getSerializableExtra(TRACK_DATA) as? Track
         track?.let {
@@ -52,15 +47,16 @@ class PlayerActivity : AppCompatActivity() {
 
         binding.backButton.setOnClickListener {
             mediaPlayerInteractorImpl.stop()
+            viewModel.playbackControl()
             onBackPressed()
         }
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
-
             updatePlayButton()
         }
         updatePlayButton()
+        turnOffScreen()
     }
 
 
@@ -96,21 +92,25 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun turnOffScreen() {
+        screenReceiver.playbackCallback = { isScreenOff ->
+            if (isScreenOff) {
+                mediaPlayerInteractorImpl.stop()
+                viewModel.playbackControl()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayerInteractorImpl.stop()
+    }
     override fun onDestroy() {
         super.onDestroy()
         viewModel.cleanup()
         mediaPlayerInteractorImpl.stop()
     }
 
-    override fun onStart() {
-        super.onStart()
-        registerReceiver(screenReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
-    }
-
-    override fun onStop() {
-        super.onStop()
-        unregisterReceiver(screenReceiver)
-    }
 
     @Deprecated("This method use back button.")
     override fun onBackPressed() {

@@ -16,7 +16,7 @@ class TrackRepositoryImpl(private val apiService: ApiService) : TrackRepository 
             if (response.isSuccessful) {
                 response.body()?.results?.map { TrackMapper.map(it) }
             } else {
-                Log.e("Boje Pravi Esli Vidish 200 POMOLIS ", "Error: ${response.code()}")
+                Log.e("TrackRepositoryImpl", "Error: ${response.code()}")
                 null
             }
         } catch (e: Exception) {
