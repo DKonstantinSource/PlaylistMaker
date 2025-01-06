@@ -9,14 +9,14 @@ import androidx.fragment.app.viewModels
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 
-class PlaylistsFragment : Fragment() {
+class PlayListsFragment : Fragment() {
 
     private val viewModel: LibraryViewModel by viewModels()
 
     companion object {
         private const val NUMBER = "number"
 
-        fun newInstance(number: Int) = PlaylistsFragment().apply {
+        fun newInstance(number: Int) = PlayListsFragment().apply {
             arguments = Bundle().apply {
                 putInt(NUMBER, number)
             }
