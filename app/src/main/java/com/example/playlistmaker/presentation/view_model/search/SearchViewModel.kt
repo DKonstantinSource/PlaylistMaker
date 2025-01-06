@@ -92,7 +92,7 @@ class SearchViewModel(
         return searchQuery
     }
 
-    private fun getHistoryTrack(): Unit {
+    private fun getHistoryTrack() {
         val historyTracks = manageSearchHistory.getSearchHistory()
         _tracks.value = historyTracks
         storyState = historyTracks.isNotEmpty()
