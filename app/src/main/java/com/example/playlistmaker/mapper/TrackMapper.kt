@@ -18,12 +18,7 @@ object TrackMapper {
                 trackTimeMillis = dataTrack.trackTimeMillis,
                 artworkUrl100 = dataTrack.artworkUrl100,
                 collectionName = dataTrack.collectionName,
-                releaseDate = dataTrack.releaseDate?.let {
-
-                    val dateFormat =
-                        SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
-                    dateFormat.parse(it.toString())
-                } ?: Date(),
+                releaseDate = dataTrack.releaseDate,
                 primaryGenreName = dataTrack.primaryGenreName,
                 country = dataTrack.country,
                 previewUrl = dataTrack.previewUrl ?: "null",
