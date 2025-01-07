@@ -9,7 +9,7 @@ class LibraryViewModel : ViewModel() {
     private val _tracks = MutableLiveData<List<Track>>(emptyList())
     val tracks: LiveData<List<Track>> get() = _tracks
 
-    private val _isFavoriteTabSelected = MutableLiveData<Boolean>(true)
+    private val _isFavoriteTabSelected = MutableLiveData(true)
     val isFavoriteTabSelected: LiveData<Boolean> get() = _isFavoriteTabSelected
 
     fun toggleTab(isFavorite: Boolean) {

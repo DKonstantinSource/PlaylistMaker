@@ -1,12 +1,10 @@
 package com.example.playlistmaker.presentation.fragments.media_library
 
 import android.os.Bundle
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentTabLayoutLibraryBinding

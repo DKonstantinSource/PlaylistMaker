@@ -16,7 +16,7 @@ class MediaPlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerRe
     }
 
     override fun execute(track: Track) {
-        mediaPlayerRepository.preparePlayer(track.previewUrl)
+        mediaPlayerRepository.preparePlayer(track.previewUrl ?: "null")
         mediaPlayerRepository.play()
         playerControl.play()
     }
