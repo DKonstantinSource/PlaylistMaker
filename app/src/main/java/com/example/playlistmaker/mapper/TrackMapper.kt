@@ -10,7 +10,6 @@ import com.example.playlistmaker.domain.model.Track as DomainTrack
 
 object TrackMapper {
     fun map(dataTrack: DataTrack): DomainTrack {
-        try {
             return DomainTrack(
                 trackId = dataTrack.trackId,
                 trackName = dataTrack.trackName,
@@ -23,10 +22,5 @@ object TrackMapper {
                 country = dataTrack.country,
                 previewUrl = dataTrack.previewUrl ?: "null",
             )
-        } catch (e: Exception) {
-            Log.e("Exeption Check", e.toString())
-
         }
-        return TODO("В данный момент я не сильно могу понять, как мне обойти кро ме как выбросить исключение, завтра в пачке спрошу, что и как ")
-    }
 }
