@@ -9,15 +9,15 @@
     <string name="termsOfUse" translatable="false">Пользовательское соглашение</string>
     <string name="mediaLibrary" translatable="false">ТУТ БУДЕТ МЕДИАТЕКА</string>
     <string name="search" translatable="false">ТУТ БУДЕТ ПОИСК</string>
-    <string name="appLinkUrl" >https://practicum.yandex.ru/android-developer/?from=catalog</string>
+    <string name="appLinkUrl">https://practicum.yandex.ru/android-developer/?from=catalog</string>
     <string name="emailUrl">flxugerax@gmail.com</string>
     <string name="emailTitleText">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="emailSubtext">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="termOfUseRl">https://yandex.ru/legal/practicum_offer/</string>
     <string name="titleSearch">Поиск</string>
-    <string name="shareApp" >Поделиться приложением через</string>
+    <string name="shareApp">Поделиться приложением через</string>
     <string name="shareAppLink">"https://practicum.yandex.ru/android-developer/?from=catalog"</string>
-    
+
     <string name="errorToConnection">Проблемы со связью</string>
     <string name="unloadFalse">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="textOnRefresh">Обновить</string>
@@ -49,6 +49,16 @@
     <string name="placeholderCurrentTrack">00:00</string>
     <string name="album_logo">Обложка трека</string>
     <string name="not_specified">Не указано</string>
+
+
+    <string name="media_library">Медиатека</string>
+    <string name="favorit_track">Избранные треки</string>
+    <string name="new_playlist">Новый плейлист</string>
+    <string name="play_lists">Плэйлисты</string>
+    <string name="media_library_is_empty">Ваша медиатека пуста</string>
+    <string name="media_library_playlists_is_empty">Вы не создали\nни одного плейлиста</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

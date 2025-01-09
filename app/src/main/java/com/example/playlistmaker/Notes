@@ -1,0 +1,12 @@
+SAVE AS
+
+
+ companion object {
+            private const val NUMBER = "number"
+
+            fun newInstance(cellNumber: Int) = TabLayoutLibrary().apply {
+                arguments = Bundle().apply {
+                    putInt(NUMBER, cellNumber)
+                }
+            }
+        }

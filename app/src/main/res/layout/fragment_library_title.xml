@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/libraryTitle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        style="@style/smallContainerSetting">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/button_back_light"
+            style="@style/buttonDarkTheme" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/media_library"
+            android:fontFamily="@font/ys_display_medium"
+            android:textSize="@dimen/headerTextSize"
+            android:textFontWeight="500"
+            android:textColor="?attr/colorOnSecondary" />
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_title_child_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="62dp" />
+
+
+</FrameLayout>

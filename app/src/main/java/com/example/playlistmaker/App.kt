@@ -25,7 +25,7 @@ class App : Application() {
             modules(
                 listOf(
                     dataModule, mediaPlayerModule, networkModule, themePreferenceModule,
-                    externalNavigationModule, historyListModule
+                    externalNavigationModule, historyListModule,
                 )
             )
         }
