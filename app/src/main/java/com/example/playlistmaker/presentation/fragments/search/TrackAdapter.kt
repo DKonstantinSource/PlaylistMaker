@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.ui.search
+package com.example.playlistmaker.presentation.fragments.search
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

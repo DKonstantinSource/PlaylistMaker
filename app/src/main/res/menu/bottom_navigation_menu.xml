@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/searchFragment"
+        android:title="@string/searchText"
+        android:icon="@drawable/icon_search_navigation" />
+
+    <item
+        android:id="@+id/libraryTitleFragment"
+        android:title="@string/media_library"
+        android:icon="@drawable/icon_library_navigation" />
+
+    <item
+        android:id="@+id/settingsFragmentScreen"
+        android:title="@string/settings"
+        android:icon="@drawable/icon_settings_navigation" />
+</menu>

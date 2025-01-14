@@ -9,7 +9,7 @@ import com.example.playlistmaker.data.settings.sharing.imp.externalNavigationMod
 import com.example.playlistmaker.data.settings.theme_settings.repository.themePreferenceModule
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.domain.settings.theme_preference.api.SettingsInteractor
-import com.example.playlistmaker.presentation.ui.main.MainActivity
+import com.example.playlistmaker.presentation.ui.host.HostActivity
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
@@ -32,7 +32,7 @@ class App : Application() {
 
         settingsInteractor.setTheme(settingsInteractor.getTheme())
 
-        startActivity(Intent(this, MainActivity::class.java).apply {
+        startActivity(Intent(this, HostActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         })
     }

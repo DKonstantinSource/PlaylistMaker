@@ -13,6 +13,7 @@
         <item name="colorBackgroundFloating">@color/colorWhiteText</item>
         <item name="trackColor">@color/switch_track_dark</item>
         <item name="thumbColor">@color/switch_thumb_dark</item>
+        <item name="colorOnSurfaceVariant">@color/bottom_nav_item_color_night</item>
 
     </style>
     <style name="title">

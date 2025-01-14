@@ -32,9 +32,6 @@ class FragmentsTitleLibrary : Fragment() {
             .addToBackStack(null)
             .commit()
 
-        binding.backButton.setOnClickListener {
-            requireActivity().finish()
-        }
 
         return binding.root
     }
