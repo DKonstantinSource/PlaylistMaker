@@ -12,7 +12,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class PlayListsFragment : Fragment() {
 
-    private lateinit var binding: FragmentPlaylistsBinding
+    private var _binding: FragmentPlaylistsBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: LibraryViewModel by viewModels()
     private lateinit var tabMediator: TabLayoutMediator
 
@@ -21,13 +22,15 @@ class PlayListsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
+        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
+
 
         setupUI()
         observeViewModel()
 
         return binding.root
     }
+
 
     private fun setupUI() {
         binding.noOnePlayLists.visibility = View.VISIBLE
@@ -50,10 +53,12 @@ class PlayListsFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        _binding = null
         if (::tabMediator.isInitialized) {
             tabMediator.detach()
         }
     }
+
 
     companion object {
         private const val NUMBER = "number"

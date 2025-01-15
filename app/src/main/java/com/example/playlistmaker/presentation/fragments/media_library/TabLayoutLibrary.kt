@@ -16,9 +16,6 @@ class TabLayoutLibrary : Fragment() {
 
     private val viewModel: LibraryViewModel by viewModels()
 
-    companion object {
-        fun newInstance() = TabLayoutLibrary()
-    }
 
     private lateinit var binding: FragmentTabLayoutLibraryBinding
 
@@ -52,5 +49,9 @@ class TabLayoutLibrary : Fragment() {
                 }
             }
         }.attach()
+    }
+
+    companion object {
+        fun newInstance() = TabLayoutLibrary()
     }
 }

@@ -19,7 +19,6 @@ class App : Application() {
     private val settingsInteractor: SettingsInteractor by inject()
     override fun onCreate() {
         super.onCreate()
-
         startKoin {
             androidContext(this@App)
             modules(
@@ -29,11 +28,6 @@ class App : Application() {
                 )
             )
         }
-
         settingsInteractor.setTheme(settingsInteractor.getTheme())
-
-        startActivity(Intent(this, HostActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        })
     }
 }

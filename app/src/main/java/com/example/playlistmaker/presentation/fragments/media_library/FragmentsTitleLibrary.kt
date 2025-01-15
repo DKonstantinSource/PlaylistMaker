@@ -29,7 +29,6 @@ class FragmentsTitleLibrary : Fragment() {
 
         childFragmentManager.beginTransaction()
             .add(R.id.fragment_title_child_container, TabLayoutLibrary.newInstance())
-            .addToBackStack(null)
             .commit()
 
 

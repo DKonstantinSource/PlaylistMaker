@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.Constants.CLICK_DEBOUNCE_DELAY
+import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity.Companion.TRACK_DATA
@@ -22,7 +23,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModel()
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private lateinit var trackAdapter: TrackAdapter
     private var isClickable = true
 
@@ -31,7 +33,7 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         setupRecyclerView()
         setupClickListeners()
@@ -242,6 +244,10 @@ class SearchFragment : Fragment() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
     companion object {
         fun newInstance() = SearchFragment()
     }

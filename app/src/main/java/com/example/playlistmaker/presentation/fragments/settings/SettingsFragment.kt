@@ -15,8 +15,8 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
-    private lateinit var _binding: FragmentSettingsBinding
-    private val binding get() = _binding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private val settingsViewModel: SettingsViewModel by viewModel<SettingsViewModel>()
     private val externalNavigatorInteractor: ExternalNavigatorInteractor by inject()
@@ -61,6 +61,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
+
     private fun shareNameApp() {
         externalNavigatorInteractor.shareApp()
     }
@@ -71,6 +72,11 @@ class SettingsFragment : Fragment() {
 
     private fun openTermOfUse() {
         externalNavigatorInteractor.openTermsOfUse()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }
