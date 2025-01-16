@@ -29,7 +29,8 @@
             android:textFontWeight="500"
             android:layout_marginBottom="@dimen/mainCornerRadiusBtn"
             android:textColor="?attr/colorOnSecondary"
-            android:textAlignment="center"></TextView>
+            android:textAlignment="center"
+            android:paddingBottom="40dp" />
 
     </LinearLayout>
 

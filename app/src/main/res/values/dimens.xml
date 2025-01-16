@@ -16,4 +16,6 @@
     <dimen name="track_footer_description">14sp</dimen>
     <dimen name="content_description_footer">13sp</dimen>
 
+
+    <dimen name="marginSettings">12dp</dimen>
 </resources>

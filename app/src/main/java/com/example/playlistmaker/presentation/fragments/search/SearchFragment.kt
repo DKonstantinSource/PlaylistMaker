@@ -1,6 +1,5 @@
-package com.example.playlistmaker.presentation.ui.search
+package com.example.playlistmaker.presentation.fragments.search
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -8,75 +7,88 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.Constants.CLICK_DEBOUNCE_DELAY
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
+import com.example.playlistmaker.presentation.ui.player.PlayerActivity.Companion.TRACK_DATA
 import com.example.playlistmaker.presentation.view_model.search.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
-@SuppressLint("ResourceType", "MissingInflatedId", "CutPasteId")
-
-class SearchActivity : AppCompatActivity() {
-    private lateinit var trackAdapter: TrackAdapter
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var binding: ActivitySearchBinding
-    private var isClickable = true
+class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModel()
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var trackAdapter: TrackAdapter
+    private var isClickable = true
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+
+        setupRecyclerView()
+        setupClickListeners()
+        setupSearchListener()
+        observeViewModel()
+        clearHistory()
+        clearTextField()
+        return binding.root
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    }
 
-        val handler = Handler(
-            Looper.getMainLooper()
-        )
-
-        recyclerView = binding.recycleView
-
+    private fun setupRecyclerView() {
         trackAdapter = TrackAdapter { track ->
             viewModel.trackClicked(track)
             getStateActivity()
         }
 
-        viewModel.selectedTrack.observe(this) { track ->
+        binding.recycleView.adapter = trackAdapter
+
+    }
+
+    fun clearHistory() {
+        binding.clearHistoryButton.setOnClickListener {
+            binding.clearHistoryButton.visibility = View.GONE
+            binding.prevSearch.visibility = View.GONE
+            viewModel.clearHistory()
+
+
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.selectedTrack.observe(viewLifecycleOwner) { track ->
             track?.let {
                 if (isClickable) {
                     isClickable = false
-                    val intent = Intent(this, PlayerActivity::class.java).apply {
+                    val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
                         putExtra(TRACK_DATA, it)
                     }
                     startActivity(intent)
-                    handler.postDelayed({ isClickable = true }, CLICK_DEBOUNCE_DELAY)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        { isClickable = true },
+                        CLICK_DEBOUNCE_DELAY
+                    )
                 }
             }
         }
 
-
-        viewModel.tracks.observe(this, Observer { tracks ->
+        viewModel.tracks.observe(viewLifecycleOwner) { tracks ->
             tracks?.let {
-
                 trackAdapter.updateData(it)
-                recyclerView.adapter = trackAdapter
                 getStateActivity()
             }
-
-        })
-        setupClickListeners()
-        setupSearchListener()
-        backOnScreen()
-        clearHistory()
-        clearTextField()
-        getStateActivity()
-
+        }
     }
 
     private fun setupClickListeners() {
@@ -84,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val query = binding.searchEditText.text.toString().trim()
                 viewModel.onSearchQueryChanged(query)
-
+                binding.progressBar.visibility = View.VISIBLE
                 true
             } else {
                 false
@@ -110,22 +122,21 @@ class SearchActivity : AppCompatActivity() {
                 binding.recycleView.visibility = View.GONE
                 binding.clearHistoryButton.visibility = View.GONE
                 viewModel.onSearchQueryChanged(s.toString())
+
             }
         })
     }
 
-    fun clearHistory() {
-        binding.clearHistoryButton.setOnClickListener {
-            binding.clearHistoryButton.visibility = View.GONE
-            binding.prevSearch.visibility = View.GONE
-            viewModel.clearHistory()
-            getStateActivity()
-
+    fun clearTextField() {
+        binding.resetButton.setOnClickListener {
+            binding.resetButton.visibility = View.GONE
+            binding.searchEditText.text.clear()
+            binding.progressBar.visibility = View.GONE
         }
     }
 
+
     fun getStateActivity() {
-        binding.progressBar.visibility = View.GONE
         if (viewModel.tracks.value!!.isEmpty() and viewModel.getQuery()
                 .isNotEmpty() and !viewModel.getStoryState() and viewModel.getStateAfterSearch()
         ) {
@@ -233,22 +244,11 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    fun clearTextField() {
-        binding.resetButton.setOnClickListener {
-            binding.resetButton.visibility = View.GONE
-            binding.searchEditText.text.clear()
-            getStateActivity()
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
-
-
-    private fun backOnScreen() {
-        binding.backButton.setOnClickListener {
-            finish()
-        }
-    }
-
     companion object {
-        const val TRACK_DATA = "TRACK_DATA"
+        fun newInstance() = SearchFragment()
     }
 }

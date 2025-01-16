@@ -13,6 +13,7 @@
         android:textSize="@dimen/small_text_size"
         app:tabSelectedTextColor="?attr/colorOnSecondary"
         app:tabIndicatorColor="?attr/colorOnSecondary"
+        android:background="?attr/colorPrimary"
         app:tabTextColor="?attr/colorOnSecondary"
         app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 

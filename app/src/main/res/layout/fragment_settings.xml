@@ -1,11 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
+    android:id="@+id/settingsFragmentScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    style="@style/backgroundColorSettings">
+    style="@style/backgroundColorSettings"
+    tools:context="com.example.playlistmaker.presentation.fragments.settings.SettingsFragment">
 
 
     <LinearLayout
@@ -15,21 +17,12 @@
         android:padding="4dp"
         style="@style/smallContainerSetting">
 
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/button_back_light"
-            style="@style/buttonDarkTheme"
-            />
         <TextView
+            android:layout_marginStart="@dimen/marginSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            style="@style/titleSettings"
-            />
+            style="@style/titleSettings" />
 
     </LinearLayout>
 
@@ -75,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
                 android:src="@drawable/share_light_mode"
-                style="@style/backgroundColorSettings"/>
+                style="@style/backgroundColorSettings" />
         </FrameLayout>
 
         <FrameLayout
@@ -92,8 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center"
                 android:text="@string/supportMail"
-                style="@style/smallContainerSetting"
-                />
+                style="@style/smallContainerSetting" />
 
             <ImageView
                 android:id="@+id/supportImage"
@@ -101,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
                 android:src="@drawable/support_light_mode"
-                style="@style/backgroundColorSettings"/>
+                style="@style/backgroundColorSettings" />
         </FrameLayout>
 
         <FrameLayout
@@ -126,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
                 android:src="@drawable/arrow_light_mode"
-                style="@style/backgroundColorSettings"/>
+                style="@style/backgroundColorSettings" />
         </FrameLayout>
     </LinearLayout>
 

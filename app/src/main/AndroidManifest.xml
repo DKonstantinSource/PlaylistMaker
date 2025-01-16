@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
     >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,26 +15,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PlaylistMaker">
-        <activity
-            android:name=".presentation.ui.library.MediaLibraryActivity"
-            android:exported="false" />
+
         <activity
             android:name=".presentation.ui.player.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.ui.settings.SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.ui.search.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.ui.main.MainActivity"
-            android:exported="true">
-            <intent-filter>
+            android:name=".presentation.ui.host.HostActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
+
+        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 
