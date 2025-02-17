@@ -1,6 +1,5 @@
 package com.example.playlistmaker.presentation.ui.player
 
-import NetworkUtils
 import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
@@ -8,6 +7,7 @@ import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.playlistmaker.Constants.FORMAT_TIME_TS
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
@@ -19,12 +19,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Date
 import java.util.Locale
 
-
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
 
-    private val viewModel: PlayerViewModel by viewModel<PlayerViewModel>()
+    private val viewModel: PlayerViewModel by viewModel()
     private val mediaPlayerInteractorImpl: MediaPlayerInteractor by inject()
     private val screenReceiver: ScreenReceiver by inject()
 
@@ -32,7 +31,6 @@ class PlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         val track = intent.getSerializableExtra(TRACK_DATA) as? Track
         track?.let {
@@ -42,24 +40,23 @@ class PlayerActivity : AppCompatActivity() {
 
         viewModel.currentTrackTime.observe(this) { time ->
             binding.currentTrackTime.text = time
-            updatePlayButton()
+        }
+
+
+        viewModel.isPlayingLiveData.observe(this) { isPlaying ->
+            updatePlayButton(isPlaying)
         }
 
         binding.backButton.setOnClickListener {
-            mediaPlayerInteractorImpl.stop()
-            viewModel.playbackControl()
             onBackPressed()
         }
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
-            updatePlayButton()
         }
-        updatePlayButton()
+
         turnOffScreen()
     }
-
-
 
     private fun updateUI(track: Track) {
         binding.trackNamePlayer.text = track.trackName
@@ -84,8 +81,8 @@ class PlayerActivity : AppCompatActivity() {
             .into(binding.cover)
     }
 
-    private fun updatePlayButton() {
-        if (viewModel.isPlaying()) {
+    private fun updatePlayButton(isPlaying: Boolean) {
+        if (isPlaying) {
             binding.playButton.setBackgroundResource(R.drawable.image_button_pause)
         } else {
             binding.playButton.setBackgroundResource(R.drawable.image_play_button)
@@ -96,25 +93,26 @@ class PlayerActivity : AppCompatActivity() {
         screenReceiver.playbackCallback = { isScreenOff ->
             if (isScreenOff) {
                 mediaPlayerInteractorImpl.stop()
-                viewModel.playbackControl()
+                viewModel.pausePlayer()
             }
         }
     }
 
     override fun onPause() {
         super.onPause()
-        mediaPlayerInteractorImpl.stop()
+        viewModel.pausePlayer()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         viewModel.cleanup()
         mediaPlayerInteractorImpl.stop()
     }
 
-
     @Deprecated("This method use back button.")
     override fun onBackPressed() {
         super.onBackPressed()
+
         finish()
     }
 
@@ -133,7 +131,6 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val FORMAT_TIME_TS = "%02d:%02d"
         const val PATTERN_DATE_FORMAT = "yyyy"
         const val TRACK_DATA = "TRACK_DATA"
     }

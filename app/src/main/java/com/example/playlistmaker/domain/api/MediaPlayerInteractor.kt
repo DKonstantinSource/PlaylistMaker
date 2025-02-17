@@ -9,4 +9,5 @@ interface MediaPlayerInteractor {
     fun stop()
     fun getCurrentPosition(): Int
     fun isPlaying(): Boolean
+    fun setOnTrackCompleteListener(listener: () -> Unit)
 }

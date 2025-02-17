@@ -7,4 +7,5 @@ interface MediaPlayerRepository {
     fun release()
     fun getCurrentPosition(): Int
     fun isPlaying(): Boolean
+    fun setOnTrackCompleteListener(listener: () -> Unit)
 }
