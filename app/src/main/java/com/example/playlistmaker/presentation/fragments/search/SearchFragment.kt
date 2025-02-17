@@ -2,8 +2,6 @@ package com.example.playlistmaker.presentation.fragments.search
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -12,18 +10,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.Constants.CLICK_DEBOUNCE_DELAY
-import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity.Companion.TRACK_DATA
 import com.example.playlistmaker.presentation.view_model.search.SearchViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 class SearchFragment : Fragment() {
 
-    private val viewModel: SearchViewModel by viewModel()
+    private val viewModel: SearchViewModel by stateViewModel()
+
+
+
     private var _binding: FragmentSearchBinding? = null
+    private var job: Job? = null
     private val binding get() = _binding!!
     private lateinit var trackAdapter: TrackAdapter
     private var isClickable = true
@@ -34,17 +41,22 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-
         setupRecyclerView()
         setupClickListeners()
         setupSearchListener()
         observeViewModel()
         clearHistory()
-        clearTextField()
+        resetButton()
+
         return binding.root
-
-
     }
+
+    private fun resetButton() {
+        binding.resetButton.setOnClickListener {
+            clearTextField()
+        }
+    }
+
 
     private fun setupRecyclerView() {
         trackAdapter = TrackAdapter { track ->
@@ -56,13 +68,11 @@ class SearchFragment : Fragment() {
 
     }
 
-    fun clearHistory() {
+    private fun clearHistory() {
         binding.clearHistoryButton.setOnClickListener {
             binding.clearHistoryButton.visibility = View.GONE
             binding.prevSearch.visibility = View.GONE
             viewModel.clearHistory()
-
-
         }
     }
 
@@ -75,10 +85,12 @@ class SearchFragment : Fragment() {
                         putExtra(TRACK_DATA, it)
                     }
                     startActivity(intent)
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        { isClickable = true },
-                        CLICK_DEBOUNCE_DELAY
-                    )
+
+
+                    lifecycleScope.launch {
+                        delay(CLICK_DEBOUNCE_DELAY)
+                        isClickable = true
+                    }
                 }
             }
         }
@@ -91,17 +103,26 @@ class SearchFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewModel.clearDateTrack()
+    }
+
     private fun setupClickListeners() {
         binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val query = binding.searchEditText.text.toString().trim()
                 viewModel.onSearchQueryChanged(query)
-                binding.progressBar.visibility = View.VISIBLE
                 true
             } else {
                 false
             }
         }
+
+        binding.resetButton.setOnClickListener {
+            clearTextField()
+        }
+
     }
 
     private fun setupSearchListener() {
@@ -112,6 +133,9 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.progressBar.visibility = View.VISIBLE
+                if (s.isNullOrBlank()) {
+                    binding.progressBar.visibility = View.GONE
+                }
                 if (s.toString().isEmpty()) {
                     binding.resetButton.visibility = View.GONE
                 } else {
@@ -127,7 +151,8 @@ class SearchFragment : Fragment() {
         })
     }
 
-    fun clearTextField() {
+
+    private fun clearTextField() {
         binding.resetButton.setOnClickListener {
             binding.resetButton.visibility = View.GONE
             binding.searchEditText.text.clear()
@@ -136,7 +161,7 @@ class SearchFragment : Fragment() {
     }
 
 
-    fun getStateActivity() {
+    private fun getStateActivity() {
         if (viewModel.tracks.value!!.isEmpty() and viewModel.getQuery()
                 .isNotEmpty() and !viewModel.getStoryState() and viewModel.getStateAfterSearch()
         ) {
@@ -242,13 +267,12 @@ class SearchFragment : Fragment() {
             Log.e("Ardad", "12")
         }
 
+
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-    companion object {
-        fun newInstance() = SearchFragment()
     }
 }
