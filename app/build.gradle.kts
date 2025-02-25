@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -30,36 +31,58 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
 
 dependencies {
 
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.koin.android)
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
-    implementation(libs.glide.transformations)
-    implementation (libs.glide)
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.fragment)
-    annotationProcessor (libs.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
+    implementation(libs.androidx.material)
     implementation(libs.androidx.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.viewpager2)
+
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson.converter)
+    implementation(libs.okhttp)
+    implementation(libs.gson)
+
+
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.fragment)
+
+
+//    implementation ("androidx.fragment:fragment-ktx:1.8.6")
+//    implementation ("androidx.room:room-ktx:2.5.0")
+//
+//    val room_version = "2.4.3"
+//    implementation ("androidx.room:room-runtime:$room_version")
+//    kapt ("androidx.room:room-compiler:2.6.1")
+
+    implementation(libs.androidx.room.ktx)
+
+    implementation(libs.koin)
+
+
+
+    implementation(libs.androidx.splashscreen)
+
+
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.espresso.core)
+
+    implementation(libs.kotlinx.coroutines.android)
 }

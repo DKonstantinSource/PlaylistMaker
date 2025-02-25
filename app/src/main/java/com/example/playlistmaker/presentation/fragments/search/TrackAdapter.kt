@@ -43,6 +43,7 @@ class TrackAdapter(
                 .centerCrop()
                 .transform(RoundedCorners(GlideUtils.dpToPx(2f, itemView.context)))
                 .into(trackLogo)
+            itemView.setOnClickListener { onTrackClick(model) }
         }
     }
 

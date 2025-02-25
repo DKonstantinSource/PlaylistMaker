@@ -5,16 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentTabLayoutLibraryBinding
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class TabLayoutLibrary : Fragment() {
+class FragmentTabLayoutLibrary : Fragment() {
 
-    private val viewModel: LibraryViewModel by viewModels()
+    private val libraryViewModel: LibraryViewModel by viewModel()
+
 
 
     private lateinit var binding: FragmentTabLayoutLibraryBinding
@@ -40,18 +41,18 @@ class TabLayoutLibrary : Fragment() {
 
                 0 -> {
                     tab.text = getString(R.string.favorit_track)
-                    viewModel.toggleTab(true)
+                    libraryViewModel.toggleTab(true)
                 }
 
                 1 -> {
                     tab.text = getString(R.string.play_lists)
-                    viewModel.toggleTab(false)
+                    libraryViewModel.toggleTab(false)
                 }
             }
         }.attach()
     }
 
     companion object {
-        fun newInstance() = TabLayoutLibrary()
+        fun newInstance() = FragmentTabLayoutLibrary()
     }
 }

@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlayListsFragment : Fragment() {
+class FragmentPlaylist : Fragment() {
 
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: LibraryViewModel by viewModels()
+    private val libraryViewModel: LibraryViewModel by viewModel()
     private lateinit var tabMediator: TabLayoutMediator
 
     override fun onCreateView(
@@ -40,7 +40,7 @@ class PlayListsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.tracks.observe(viewLifecycleOwner) { tracks ->
+        libraryViewModel.tracks.observe(viewLifecycleOwner) { tracks ->
             if (tracks.isEmpty()) {
                 binding.emptyPlayListImage.visibility = View.VISIBLE
                 binding.emptyPlayListText.visibility = View.VISIBLE
@@ -61,12 +61,17 @@ class PlayListsFragment : Fragment() {
 
 
     companion object {
-        private const val NUMBER = "number"
-
-        fun newInstance(number: Int) = PlayListsFragment().apply {
-            arguments = Bundle().apply {
-                putInt(NUMBER, number)
+        fun newInstance(position: Int): FragmentPlaylist {
+            return FragmentPlaylist().apply {
+                arguments = Bundle().apply {
+                    putInt("TAB_POSITION", position)
+                }
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val position = arguments?.getInt("TAB_POSITION") ?: 0
     }
 }

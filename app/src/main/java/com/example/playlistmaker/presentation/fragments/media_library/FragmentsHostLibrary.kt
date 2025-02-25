@@ -5,17 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentLibraryTitleBinding
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentsTitleLibrary : Fragment() {
+class FragmentsHostLibrary : Fragment() {
 
-    private val viewModel: LibraryViewModel by viewModels()
+    private val libraryViewModel: LibraryViewModel by viewModel()
 
     companion object {
-        fun newInstance() = FragmentsTitleLibrary()
+        fun newInstance() = FragmentsHostLibrary()
     }
 
     private lateinit var binding: FragmentLibraryTitleBinding
@@ -28,7 +28,7 @@ class FragmentsTitleLibrary : Fragment() {
         binding = FragmentLibraryTitleBinding.inflate(inflater, container, false)
 
         childFragmentManager.beginTransaction()
-            .add(R.id.fragment_title_child_container, TabLayoutLibrary.newInstance())
+            .add(R.id.fragment_title_child_container, FragmentTabLayoutLibrary.newInstance())
             .commit()
 
 

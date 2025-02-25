@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.app.Application
 import android.content.Intent
+import com.example.playlistmaker.data.db.repositoryModule
 import com.example.playlistmaker.data.historyListModule
 import com.example.playlistmaker.data.network.networkModule
 import com.example.playlistmaker.data.player.mediaPlayerModule
@@ -24,7 +25,7 @@ class App : Application() {
             modules(
                 listOf(
                     dataModule, mediaPlayerModule, networkModule, themePreferenceModule,
-                    externalNavigationModule, historyListModule,
+                    externalNavigationModule, historyListModule, repositoryModule,
                 )
             )
         }

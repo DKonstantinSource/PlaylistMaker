@@ -14,9 +14,9 @@ class TabLayoutViewPageAdapter(fragmentManager: FragmentManager, lifecycle: Life
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> FavoriteTracksFragment.newInstance(1)
-            1 -> PlayListsFragment.newInstance(2)
-            else -> throw IllegalStateException("Unexpected position somthing wrong tabLayer $position")
+            0 -> FavoriteTracksListLibraryFragment.newInstance(1)
+            1 -> FragmentPlaylist.newInstance(2)
+            else -> throw IllegalStateException("Unexpected position: $position")
         }
     }
 }
