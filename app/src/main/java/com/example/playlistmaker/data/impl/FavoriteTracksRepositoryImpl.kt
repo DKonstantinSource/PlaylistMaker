@@ -37,6 +37,7 @@ fun TrackEntity.toDomain() = Track(
 
 class FavoriteTracksRepositoryImpl(private val trackDao: TrackDao) : FavoriteTracksRepository {
     override suspend fun addTrackToFavorites(track: Track) {
+        Log.d("AddTrack", "Track add on DB")
         trackDao.insertTrack(track.toEntity())
     }
 

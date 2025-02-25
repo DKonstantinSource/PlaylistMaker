@@ -24,9 +24,10 @@ class FragmentPlaylist : Fragment() {
     ): View {
         _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
 
-
+        binding.noOnePlayLists.visibility = View.VISIBLE
+        binding.emptyPlayListText.visibility = View.VISIBLE
         setupUI()
-        observeViewModel()
+
 
         return binding.root
     }
@@ -39,17 +40,6 @@ class FragmentPlaylist : Fragment() {
         binding.emptyPlayListImage.visibility = View.VISIBLE
     }
 
-    private fun observeViewModel() {
-        libraryViewModel.tracks.observe(viewLifecycleOwner) { tracks ->
-            if (tracks.isEmpty()) {
-                binding.emptyPlayListImage.visibility = View.VISIBLE
-                binding.emptyPlayListText.visibility = View.VISIBLE
-            } else {
-                binding.emptyPlayListImage.visibility = View.GONE
-                binding.emptyPlayListText.visibility = View.GONE
-            }
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()

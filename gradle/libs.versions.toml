@@ -1,6 +1,6 @@
 [versions]
 agp = "8.8.0"
-kotlin = "1.9.0"
+kotlin = "2.1.0"
 core-ktx = "1.12.0"
 appcompat = "1.6.1"
 material = "1.9.0"
@@ -19,6 +19,7 @@ androidx-test-ext-junit = "1.1.5"
 androidx-test-core = "1.5.0"
 espresso-core = "3.5.1"
 kotlinx-coroutines = "1.6.4"
+ksp = "2.1.0-1.0.29"
 
 [libraries]
 # AndroidX библиотеки
@@ -61,3 +62,4 @@ androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", v
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

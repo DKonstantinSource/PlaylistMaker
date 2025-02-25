@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.FragmentTracksListLibraryBinding
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.example.playlistmaker.presentation.fragments.search.TrackAdapter
-import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 
 class FavoriteTracksListLibraryFragment : Fragment() {
@@ -21,25 +24,27 @@ class FavoriteTracksListLibraryFragment : Fragment() {
     private lateinit var binding: FragmentTracksListLibraryBinding
     private lateinit var trackAdapter: TrackAdapter
 
+    private var isClickable = true
+    private val CLICK_DEBOUNCE_DELAY = 500L
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTracksListLibraryBinding.inflate(inflater, container, false)
-        libraryViewModel.loadFavoriteTracks()
-        observeViewModel()
+
         setupRecyclerView()
+        observeViewModel()
+        libraryViewModel.loadFavoriteTracks()
+
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val position = arguments?.getInt("TAB_POSITION") ?: 0
-    }
-
     private fun setupRecyclerView() {
-        trackAdapter = TrackAdapter(onTrackClick = { track -> openAudioPlayer(track) })
+        trackAdapter = TrackAdapter(onTrackClick = { track ->
+            libraryViewModel.trackClicked(track)
+        })
         binding.recyclerViewLibrary.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = trackAdapter
@@ -47,9 +52,29 @@ class FavoriteTracksListLibraryFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        libraryViewModel.selectedTrack.observe(viewLifecycleOwner) { track ->
+            track?.let {
+                if (isClickable) {
+                    isClickable = false
+                    val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
+                        putExtra(PlayerActivity.TRACK_DATA, it)
+                    }
+                    startActivity(intent)
+
+
+                    lifecycleScope.launch {
+                        delay(CLICK_DEBOUNCE_DELAY)
+                        isClickable = true
+                    }
+                }
+            }
+        }
+
         libraryViewModel.tracks.observe(viewLifecycleOwner) { tracks ->
             if (tracks.isEmpty()) {
                 binding.noOneTrackOnLibrary.visibility = View.VISIBLE
+                binding.errorPlaceHolderImg.visibility = View.VISIBLE
+                binding.errorPlaceHolderText.visibility = View.VISIBLE
                 binding.recyclerViewLibrary.visibility = View.GONE
             } else {
                 binding.noOneTrackOnLibrary.visibility = View.GONE
@@ -59,19 +84,13 @@ class FavoriteTracksListLibraryFragment : Fragment() {
         }
 
         libraryViewModel.isEmpty.observe(viewLifecycleOwner) { isEmpty ->
-            if (isEmpty) {
-                binding.noOneTrackOnLibrary.visibility = View.VISIBLE
-            } else {
-                binding.noOneTrackOnLibrary.visibility = View.GONE
-            }
+            binding.noOneTrackOnLibrary.visibility = if (isEmpty) View.VISIBLE else View.GONE
         }
     }
 
-    private fun openAudioPlayer(track: Track) {
-        val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
-            putExtra("TRACK_KEY", track)
-        }
-        startActivity(intent)
+    override fun onPause() {
+        super.onPause()
+        libraryViewModel.clearSelectedTrack()
     }
 
     companion object {
@@ -84,4 +103,5 @@ class FavoriteTracksListLibraryFragment : Fragment() {
         }
     }
 }
+
 

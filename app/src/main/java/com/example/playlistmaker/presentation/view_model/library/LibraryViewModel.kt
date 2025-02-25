@@ -8,18 +8,27 @@ import kotlinx.coroutines.launch
 
 class LibraryViewModel(private val favoriteTracksInteractor: FavoriteTracksInteractor) :
     ViewModel() {
+
     private val _tracks = MutableLiveData<List<Track>>()
     val tracks: LiveData<List<Track>> = _tracks
-
-    private val _isFavoriteTabSelected = MutableLiveData(true)
-    val isFavoriteTabSelected: LiveData<Boolean> get() = _isFavoriteTabSelected
 
     private val _isEmpty = MutableLiveData<Boolean>(false)
     val isEmpty: LiveData<Boolean> = _isEmpty
 
+    private val _selectedTrack = MutableLiveData<Track?>()
+    val selectedTrack: LiveData<Track?> get() = _selectedTrack
+
+    private val _isFavoriteTabSelected = MutableLiveData<Boolean>(true)
+    val isFavoriteTabSelected: LiveData<Boolean> = _isFavoriteTabSelected
+
     init {
         loadFavoriteTracks()
     }
+
+    fun clearSelectedTrack() {
+        _selectedTrack.value = null
+    }
+
 
     fun toggleTab(isFavorite: Boolean) {
         _isFavoriteTabSelected.value = isFavorite
@@ -30,7 +39,12 @@ class LibraryViewModel(private val favoriteTracksInteractor: FavoriteTracksInter
             favoriteTracksInteractor.getFavoriteTracks().collect { favoriteTracks ->
                 _tracks.value = favoriteTracks
                 _isEmpty.value = favoriteTracks.isEmpty()
+                Log.d("LibraryViewModel", "Loaded tracks: ${favoriteTracks.size}")
             }
         }
+    }
+
+    fun trackClicked(track: Track) {
+        _selectedTrack.value = track
     }
 }

@@ -98,7 +98,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun updateFavoriteButton(isFavorite: Boolean) {
         val iconRes =
-            if (isFavorite) R.drawable.image_favorite_track_unclicked else R.drawable.favorit_is_clicked_icon
+            if (isFavorite) R.drawable.favorit_is_clicked_icon else R.drawable.image_favorite_track_unclicked
         binding.favoriteButton.setImageResource(iconRes)
     }
 

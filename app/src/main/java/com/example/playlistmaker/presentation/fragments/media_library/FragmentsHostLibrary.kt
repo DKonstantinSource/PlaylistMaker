@@ -27,11 +27,17 @@ class FragmentsHostLibrary : Fragment() {
     ): View {
         binding = FragmentLibraryTitleBinding.inflate(inflater, container, false)
 
-        childFragmentManager.beginTransaction()
-            .add(R.id.fragment_title_child_container, FragmentTabLayoutLibrary.newInstance())
-            .commit()
-
+        if (childFragmentManager.findFragmentByTag(FragmentTabLayoutLibrary::class.java.simpleName) == null) {
+            childFragmentManager.beginTransaction()
+                .replace(
+                    R.id.fragment_title_child_container,
+                    FragmentTabLayoutLibrary.newInstance(),
+                    FragmentTabLayoutLibrary::class.java.simpleName
+                )
+                .commit()
+        }
 
         return binding.root
     }
+
 }

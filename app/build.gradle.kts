@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp)
     id("kotlin-kapt")
 }
 
@@ -44,13 +45,13 @@ android {
 
 dependencies {
 
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.viewpager2)
 
-    implementation("jp.wasabeef:glide-transformations:4.3.0")
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
     implementation(libs.retrofit)
@@ -64,17 +65,7 @@ dependencies {
     implementation(libs.androidx.fragment)
 
 
-//    implementation ("androidx.fragment:fragment-ktx:1.8.6")
-//    implementation ("androidx.room:room-ktx:2.5.0")
-//
-//    val room_version = "2.4.3"
-//    implementation ("androidx.room:room-runtime:$room_version")
-//    kapt ("androidx.room:room-compiler:2.6.1")
-
-    implementation(libs.androidx.room.ktx)
-
     implementation(libs.koin)
-
 
 
     implementation(libs.androidx.splashscreen)
@@ -84,5 +75,14 @@ dependencies {
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.espresso.core)
 
+
     implementation(libs.kotlinx.coroutines.android)
+
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
+
+    implementation("androidx.room:room-ktx:2.6.1")
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+
 }
