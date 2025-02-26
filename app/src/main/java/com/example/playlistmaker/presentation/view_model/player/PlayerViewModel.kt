@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
@@ -53,16 +54,30 @@ class PlayerViewModel(
     fun onFavoriteClicked() {
         val track = _trackInfo.value ?: return
         val isCurrentlyFavorite = _isFavorite.value ?: false
-
         viewModelScope.launch {
-            if (isCurrentlyFavorite) {
-                favoriteTracksInteractor.removeTrack(track)
-            } else {
-                favoriteTracksInteractor.addTrack(track)
+            try {
+                if (isCurrentlyFavorite) {
+                    favoriteTracksInteractor.removeTrack(track)
+                } else {
+                    favoriteTracksInteractor.addTrack(track)
+                }
+                withContext(Dispatchers.Main) {
+                    _isFavorite.value = !isCurrentlyFavorite
+                }
+                Log.d(
+                    "FavoriteTrack",
+                    "Track ${track.trackName} ${if (isCurrentlyFavorite) "removed from" else "added to"} favorites"
+                )
+
+            } catch (e: Exception) {
+                Log.e("FavoriteTrack", "Error updating favorite status for ${track.trackName}", e)
             }
-            _isFavorite.postValue(!isCurrentlyFavorite)
         }
     }
+
+
+
+
 
     private fun preparePlayer(track: Track) {
         val songBridge = track.previewUrl

@@ -12,14 +12,9 @@ class LibraryViewModel(private val favoriteTracksInteractor: FavoriteTracksInter
     private val _tracks = MutableLiveData<List<Track>>()
     val tracks: LiveData<List<Track>> = _tracks
 
-    private val _isEmpty = MutableLiveData<Boolean>(false)
-    val isEmpty: LiveData<Boolean> = _isEmpty
 
     private val _selectedTrack = MutableLiveData<Track?>()
     val selectedTrack: LiveData<Track?> get() = _selectedTrack
-
-    private val _isFavoriteTabSelected = MutableLiveData<Boolean>(true)
-    val isFavoriteTabSelected: LiveData<Boolean> = _isFavoriteTabSelected
 
     init {
         loadFavoriteTracks()
@@ -29,16 +24,11 @@ class LibraryViewModel(private val favoriteTracksInteractor: FavoriteTracksInter
         _selectedTrack.value = null
     }
 
-
-    fun toggleTab(isFavorite: Boolean) {
-        _isFavoriteTabSelected.value = isFavorite
-    }
-
     fun loadFavoriteTracks() {
         viewModelScope.launch {
             favoriteTracksInteractor.getFavoriteTracks().collect { favoriteTracks ->
-                _tracks.value = favoriteTracks
-                _isEmpty.value = favoriteTracks.isEmpty()
+
+            _tracks.value = favoriteTracks
                 Log.d("LibraryViewModel", "Loaded tracks: ${favoriteTracks.size}")
             }
         }

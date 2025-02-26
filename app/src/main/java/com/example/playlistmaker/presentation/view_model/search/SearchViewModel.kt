@@ -32,9 +32,26 @@ class SearchViewModel(
         getHistoryTrack()
     }
 
+
     fun trackClicked(track: Track) {
         manageSearchHistory.addToHistory(track)
         _selectedTrack.value = track
+
+        _tracks.value = _tracks.value?.map {
+            if (it.trackId == track.trackId) {
+                it.copy(isFavorite = !it.isFavorite)
+            } else {
+                it
+            }
+        }
+    }
+
+    fun updateTracks() {
+        if (getQuery().isNotEmpty()) {
+            searchTracks(getQuery())
+        } else {
+            getHistoryTrack()
+        }
     }
 
     fun onSearchQueryChanged(query: String) {

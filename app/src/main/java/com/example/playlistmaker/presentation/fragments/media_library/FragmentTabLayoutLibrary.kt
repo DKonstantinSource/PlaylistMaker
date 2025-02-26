@@ -42,11 +42,9 @@ class FragmentTabLayoutLibrary : Fragment() {
             when (position) {
                 0 -> {
                     tab.text = getString(R.string.favorit_track)
-                    libraryViewModel.toggleTab(true)
                 }
                 1 -> {
                     tab.text = getString(R.string.play_lists)
-                    libraryViewModel.toggleTab(false)
                 }
             }
         }.attach()
