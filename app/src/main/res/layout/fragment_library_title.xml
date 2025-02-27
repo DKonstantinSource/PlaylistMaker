@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="6dp"
-    tools:context=".presentation.fragments.media_library.PlayListsFragment"
+    tools:context=".presentation.fragments.media_library.FragmentPlaylist"
     xmlns:tools="http://schemas.android.com/tools">
 
 
@@ -34,7 +34,9 @@
         android:id="@+id/fragment_title_child_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="62dp" />
+        android:layout_marginTop="62dp"
+        android:layout_weight="1"
+        tools:ignore="ObsoleteLayoutParam" />
 
 
 </FrameLayout>

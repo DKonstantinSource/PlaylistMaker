@@ -14,6 +14,7 @@
         <item name="trackColor">@color/switch_track_dark</item>
         <item name="thumbColor">@color/switch_thumb_dark</item>
         <item name="colorOnSurfaceVariant">@color/bottom_nav_item_color_night</item>
+        <item name="colorTertiaryFixed">#E6E8EB</item>
 
     </style>
     <style name="title">
@@ -24,4 +25,5 @@
         <item name="android:background">#80FF0000</item>
         <item name="android:alpha">0</item>
     </style>
+
 </resources>

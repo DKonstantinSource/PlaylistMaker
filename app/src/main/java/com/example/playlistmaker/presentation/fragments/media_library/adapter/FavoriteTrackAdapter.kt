@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.fragments.search
+package com.example.playlistmaker.presentation.fragments.media_library.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -13,12 +13,12 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.GlideUtils
 import com.example.playlistmaker.domain.model.Track
 
-class TrackAdapter(
+class FavoriteTrackAdapter(
     private var tracks: List<Track> = listOf(),
     private val onTrackClick: (Track) -> Unit
-) : RecyclerView.Adapter<TrackAdapter.TracksViewHolder>() {
+) : RecyclerView.Adapter<FavoriteTrackAdapter.FavoritTracksViewHolder>() {
 
-    inner class TracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class FavoritTracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trackName: TextView = itemView.findViewById(R.id.track_name)
         private val artistName: TextView = itemView.findViewById(R.id.name_artist)
         private val trackTime: TextView = itemView.findViewById(R.id.track_time)
@@ -30,7 +30,6 @@ class TrackAdapter(
             val seconds = totalSeconds % 60
             return String.format("%02d:%02d", minutes, seconds)
         }
-
 
         fun bind(model: Track) {
             trackName.text = model.trackName
@@ -44,24 +43,22 @@ class TrackAdapter(
                 .centerCrop()
                 .transform(RoundedCorners(GlideUtils.dpToPx(2f, itemView.context)))
                 .into(trackLogo)
+
             itemView.setOnClickListener { onTrackClick(model) }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritTracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
-        return TracksViewHolder(view)
+        return FavoritTracksViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return tracks.size
     }
 
-    override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FavoritTracksViewHolder, position: Int) {
         holder.bind(tracks[position])
-        holder.itemView.setOnClickListener {
-            onTrackClick(tracks[position])
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

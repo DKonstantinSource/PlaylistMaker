@@ -32,19 +32,26 @@ class PlayerActivity : AppCompatActivity() {
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val isFavorite = intent.getBooleanExtra("IS_FAVORITE", false)
+        updateFavoriteButton(isFavorite)
+
         val track = intent.getSerializableExtra(TRACK_DATA) as? Track
         track?.let {
             viewModel.setTrack(it)
             updateUI(it)
         }
 
+
         viewModel.currentTrackTime.observe(this) { time ->
             binding.currentTrackTime.text = time
         }
 
-
         viewModel.isPlayingLiveData.observe(this) { isPlaying ->
             updatePlayButton(isPlaying)
+        }
+
+        viewModel.isFavorite.observe(this) { isFavorite ->
+            updateFavoriteButton(isFavorite)
         }
 
         binding.backButton.setOnClickListener {
@@ -55,8 +62,13 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.playbackControl()
         }
 
+        binding.favoriteButton.setOnClickListener {
+            viewModel.onFavoriteClicked()
+        }
+
         turnOffScreen()
     }
+
 
     private fun updateUI(track: Track) {
         binding.trackNamePlayer.text = track.trackName
@@ -88,6 +100,13 @@ class PlayerActivity : AppCompatActivity() {
             binding.playButton.setBackgroundResource(R.drawable.image_play_button)
         }
     }
+    private fun updateFavoriteButton(isFavorite: Boolean) {
+        val iconRes =
+            if (isFavorite) R.drawable.favorit_is_clicked_icon else R.drawable.image_favorite_track_unclicked
+
+        binding.favoriteButton.setImageResource(iconRes)
+    }
+
 
     private fun turnOffScreen() {
         screenReceiver.playbackCallback = { isScreenOff ->
@@ -112,7 +131,6 @@ class PlayerActivity : AppCompatActivity() {
     @Deprecated("This method use back button.")
     override fun onBackPressed() {
         super.onBackPressed()
-
         finish()
     }
 

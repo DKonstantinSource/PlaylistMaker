@@ -11,7 +11,9 @@ import org.koin.dsl.module
 val dataModule = module {
 
     viewModel { SearchViewModel(get(), get()) }
-    viewModel { PlayerViewModel(get()) }
+
+    viewModel { PlayerViewModel(get(), get()) }
+
+    viewModel { LibraryViewModel(get()) }
     viewModel { SettingsViewModel(get()) }
-    viewModel { LibraryViewModel() }
 }

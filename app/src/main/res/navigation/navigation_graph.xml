@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/libraryTitleFragment"
-        android:name="com.example.playlistmaker.presentation.fragments.media_library.FragmentsTitleLibrary"
+        android:name="com.example.playlistmaker.presentation.fragments.media_library.FragmentsHostLibrary"
         android:label="fragment_library"
         tools:layout="@layout/fragment_library_title" />
 

@@ -1,25 +1,40 @@
 package com.example.playlistmaker.presentation.view_model.library
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.util.Log
+import androidx.lifecycle.*
+import com.example.playlistmaker.domain.impl.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.model.Track
+import kotlinx.coroutines.launch
 
-class LibraryViewModel : ViewModel() {
-    private val _tracks = MutableLiveData<List<Track>>(emptyList())
-    val tracks: LiveData<List<Track>> get() = _tracks
+class LibraryViewModel(private val favoriteTracksInteractor: FavoriteTracksInteractor) :
+    ViewModel() {
 
-    private val _isFavoriteTabSelected = MutableLiveData(true)
-    val isFavoriteTabSelected: LiveData<Boolean> get() = _isFavoriteTabSelected
+    private val _tracks = MutableLiveData<List<Track>>()
+    val tracks: LiveData<List<Track>> = _tracks
 
-    fun toggleTab(isFavorite: Boolean) {
-        _isFavoriteTabSelected.value = isFavorite
+
+    private val _selectedTrack = MutableLiveData<Track?>()
+    val selectedTrack: LiveData<Track?> get() = _selectedTrack
+
+    init {
+        loadFavoriteTracks()
     }
 
-    fun setTracks(newTracks: List<Track>) {
-        _tracks.value = newTracks
-        // TODO В след спринте (Наверное) настанет твоеё время !
+    fun clearSelectedTrack() {
+        _selectedTrack.value = null
     }
 
+    fun loadFavoriteTracks() {
+        viewModelScope.launch {
+            favoriteTracksInteractor.getFavoriteTracks().collect { favoriteTracks ->
 
+            _tracks.value = favoriteTracks
+                Log.d("LibraryViewModel", "Loaded tracks: ${favoriteTracks.size}")
+            }
+        }
+    }
+
+    fun trackClicked(track: Track) {
+        _selectedTrack.value = track
+    }
 }

@@ -12,22 +12,20 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.Constants.CLICK_DEBOUNCE_DELAY
+import com.example.playlistmaker.Constants.IS_FAVORITE
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
-import com.example.playlistmaker.presentation.ui.player.PlayerActivity.Companion.TRACK_DATA
 import com.example.playlistmaker.presentation.view_model.search.SearchViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
+
 
 class SearchFragment : Fragment() {
 
+    @Suppress("DEPRECATION")
     private val viewModel: SearchViewModel by stateViewModel()
-
-
 
     private var _binding: FragmentSearchBinding? = null
     private var job: Job? = null
@@ -48,8 +46,10 @@ class SearchFragment : Fragment() {
         clearHistory()
         resetButton()
 
+
         return binding.root
     }
+
 
     private fun resetButton() {
         binding.resetButton.setOnClickListener {
@@ -81,11 +81,12 @@ class SearchFragment : Fragment() {
             track?.let {
                 if (isClickable) {
                     isClickable = false
+
                     val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
-                        putExtra(TRACK_DATA, it)
+                        putExtra(PlayerActivity.TRACK_DATA, it)
+                        putExtra(IS_FAVORITE, it.isFavorite)
                     }
                     startActivity(intent)
-
 
                     lifecycleScope.launch {
                         delay(CLICK_DEBOUNCE_DELAY)
@@ -96,6 +97,7 @@ class SearchFragment : Fragment() {
         }
 
         viewModel.tracks.observe(viewLifecycleOwner) { tracks ->
+            Log.d("SearchFragment", "Updated tracks: $tracks")
             tracks?.let {
                 trackAdapter.updateData(it)
                 getStateActivity()
@@ -268,6 +270,10 @@ class SearchFragment : Fragment() {
         }
 
 
+    }
+    override fun onPause() {
+        super.onPause()
+        viewModel.updateTracks()
     }
 
 

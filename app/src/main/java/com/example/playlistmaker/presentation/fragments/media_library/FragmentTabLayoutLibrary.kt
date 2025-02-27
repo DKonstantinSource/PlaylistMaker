@@ -5,16 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.viewpager2.widget.ViewPager2
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentTabLayoutLibraryBinding
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class TabLayoutLibrary : Fragment() {
+class FragmentTabLayoutLibrary : Fragment() {
 
-    private val viewModel: LibraryViewModel by viewModels()
+    private val libraryViewModel: LibraryViewModel by viewModel()
+
 
 
     private lateinit var binding: FragmentTabLayoutLibraryBinding
@@ -25,6 +27,8 @@ class TabLayoutLibrary : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTabLayoutLibraryBinding.inflate(inflater, container, false)
+
+
         return binding.root
     }
 
@@ -35,23 +39,26 @@ class TabLayoutLibrary : Fragment() {
         binding.viewPager.adapter = adapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-
             when (position) {
-
                 0 -> {
                     tab.text = getString(R.string.favorit_track)
-                    viewModel.toggleTab(true)
                 }
-
                 1 -> {
                     tab.text = getString(R.string.play_lists)
-                    viewModel.toggleTab(false)
                 }
             }
         }.attach()
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+            }
+        })
+
     }
 
+
     companion object {
-        fun newInstance() = TabLayoutLibrary()
+        fun newInstance() = FragmentTabLayoutLibrary()
     }
 }

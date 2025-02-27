@@ -9,4 +9,5 @@ object Constants {
     const val SEARCH_HISTORY = "search_history"
     const val DEFAULT_TIME_PLAYER = "00:00"
     const val FORMAT_TIME_TS = "%02d:%02d"
+    const val IS_FAVORITE = "IS_FAVORITE"
 }

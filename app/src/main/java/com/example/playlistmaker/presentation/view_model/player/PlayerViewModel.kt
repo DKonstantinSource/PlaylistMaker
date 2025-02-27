@@ -7,15 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.Constants.DEFAULT_TIME_PLAYER
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.impl.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.model.PlayerState
 import com.example.playlistmaker.domain.model.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor
 ) : ViewModel() {
 
     private val _trackInfo = MutableLiveData<Track>()
@@ -27,6 +30,9 @@ class PlayerViewModel(
     private val _isPlayingLiveData = MutableLiveData<Boolean>()
     val isPlayingLiveData: LiveData<Boolean> get() = _isPlayingLiveData
 
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean> get() = _isFavorite
+
     private var timerJob: Job? = null
     private var playerState = PlayerState.DEFAULT
 
@@ -34,7 +40,44 @@ class PlayerViewModel(
         if (_trackInfo.value == track) return
         _trackInfo.value = track
         preparePlayer(track)
+        checkIfFavorite(track.trackId)
     }
+
+    private fun checkIfFavorite(trackId: Int) {
+        viewModelScope.launch {
+            favoriteTracksInteractor.getFavoriteTrackIds().collect { favoriteIds ->
+                _isFavorite.postValue(favoriteIds.contains(trackId))
+            }
+        }
+    }
+
+    fun onFavoriteClicked() {
+        val track = _trackInfo.value ?: return
+        val isCurrentlyFavorite = _isFavorite.value ?: false
+        viewModelScope.launch {
+            try {
+                if (isCurrentlyFavorite) {
+                    favoriteTracksInteractor.removeTrack(track)
+                } else {
+                    favoriteTracksInteractor.addTrack(track)
+                }
+                withContext(Dispatchers.Main) {
+                    _isFavorite.value = !isCurrentlyFavorite
+                }
+                Log.d(
+                    "FavoriteTrack",
+                    "Track ${track.trackName} ${if (isCurrentlyFavorite) "removed from" else "added to"} favorites"
+                )
+
+            } catch (e: Exception) {
+                Log.e("FavoriteTrack", "Error updating favorite status for ${track.trackName}", e)
+            }
+        }
+    }
+
+
+
+
 
     private fun preparePlayer(track: Track) {
         val songBridge = track.previewUrl
