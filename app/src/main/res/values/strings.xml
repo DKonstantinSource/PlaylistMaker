@@ -57,8 +57,11 @@
     <string name="play_lists">Плэйлисты</string>
     <string name="media_library_is_empty">Ваша медиатека пуста</string>
     <string name="media_library_playlists_is_empty">Вы не создали\nни одного плейлиста</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="new_playlist_title">Новый плейлист</string>
+    <string name="string_permission_required">Доступ к хранилищу необходим для нормального функционирования приложения</string>
+    <string name="create_playlist">Создать</string>
 
 </resources>

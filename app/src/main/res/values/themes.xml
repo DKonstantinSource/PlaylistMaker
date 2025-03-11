@@ -16,6 +16,8 @@
         <item name="thumbColor">@color/switch_thumb_light</item>
         <item name="colorOnSurfaceVariant">@color/bottom_nav_item_color</item>
 
+        <item name="colorPrimaryFixedDim">#AEAFB4</item>
+
 
     </style>>
 

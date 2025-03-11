@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.fragments.media_library.adapter
+package com.example.playlistmaker.presentation.fragments.media_library.favorit_track.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

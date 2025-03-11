@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data.impl
 
-import com.example.playlistmaker.data.db.TrackDao
-import com.example.playlistmaker.data.db.TrackEntity
+import com.example.playlistmaker.data.db.track.TrackDao
+import com.example.playlistmaker.data.db.track.TrackEntity
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.repository.FavoriteTracksRepository
 import kotlinx.coroutines.flow.Flow

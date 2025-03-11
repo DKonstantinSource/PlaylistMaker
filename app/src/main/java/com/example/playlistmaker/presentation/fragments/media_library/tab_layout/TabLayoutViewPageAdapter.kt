@@ -1,9 +1,11 @@
-package com.example.playlistmaker.presentation.fragments.media_library
+package com.example.playlistmaker.presentation.fragments.media_library.tab_layout
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.playlistmaker.presentation.fragments.media_library.favorit_track.FavoriteTracksListLibraryFragment
+import com.example.playlistmaker.presentation.fragments.media_library.playlist.playlist_fragment.FragmentPlaylist
 
 class TabLayoutViewPageAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     FragmentStateAdapter(fragmentManager, lifecycle) {

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.db
+package com.example.playlistmaker.data.db.track
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -41,5 +41,5 @@ data class TrackEntity(
     val isFavorit: Boolean = true,
 
     @ColumnInfo(name = "timestamp")
-    val timestamp: Long = System.currentTimeMillis() // время добавления трека
+    val timestamp: Long = System.currentTimeMillis()
 )

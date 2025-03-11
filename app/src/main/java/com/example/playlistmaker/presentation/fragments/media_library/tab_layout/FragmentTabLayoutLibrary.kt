@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.fragments.media_library
+package com.example.playlistmaker.presentation.fragments.media_library.tab_layout
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

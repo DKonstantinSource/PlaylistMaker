@@ -45,7 +45,7 @@ android {
 
 dependencies {
 
-
+    implementation("pub.devrel:easypermissions:3.0.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material)

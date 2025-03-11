@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="6dp"
-    tools:context=".presentation.fragments.media_library.FragmentPlaylist"
+    tools:context=".presentation.fragments.media_library.playlist.playlist_fragment.FragmentPlaylist"
     xmlns:tools="http://schemas.android.com/tools">
 
 

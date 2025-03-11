@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.db
+package com.example.playlistmaker.data.db.track
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -21,4 +21,8 @@ interface TrackDao {
 
     @Query("SELECT track_id FROM favorite_tracks")
     fun getTrackIds(): Flow<List<Int>>
+
+    @Query("SELECT * FROM favorite_tracks WHERE track_id IN (:trackIds)")
+    suspend fun getTracksByIds(trackIds: List<Int>): List<TrackEntity>
+
 }

@@ -18,8 +18,15 @@
 
     <fragment
         android:id="@+id/libraryTitleFragment"
-        android:name="com.example.playlistmaker.presentation.fragments.media_library.FragmentsHostLibrary"
+        android:name="com.example.playlistmaker.presentation.fragments.media_library.tab_layout.FragmentsHostLibrary"
         android:label="fragment_library"
         tools:layout="@layout/fragment_library_title" />
+
+    <fragment
+        android:id="@+id/fragmentPlayListAdd"
+        android:name="com.example.playlistmaker.presentation.fragments.media_library.playlist.add_playlist.FragmentPlayListAdd"
+        android:label="fragment_playlist_add"
+        tools:layout="@layout/fragment_playlist_add" />
+
 
 </navigation>

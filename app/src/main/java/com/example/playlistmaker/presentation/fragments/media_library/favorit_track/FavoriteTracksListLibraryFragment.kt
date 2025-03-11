@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.fragments.media_library
+package com.example.playlistmaker.presentation.fragments.media_library.favorit_track
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.FragmentTracksListLibraryBinding
-import com.example.playlistmaker.presentation.fragments.media_library.adapter.FavoriteTrackAdapter
+import com.example.playlistmaker.presentation.fragments.media_library.favorit_track.adapter.FavoriteTrackAdapter
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import kotlinx.coroutines.delay

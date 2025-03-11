@@ -16,6 +16,8 @@
         <item name="colorOnSurfaceVariant">@color/bottom_nav_item_color_night</item>
         <item name="colorTertiaryFixed">#E6E8EB</item>
 
+        <item name="colorPrimaryFixedDim">#FFFFFF</item>
+
     </style>
     <style name="title">
         <item name="android:textSize">22sp</item>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_weight="1"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.fragments.media_library.FavoriteTracksListLibraryFragment">
+    tools:context=".presentation.fragments.media_library.favorit_track.FavoriteTracksListLibraryFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:paddingTop="20dp"

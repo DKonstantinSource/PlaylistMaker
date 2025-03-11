@@ -2,7 +2,7 @@ package com.example.playlistmaker.data.network
 
 import com.example.playlistmaker.Constants.BASE_URL_ITUNES
 import com.example.playlistmaker.data.impl.TrackRepositoryImpl
-import com.example.playlistmaker.data.network.API.ApiService
+import com.example.playlistmaker.data.network.api.ApiService
 import com.example.playlistmaker.domain.impl.SearchTracksInteractorImpl
 import com.example.playlistmaker.domain.repository.TrackRepository
 import com.google.gson.Gson
