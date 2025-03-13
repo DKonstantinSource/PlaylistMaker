@@ -1,6 +1,7 @@
 package com.example.playlistmaker.domain.api
 
 import com.example.playlistmaker.domain.model.Playlist
+import com.example.playlistmaker.domain.model.Track
 
 interface PlaylistInteractor {
 
@@ -11,4 +12,6 @@ interface PlaylistInteractor {
     suspend fun getPlaylistById(id: Long): Playlist?
 
     suspend fun getAllPlaylists(): List<Playlist>
+
+    suspend fun addTrackToPlaylist(track: Track, playlist: Playlist)
 }

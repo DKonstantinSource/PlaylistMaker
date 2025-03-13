@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.Constants.DEFAULT_TIME_PLAYER
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.api.PlaylistInteractor
 import com.example.playlistmaker.domain.impl.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.model.PlayerState
+import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,7 +20,8 @@ import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
-    private val favoriteTracksInteractor: FavoriteTracksInteractor
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
     private val _trackInfo = MutableLiveData<Track>()
@@ -33,8 +36,39 @@ class PlayerViewModel(
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> get() = _isFavorite
 
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> get() = _playlists
+
+    private val _addTrackStatus = MutableLiveData<String>()
+    val addTrackStatus: LiveData<String> get() = _addTrackStatus
+
+
+    init {
+        refreshPlaylists()
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        if (playlist.tracks.any { it.trackId == track.trackId }) {
+            _addTrackStatus.postValue("Трек уже в плейлисте")
+            return
+        }
+
+        viewModelScope.launch {
+            playlistInteractor.addTrackToPlaylist(track, playlist)
+            _addTrackStatus.postValue("Трек добавлен в плейлист")
+        }
+    }
+
     private var timerJob: Job? = null
     private var playerState = PlayerState.DEFAULT
+
+
+    fun refreshPlaylists() {
+        viewModelScope.launch {
+            _playlists.value = playlistInteractor.getAllPlaylists()
+        }
+    }
+
 
     fun setTrack(track: Track) {
         if (_trackInfo.value == track) return

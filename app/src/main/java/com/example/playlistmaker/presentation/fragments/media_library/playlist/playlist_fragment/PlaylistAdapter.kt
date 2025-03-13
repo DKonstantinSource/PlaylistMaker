@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistItemBinding
 import com.example.playlistmaker.domain.model.Playlist
 
@@ -27,9 +28,14 @@ class PlaylistAdapter :
     inner class PlaylistViewHolder(private val binding: PlaylistItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(playlist: Playlist) {
-            binding.playlistTitleName.text = playlist.name
-            binding.playlistTrackCount.text = "${playlist.trackCount} треков"
-            Glide.with(binding.playlistCoverImage.context).load(playlist.imagePath)
+            binding.playlistName.text = playlist.name
+            binding.playListCount.text = "${playlist.trackCount} треков"
+
+            val imagePath = playlist.imagePath
+            Glide.with(binding.playlistCoverImage.context)
+                .load(imagePath)
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_placeholder)
                 .into(binding.playlistCoverImage)
         }
     }

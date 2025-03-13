@@ -34,9 +34,12 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleViewPlayList"
-                android:visibility="visible"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp"
+                android:overScrollMode="never" />
 
 
         </LinearLayout>

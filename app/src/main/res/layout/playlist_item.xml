@@ -1,47 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="8dp"
-    android:clickable="true"
-    android:focusable="true"
-    app:cardBackgroundColor="@android:color/transparent">
+    android:layout_width="160dp"
+    android:layout_height="196dp"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:gravity="center_horizontal">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/playlist_cover_card"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/playlistCoverImage"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="?attr/colorPrimary"
+            android:adjustViewBounds="false"
             android:scaleType="centerCrop"
-            android:background="@drawable/border_item_playlist" />
+            android:src="@drawable/empty_placeholder_big" />
+    </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/playlistTitleName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_gravity="start"
-            android:textColor="@android:color/black"
-            tools:text="My Playlist" />
+    <TextView
+        style="@style/PlaylistItem"
+        android:id="@+id/playlistName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/playlist_cover_card"
+        tools:text="Название" />
 
-        <TextView
-            android:id="@+id/playlistTrackCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_gravity="start"
-            android:textColor="@android:color/darker_gray"
-            tools:text="10 треков" />
-    </LinearLayout>
+    <TextView
+        style="@style/PlaylistItem"
+        android:id="@+id/playListCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/playlistName"
+        tools:text="Нету трэка" />
 
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,36 +1,43 @@
 package com.example.playlistmaker.presentation.ui.player
 
 import android.annotation.SuppressLint
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.TypedValue
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.Constants.FORMAT_TIME_TS
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.databinding.BottomSheetPlaylistsBinding
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Date
-import java.util.Locale
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PlayerActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityPlayerBinding
-
     private val viewModel: PlayerViewModel by viewModel()
     private val mediaPlayerInteractorImpl: MediaPlayerInteractor by inject()
-    private val screenReceiver: ScreenReceiver by inject()
+    private lateinit var bottomSheetDialog: BottomSheetDialog
+    private lateinit var bottomSheetBinding: BottomSheetPlaylistsBinding
+    private lateinit var playlistAdapter: PlaylistAdapterPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setupBottomSheet()
+        setupRecyclerView()
 
         val isFavorite = intent.getBooleanExtra("IS_FAVORITE", false)
         updateFavoriteButton(isFavorite)
@@ -40,7 +47,6 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.setTrack(it)
             updateUI(it)
         }
-
 
         viewModel.currentTrackTime.observe(this) { time ->
             binding.currentTrackTime.text = time
@@ -52,6 +58,14 @@ class PlayerActivity : AppCompatActivity() {
 
         viewModel.isFavorite.observe(this) { isFavorite ->
             updateFavoriteButton(isFavorite)
+        }
+
+        viewModel.playlists.observe(this, Observer { playlists ->
+            playlistAdapter.submitList(playlists)
+        })
+
+        viewModel.addTrackStatus.observe(this) { message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
 
         binding.backButton.setOnClickListener {
@@ -66,9 +80,36 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.onFavoriteClicked()
         }
 
-        turnOffScreen()
+        binding.buttonAddCollection.setOnClickListener {
+            viewModel.refreshPlaylists()
+            bottomSheetDialog.show()
+        }
+
+        viewModel.addTrackStatus.observe(this) { message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
+
     }
 
+    private fun setupBottomSheet() {
+        bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetBinding = BottomSheetPlaylistsBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(bottomSheetBinding.root)
+    }
+
+    private fun setupRecyclerView() {
+        playlistAdapter = PlaylistAdapterPlayer { playlist ->
+            val track = viewModel.trackInfo.value
+            if (track != null) {
+                viewModel.addTrackToPlaylist(track, playlist)
+                bottomSheetDialog.dismiss()
+            }
+        }
+        bottomSheetBinding.rvPlaylists.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = playlistAdapter
+        }
+    }
 
     private fun updateUI(track: Track) {
         binding.trackNamePlayer.text = track.trackName
@@ -100,21 +141,12 @@ class PlayerActivity : AppCompatActivity() {
             binding.playButton.setBackgroundResource(R.drawable.image_play_button)
         }
     }
+
     private fun updateFavoriteButton(isFavorite: Boolean) {
         val iconRes =
             if (isFavorite) R.drawable.favorit_is_clicked_icon else R.drawable.image_favorite_track_unclicked
 
         binding.favoriteButton.setImageResource(iconRes)
-    }
-
-
-    private fun turnOffScreen() {
-        screenReceiver.playbackCallback = { isScreenOff ->
-            if (isScreenOff) {
-                mediaPlayerInteractorImpl.stop()
-                viewModel.pausePlayer()
-            }
-        }
     }
 
     override fun onPause() {

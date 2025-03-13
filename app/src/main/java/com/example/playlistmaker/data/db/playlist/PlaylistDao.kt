@@ -24,16 +24,19 @@ interface PlaylistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addTrackToPlaylist(crossRef: PlaylistTrackCrossRef)
 
-    @Query("DELETE FROM playlist_tracks WHERE playlistId = :playlistId AND trackId = :trackId")
+    @Query("DELETE FROM playlist_tracks_cross WHERE playlistId = :playlistId AND trackId = :trackId")
     suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Int)
 
     @Query("DELETE FROM playlist_table")
     suspend fun clearPlaylists()
 
-    @Query("SELECT trackId FROM playlist_tracks WHERE playlistId = :playlistId")
+    @Query("SELECT trackId FROM playlist_tracks_cross WHERE playlistId = :playlistId")
     suspend fun getTrackIdsForPlaylist(playlistId: Long): List<Int>
 
-    @Query("DELETE FROM playlist_tracks WHERE playlistId = :playlistId")
+    @Query("DELETE FROM playlist_tracks_cross WHERE playlistId = :playlistId")
     suspend fun clearTracksFromPlaylist(playlistId: Long)
+
+    @Query("UPDATE playlist_table SET tracks = :updatedTracks, trackCount = trackCount + 1 WHERE playlistId = :playlistId")
+    suspend fun updatePlaylistTracks(playlistId: Long, updatedTracks: String)
 
 }

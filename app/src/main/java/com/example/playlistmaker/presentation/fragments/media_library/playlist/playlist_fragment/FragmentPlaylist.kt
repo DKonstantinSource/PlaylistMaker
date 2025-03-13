@@ -1,16 +1,21 @@
 package com.example.playlistmaker.presentation.fragments.media_library.playlist.playlist_fragment
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentPlaylist : Fragment() {
@@ -40,12 +45,16 @@ class FragmentPlaylist : Fragment() {
         binding.buttonNewList.setOnClickListener {
             findNavController().navigate(R.id.fragmentPlayListAdd)
         }
+
+
     }
+
 
     private fun setupRecyclerView() {
         playlistAdapter = PlaylistAdapter()
         binding.recycleViewPlayList.apply {
             layoutManager = GridLayoutManager(context, 2)
+            addItemDecoration(PlaylistItemDecoration(16, 8))
             adapter = playlistAdapter
         }
     }

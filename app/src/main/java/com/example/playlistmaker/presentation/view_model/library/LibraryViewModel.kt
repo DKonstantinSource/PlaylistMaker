@@ -21,17 +21,28 @@ class LibraryViewModel(
     private val _selectedTrack = MutableLiveData<Track?>()
     val selectedTrack: LiveData<Track?> get() = _selectedTrack
 
+    private val _playlistCreated = MutableLiveData<Boolean>()
+    val playlistCreated: LiveData<Boolean> get() = _playlistCreated
+
+    private val _lastCreatedPlaylistName = MutableLiveData<String?>()
+    val lastCreatedPlaylistName: LiveData<String?> get() = _lastCreatedPlaylistName
+
+
     init {
         loadFavoriteTracks()
         loadPlaylists()
     }
 
+
     fun createPlaylist(playlist: Playlist) {
         viewModelScope.launch {
             playlistInteractor.createPlaylist(playlist)
             loadPlaylists()
+            _lastCreatedPlaylistName.postValue(playlist.name)
+            _playlistCreated.postValue(true)
         }
     }
+
 
     fun updatePlaylist(playlist: Playlist) {
         viewModelScope.launch {
@@ -39,6 +50,7 @@ class LibraryViewModel(
             loadPlaylists()
         }
     }
+
 
     fun clearSelectedTrack() {
         _selectedTrack.value = null

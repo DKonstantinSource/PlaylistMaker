@@ -35,6 +35,7 @@ class FragmentPlayListAdd : Fragment() {
                 coverImagePath = PhotoPickerUtil.copyImageToAppStorage(requireContext(), uri)
                 binding.imageNewPlaylist.setImageURI(uri)
                 binding.buttonImageAdd.visibility = View.GONE
+                updateUIState()
             }
         }
 
@@ -49,10 +50,8 @@ class FragmentPlayListAdd : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val watcher = { updateUIState() }
-
-        binding.titleName.addTextChangedListener { watcher() }
-        binding.playlistDescription.addTextChangedListener { watcher() }
+        binding.titleName.addTextChangedListener { updateUIState() }
+        binding.playlistDescription.addTextChangedListener { updateUIState() }
 
         binding.imageNewPlaylist.setOnClickListener {
             selectImageLauncher.launch("image/*")
@@ -73,35 +72,31 @@ class FragmentPlayListAdd : Fragment() {
 
     private fun updateUIState() {
         val titleNotEmpty = !binding.titleName.text.isNullOrBlank()
-        val descriptionNotEmpty = !binding.playlistDescription.text.isNullOrBlank()
-
-        val isButtonActive = titleNotEmpty && descriptionNotEmpty
-        binding.saveNewPlayList.isEnabled = isButtonActive
+        binding.saveNewPlayList.isEnabled = titleNotEmpty
         binding.saveNewPlayList.backgroundTintList =
-            ColorStateList.valueOf(if (isButtonActive) activeColor else defaultColor)
+            ColorStateList.valueOf(if (titleNotEmpty) activeColor else defaultColor)
 
         binding.titleName.backgroundTintList =
             ColorStateList.valueOf(if (titleNotEmpty) activeColor else defaultColor)
-        binding.playlistDescription.backgroundTintList =
-            ColorStateList.valueOf(if (descriptionNotEmpty) activeColor else defaultColor)
     }
 
     private fun savePlaylist() {
         val name = binding.titleName.text?.toString()?.trim()
-        val description = binding.playlistDescription.text?.toString()?.trim()
+        val description = binding.playlistDescription.text?.toString()?.trim() ?: ""
 
         if (name.isNullOrEmpty()) {
             Toast.makeText(context, "Введите название плейлиста", Toast.LENGTH_SHORT).show()
             return
         }
+
         val defaultImagePath =
             "android.resource://${requireContext().packageName}/${R.drawable.image_placeholder}"
 
         val playlist = Playlist(
             id = 0,
             name = name,
-            description = description ?: "",
-            imagePath = coverImagePath.takeIf { !it.isNullOrEmpty() } ?: defaultImagePath,
+            description = description,
+            imagePath = coverImagePath ?: defaultImagePath,
             tracks = emptyList(),
             trackCount = 0
         )
@@ -119,7 +114,9 @@ class FragmentPlayListAdd : Fragment() {
     }
 
     private fun isDataModified(): Boolean {
-        return !binding.titleName.text.isNullOrEmpty() || coverImagePath != null
+        return !binding.titleName.text.isNullOrEmpty() ||
+                !binding.playlistDescription.text.isNullOrEmpty() ||
+                coverImagePath != null
     }
 
     private fun showConfirmExitDialog() {

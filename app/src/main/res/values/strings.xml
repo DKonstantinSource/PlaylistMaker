@@ -64,4 +64,6 @@
     <string name="string_permission_required">Доступ к хранилищу необходим для нормального функционирования приложения</string>
     <string name="create_playlist">Создать</string>
 
+    <string name="add_on_playlist_bottom_sheet">Добавить в плейлист</string>
+
 </resources>

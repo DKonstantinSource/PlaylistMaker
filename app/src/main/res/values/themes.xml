@@ -31,5 +31,10 @@
         <item name="android:alpha">0</item>
     </style>
 
+    <style name="SnackbarTheme">
+        <item name="snackbarBackground">@color/colorWhiteText</item>
+        <item name="snackbarTextColor">@color/colorBlackText</item>
+    </style>
+
 
 </resources>

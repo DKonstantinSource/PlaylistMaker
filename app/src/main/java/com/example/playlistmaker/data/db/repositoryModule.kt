@@ -13,10 +13,12 @@ val repositoryModule = module {
     single { AppDatabase.getDatabase(get()) }
     single { get<AppDatabase>().trackDao() }
     single { get<AppDatabase>().playlistDao() }
+    single { get<AppDatabase>().playlistTrackDao() }
 
     single<FavoriteTracksRepository> { FavoriteTracksRepositoryImpl(get()) }
     single<FavoriteTracksInteractor> { FavoriteTracksInteractor(get()) }
 
-    single<PlayListRepository> { PlayListRepositoryImpl(get(), get()) }
+    single<PlayListRepository> { PlayListRepositoryImpl(get(), get(), get()) }
+
     single<PlaylistInteractor> { PlaylistInteractorImpl(get()) }
 }
