@@ -21,9 +21,6 @@
         android:theme="@style/Base.Theme.PlaylistMaker">
 
         <activity
-            android:name=".presentation.ui.player.PlayerActivity"
-            android:exported="false" />
-        <activity
             android:name=".presentation.ui.host.HostActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustNothing">

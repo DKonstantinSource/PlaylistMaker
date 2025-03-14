@@ -11,10 +11,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.Constants.CLICK_DEBOUNCE_DELAY
 import com.example.playlistmaker.Constants.IS_FAVORITE
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.presentation.ui.player.PlayerActivity
+import com.example.playlistmaker.presentation.fragments.media_library.player.FragmentPlayer
 import com.example.playlistmaker.presentation.view_model.search.SearchViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -82,11 +84,15 @@ class SearchFragment : Fragment() {
                 if (isClickable) {
                     isClickable = false
 
-                    val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
-                        putExtra(PlayerActivity.TRACK_DATA, it)
-                        putExtra(IS_FAVORITE, it.isFavorite)
+                    val bundle = Bundle().apply {
+                        putSerializable(FragmentPlayer.TRACK_DATA, it)
+                        putBoolean(IS_FAVORITE, it.isFavorite)
                     }
-                    startActivity(intent)
+
+                    findNavController().navigate(
+                        R.id.action_searchFragment_to_fragmentPlayer,
+                        bundle
+                    )
 
                     lifecycleScope.launch {
                         delay(CLICK_DEBOUNCE_DELAY)
@@ -104,6 +110,7 @@ class SearchFragment : Fragment() {
             }
         }
     }
+
 
     override fun onStop() {
         super.onStop()
