@@ -16,7 +16,7 @@ import com.example.playlistmaker.Constants.CLICK_DEBOUNCE_DELAY
 import com.example.playlistmaker.Constants.IS_FAVORITE
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.presentation.fragments.media_library.player.FragmentPlayer
+import com.example.playlistmaker.presentation.fragments.player.FragmentPlayer
 import com.example.playlistmaker.presentation.view_model.search.SearchViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

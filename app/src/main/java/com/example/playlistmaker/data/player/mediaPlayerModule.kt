@@ -5,7 +5,7 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.repository.MediaPlayerRepository
-import com.example.playlistmaker.presentation.ui.player.ScreenReceiver
+import com.example.playlistmaker.presentation.fragments.player.ScreenReceiver
 import org.koin.dsl.module
 
 val mediaPlayerModule = module {

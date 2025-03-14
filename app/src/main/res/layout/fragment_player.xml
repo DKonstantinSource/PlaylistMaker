@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
-    tools:context=".presentation.fragments.media_library.player.FragmentPlayer">
+    tools:context=".presentation.fragments.player.FragmentPlayer">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -278,18 +278,11 @@
         android:background="#99000000"
         android:visibility="gone" />
 
-    <LinearLayout
-        android:id="@+id/playlists_bottom_sheet"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:background="@drawable/bottom_sheet_background"
-        android:elevation="8dp"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="240dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    <include
+        android:visibility="gone"
+        android:id="@+id/bottom_sheet_container"
+        android:background="@android:color/transparent"
+        layout="@layout/bottom_sheet_playlists" />
 
-
-    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

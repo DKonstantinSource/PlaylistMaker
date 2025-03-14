@@ -31,5 +31,10 @@
         <item name="android:alpha">0</item>
     </style>
 
+    <style name="bottom_sheet">
+        <item name="android:background">@drawable/bottom_sheet_background</item>
+        <item name="backgroundColor">?attr/colorPrimary</item>
+    </style>
+
 
 </resources>

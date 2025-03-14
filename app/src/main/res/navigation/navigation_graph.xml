@@ -40,7 +40,7 @@
 
     <fragment
         android:id="@+id/fragmentPlayer"
-        android:name="com.example.playlistmaker.presentation.fragments.media_library.player.FragmentPlayer"
+        android:name="com.example.playlistmaker.presentation.fragments.player.FragmentPlayer"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" />
 </navigation>

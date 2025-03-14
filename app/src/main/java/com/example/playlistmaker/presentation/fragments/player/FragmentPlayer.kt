@@ -1,6 +1,7 @@
-package com.example.playlistmaker.presentation.fragments.media_library.player
+package com.example.playlistmaker.presentation.fragments.player
 
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
@@ -17,7 +18,6 @@ import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.databinding.BottomSheetPlaylistsBinding
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.presentation.ui.player.PlaylistAdapterPlayer
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -83,26 +83,6 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         viewModel.playlists.observe(viewLifecycleOwner, Observer { playlists ->
             playlistAdapter.submitList(playlists)
         })
-
-        val bottomSheetContainer = binding.playlistsBottomSheet
-        val overlay = binding.overlay
-
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
-
-        bottomSheetBehavior.addBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                overlay.visibility =
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) View.GONE else View.VISIBLE
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                overlay.alpha = slideOffset
-            }
-        })
-
         binding.buttonAddCollection.setOnClickListener {
             bottomSheetDialog.show()
         }
@@ -111,13 +91,59 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
             findNavController().navigate(R.id.fragmentPlayListAdd)
             bottomSheetDialog.dismiss()
         }
+
+        bottomSheetBinding.buttonNewListBottomSheet.setOnClickListener {
+            if (bottomSheetDialog.isShowing) {
+                bottomSheetDialog.dismiss()
+            } else {
+                bottomSheetDialog.show()
+            }
+        }
     }
 
     private fun setupBottomSheet() {
         bottomSheetBinding = BottomSheetPlaylistsBinding.inflate(layoutInflater)
         bottomSheetDialog = BottomSheetDialog(requireContext())
+
+
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
+
+        val bottomSheetContainer = bottomSheetDialog.findViewById<View>(R.id.bottom_sheet_container)
+
+        if (bottomSheetContainer != null) {
+            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+            bottomSheetBinding.buttonNewListBottomSheet.setOnClickListener {
+                findNavController().navigate(R.id.fragmentPlayListAdd)
+                bottomSheetDialog.dismiss()
+            }
+
+            bottomSheetBehavior.addBottomSheetCallback(object :
+                BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        binding.overlay.visibility = View.GONE
+                    } else {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    binding.overlay.alpha = slideOffset
+                }
+            })
+
+            binding.overlay.setOnClickListener {
+                bottomSheetDialog.dismiss()
+            }
+        } else {
+            Log.e("FragmentPlayer", "bottomSheetContainer is null")
+        }
     }
+
+
+
 
     private fun setupRecyclerView() {
         playlistAdapter = PlaylistAdapterPlayer { playlist ->

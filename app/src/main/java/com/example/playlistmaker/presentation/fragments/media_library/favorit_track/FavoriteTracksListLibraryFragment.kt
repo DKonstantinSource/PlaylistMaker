@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentTracksListLibraryBinding
 import com.example.playlistmaker.presentation.fragments.media_library.favorit_track.adapter.FavoriteTrackAdapter
-import com.example.playlistmaker.presentation.fragments.media_library.player.FragmentPlayer
+import com.example.playlistmaker.presentation.fragments.player.FragmentPlayer
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
