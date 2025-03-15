@@ -15,11 +15,20 @@
         <item name="trackColor">@color/switch_track_light</item>
         <item name="thumbColor">@color/switch_thumb_light</item>
         <item name="colorOnSurfaceVariant">@color/bottom_nav_item_color</item>
-
         <item name="colorPrimaryFixedDim">#AEAFB4</item>
+        <item name="bottomSheetDialogTheme">@style/bottom_sheet</item>
+        <item name="bottomSheetDragHandleStyle">@style/bottom_sheet</item>
+        <item name="bottomSheetStyle">@style/bottom_sheet</item>
 
 
     </style>>
+
+    <style name="bottom_sheet">
+        <item name="android:background">@drawable/bottom_sheet_background</item>
+        <item name="backgroundColor">?attr/colorPrimary</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+    </style>
 
     <style name="title">
         <item name="android:textSize">22sp</item>
@@ -29,11 +38,6 @@
     <style name="TransparentButton">
         <item name="android:background">#80FF0000</item>
         <item name="android:alpha">0</item>
-    </style>
-
-    <style name="bottom_sheet">
-        <item name="android:background">@drawable/bottom_sheet_background</item>
-        <item name="backgroundColor">?attr/colorPrimary</item>
     </style>
 
 
