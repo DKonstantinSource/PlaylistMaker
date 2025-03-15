@@ -15,19 +15,13 @@
         <item name="thumbColor">@color/switch_thumb_dark</item>
         <item name="colorOnSurfaceVariant">@color/bottom_nav_item_color_night</item>
         <item name="colorTertiaryFixed">#E6E8EB</item>
-        <item name="bottomSheetDialogTheme">@style/bottom_sheet</item>
-        <item name="bottomSheetDragHandleStyle">@style/bottom_sheet</item>
-        <item name="bottomSheetStyle">@style/bottom_sheet</item>
 
         <item name="colorPrimaryFixedDim">#FFFFFF</item>
 
     </style>
 
-    <style name="bottom_sheet">
-        <item name="android:background">@drawable/bottom_sheet_background</item>
-        <item name="backgroundColor">?attr/colorPrimary</item>
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">100dp</item>
+    <style name="Theme.MyAppPlaylistMaker" parent="Base.Theme.PlaylistMaker">
+        <item name="snackbarStyle">@style/Widget.App.CustomSnackbar</item>
     </style>
 
     <style name="title">

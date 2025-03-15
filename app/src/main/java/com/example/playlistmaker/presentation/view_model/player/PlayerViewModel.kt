@@ -47,17 +47,19 @@ class PlayerViewModel(
         refreshPlaylists()
     }
 
+
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         if (playlist.tracks.any { it.trackId == track.trackId }) {
-            _addTrackStatus.postValue("Трек уже в плейлисте")
+            _addTrackStatus.postValue("Трек уже в плейлисте \"${playlist.name}\"")
             return
         }
 
         viewModelScope.launch {
             playlistInteractor.addTrackToPlaylist(track, playlist)
-            _addTrackStatus.postValue("Трек добавлен в плейлист")
+            _addTrackStatus.postValue("Трек добавлен в плейлист \"${playlist.name}\"")
         }
     }
+
 
     private var timerJob: Job? = null
     private var playerState = PlayerState.DEFAULT

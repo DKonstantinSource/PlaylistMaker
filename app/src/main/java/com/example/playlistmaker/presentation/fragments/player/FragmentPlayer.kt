@@ -1,56 +1,68 @@
 package com.example.playlistmaker.presentation.fragments.player
 
 import android.os.Bundle
-import android.util.Log
-import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.playlistmaker.Constants.FORMAT_TIME_TS
-import com.example.playlistmaker.Constants.IS_FAVORITE
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.databinding.BottomSheetPlaylistsBinding
+import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation
+import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class FragmentPlayer : Fragment(R.layout.fragment_player) {
-    private lateinit var binding: FragmentPlayerBinding
-    private lateinit var bottomSheetBinding: BottomSheetPlaylistsBinding
+
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
+
+    private var _bottomSheetBinding: BottomSheetPlaylistsBinding? = null
+    private val bottomSheetBinding get() = _bottomSheetBinding!!
+
     private val viewModel: PlayerViewModel by viewModel()
     private val mediaPlayerInteractorImpl: MediaPlayerInteractor by inject()
-    private lateinit var bottomSheetDialog: BottomSheetDialog
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var playlistAdapter: PlaylistAdapterPlayer
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        _bottomSheetBinding =
+            BottomSheetPlaylistsBinding.bind(binding.root.findViewById(R.id.bottom_sheet_new_playlist))
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentPlayerBinding.bind(view)
-
-        setupBottomSheet()
-        setupRecyclerView()
 
         val isFavorite = arguments?.getBoolean(IS_FAVORITE, false) ?: false
         updateFavoriteButton(isFavorite)
-
 
         val track = arguments?.getSerializable(TRACK_DATA) as? Track
         track?.let {
             viewModel.setTrack(it)
             updateUI(it)
         }
+
+        setupBottomSheet()
+        setupRecyclerView()
+        observeState()
 
         viewModel.currentTrackTime.observe(viewLifecycleOwner) { time ->
             binding.currentTrackTime.text = time
@@ -65,8 +77,9 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         }
 
         viewModel.addTrackStatus.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            showSnackBar(message)
         }
+
 
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
@@ -80,82 +93,57 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
             viewModel.onFavoriteClicked()
         }
 
-        viewModel.playlists.observe(viewLifecycleOwner, Observer { playlists ->
-            playlistAdapter.submitList(playlists)
-        })
         binding.buttonAddCollection.setOnClickListener {
-            bottomSheetDialog.show()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            viewModel.refreshPlaylists()
         }
 
         bottomSheetBinding.buttonNewListBottomSheet.setOnClickListener {
-            findNavController().navigate(R.id.fragmentPlayListAdd)
-            bottomSheetDialog.dismiss()
+            // Логика создания нового плейлиста
+        }
+    }
+
+    private fun setupRecyclerView() {
+        playlistAdapter = PlaylistAdapterPlayer { playlist ->
+            val track = viewModel.trackInfo.value ?: return@PlaylistAdapterPlayer
+            viewModel.addTrackToPlaylist(track, playlist)
         }
 
-        bottomSheetBinding.buttonNewListBottomSheet.setOnClickListener {
-            if (bottomSheetDialog.isShowing) {
-                bottomSheetDialog.dismiss()
-            } else {
-                bottomSheetDialog.show()
-            }
+        bottomSheetBinding.rvPlaylists.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = playlistAdapter
         }
     }
 
     private fun setupBottomSheet() {
-        bottomSheetBinding = BottomSheetPlaylistsBinding.inflate(layoutInflater)
-        bottomSheetDialog = BottomSheetDialog(requireContext())
-
-
-        bottomSheetDialog.setContentView(bottomSheetBinding.root)
-
-        val bottomSheetContainer = bottomSheetDialog.findViewById<View>(R.id.bottom_sheet_container)
-
-        if (bottomSheetContainer != null) {
-            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-            bottomSheetBinding.buttonNewListBottomSheet.setOnClickListener {
-                findNavController().navigate(R.id.fragmentPlayListAdd)
-                bottomSheetDialog.dismiss()
-            }
-
-            bottomSheetBehavior.addBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        binding.overlay.visibility = View.GONE
-                    } else {
-                        binding.overlay.visibility = View.VISIBLE
-                    }
-                }
-
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    binding.overlay.alpha = slideOffset
-                }
-            })
-
-            binding.overlay.setOnClickListener {
-                bottomSheetDialog.dismiss()
-            }
-        } else {
-            Log.e("FragmentPlayer", "bottomSheetContainer is null")
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetBinding.root as View).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
         }
+
+        binding.overlay.setOnClickListener {
+            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                binding.overlay.visibility =
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) View.GONE else View.VISIBLE
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = ((slideOffset + 1) / 2).coerceIn(0f, 1f)
+            }
+        })
     }
 
 
-
-
-    private fun setupRecyclerView() {
-        playlistAdapter = PlaylistAdapterPlayer { playlist ->
-            val track = viewModel.trackInfo.value
-            if (track != null) {
-                viewModel.addTrackToPlaylist(track, playlist)
-                bottomSheetDialog.dismiss()
-            }
-        }
-        bottomSheetBinding.rvPlaylists.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = playlistAdapter
+    private fun observeState() {
+        viewModel.playlists.observe(viewLifecycleOwner) { playlists ->
+            playlistAdapter.submitList(playlists)
+            bottomSheetBinding.rvPlaylists.isVisible = playlists.isNotEmpty()
         }
     }
 
@@ -169,16 +157,10 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         binding.durationValue.text = formatTrackTime(track.trackTimeMillis.toLong())
 
         val artworkUrl = track.getCoverArtwork()
-        val cornerRadius = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            8f,
-            binding.cover.resources.displayMetrics
-        ).toInt()
-
         Glide.with(requireContext())
             .load(artworkUrl)
             .placeholder(R.drawable.image_placeholder)
-            .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(cornerRadius, 0)))
+            .apply(RequestOptions.circleCropTransform())
             .into(binding.cover)
     }
 
@@ -199,6 +181,12 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         viewModel.pausePlayer()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        _bottomSheetBinding = null
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         viewModel.cleanup()
@@ -207,19 +195,30 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
 
     private fun formatReleaseDate(releaseDate: Date?): String {
         return releaseDate?.let {
-            val dateFormat = SimpleDateFormat(PATTERN_DATE_FORMAT, Locale.getDefault())
-            dateFormat.format(it)
+            SimpleDateFormat(PATTERN_DATE_FORMAT, Locale.getDefault()).format(it)
         } ?: getString(R.string.not_specified)
     }
 
     private fun formatTrackTime(millis: Long): String {
+        val minutes = (millis / 1000 / 60) % 60
         val seconds = (millis / 1000) % 60
-        val minutes = (millis / (1000 * 60)) % 60
         return String.format(FORMAT_TIME_TS, minutes, seconds)
+    }
+
+    private fun showSnackBar(message: String) {
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+        val textView =
+            snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        val typeface = ResourcesCompat.getFont(requireContext(), R.font.ys_display_regular)
+        textView.setTextSize(14f)
+        textView.setTypeface(typeface)
+        snackbar.show()
     }
 
     companion object {
         const val PATTERN_DATE_FORMAT = "yyyy"
         const val TRACK_DATA = "TRACK_DATA"
+        const val IS_FAVORITE = "IS_FAVORITE"
+        const val FORMAT_TIME_TS = "%02d:%02d"
     }
 }

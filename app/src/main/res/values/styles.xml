@@ -166,5 +166,48 @@
         <item name="android:textColor">?attr/colorBackgroundFloating</item>
     </style>
 
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearance</item>
+    </style>
+
+    <style name="CustomShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+
+    <style name="CustomShapeImage" parent="@style/ThemeOverlay.MaterialComponents">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/size8dp</item>
+    </style>
+
+    <style name="ThemeOverlay.CustomSnackbar" parent="ThemeOverlay.MaterialComponents">
+        <item name="snackbarStyle">@style/Widget.App.CustomSnackbar</item>
+    </style>
+
+    <style name="Widget.App.CustomSnackbar" parent="@style/Widget.MaterialComponents.Snackbar">
+        <item name="backgroundTint">?attr/colorAccent</item>
+        <item name="android:layout_margin">@dimen/size6dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.CustomSnackbar</item>
+        <item name="snackbarTextViewStyle">@style/TextAppearance.App.CustomSnackbarText</item>
+
+    </style>
+
+    <style name="ShapeAppearance.CustomSnackbar" parent="@style/ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="height">@dimen/size48dp</item>
+        <item name="android:width">@dimen/size345dp</item>
+        <item name="cornerRadius">@dimen/size0</item>
+    </style>
+
+    <style name="TextAppearance.App.CustomSnackbarText" parent="@style/TextAppearance.MaterialComponents.Body2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+
+    </style>
+
 
 </resources>

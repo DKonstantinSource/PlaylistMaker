@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:padding="16dp"
     android:background="@drawable/bottom_sheet_background"
-    style="@style/bottom_sheet">
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <TextView
         android:id="@+id/textView"
