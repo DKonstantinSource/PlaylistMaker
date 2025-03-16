@@ -62,8 +62,7 @@
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@id/endBorder"
                     app:layout_constraintStart_toEndOf="@id/startBorder"
-                    app:layout_constraintTop_toBottomOf="@id/backButton"
-                    tools:src="@drawable/ic_launcher_background" />
+                    app:layout_constraintTop_toBottomOf="@id/backButton" />
 
                 <TextView
                     android:id="@+id/trackNamePlayer"

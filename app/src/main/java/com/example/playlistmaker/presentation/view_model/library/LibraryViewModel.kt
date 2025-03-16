@@ -27,6 +27,11 @@ class LibraryViewModel(
     private val _lastCreatedPlaylistName = MutableLiveData<String?>()
     val lastCreatedPlaylistName: LiveData<String?> get() = _lastCreatedPlaylistName
 
+    private val _tracksFavorit = MutableLiveData<List<Track>>()
+    val tracksFavorit: LiveData<List<Track>> = _tracksFavorit
+
+
+
 
     init {
         loadFavoriteTracks()
@@ -59,7 +64,7 @@ class LibraryViewModel(
     fun loadFavoriteTracks() {
         viewModelScope.launch {
             favoriteTracksInteractor.getFavoriteTracks().collect { favoriteTracks ->
-                _tracks.value = favoriteTracks
+                _tracksFavorit.value = favoriteTracks
             }
         }
     }

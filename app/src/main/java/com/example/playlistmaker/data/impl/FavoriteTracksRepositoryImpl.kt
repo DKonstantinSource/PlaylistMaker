@@ -44,8 +44,6 @@ class FavoriteTracksRepositoryImpl(private val trackDao: TrackDao) : FavoriteTra
         val trackEntity = track.toEntity()
         trackDao.insertTrack(trackEntity)
     }
-
-    // Удаление трека из избранного
     override suspend fun removeTrackFromFavorites(track: Track) {
         val trackEntity = track.toEntity()
         trackDao.deleteTrack(trackEntity)
@@ -58,8 +56,6 @@ class FavoriteTracksRepositoryImpl(private val trackDao: TrackDao) : FavoriteTra
                 trackEntities.map { it.toDomain() }
             }
     }
-
-
     override fun getFavoriteTrackIds(): Flow<List<Int>> {
         return trackDao.getTrackIds()
     }

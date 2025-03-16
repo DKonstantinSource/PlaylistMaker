@@ -16,8 +16,25 @@
         <item name="thumbColor">@color/switch_thumb_light</item>
         <item name="colorOnSurfaceVariant">@color/bottom_nav_item_color</item>
         <item name="colorPrimaryFixedDim">#AEAFB4</item>
+        <item name="alertDialogTheme">@style/CustomMaterialDialog</item>
 
     </style>>
+
+    <style name="CustomDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/buttonBarPositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/buttonBarNegativeButtonStyle</item>
+    </style>
+
+    <style name="buttonBarPositiveButtonStyle">
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/colorBlackText</item>
+    </style>
+
+    <style name="buttonBarNegativeButtonStyle">
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/colorBlackText</item>
+    </style>
+
 
     <style name="Theme.MyAppPlaylistMaker" parent="Base.Theme.PlaylistMaker">
         <item name="snackbarStyle">@style/Widget.App.CustomSnackbar</item>

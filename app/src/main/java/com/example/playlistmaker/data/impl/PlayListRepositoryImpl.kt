@@ -19,21 +19,14 @@ class PlayListRepositoryImpl(
 
     override suspend fun addTrackToPlaylist(track: Track, playlistId: Long) {
         val playlistEntity = playListDao.getPlaylistById(playlistId) ?: return
-
-        // Преобразуем строку с trackId в список Long
         val updatedTrackIds = playlistEntity.tracks.split(",")
             .mapNotNull { it.toLongOrNull() }
             .toMutableList()
 
-        // Добавляем новый трек
         if (!updatedTrackIds.contains(track.trackId)) {
             updatedTrackIds.add(track.trackId)
         }
-
-        // Обновляем плейлист в базе данных
         playListDao.updatePlaylistTracks(playlistId, updatedTrackIds.joinToString(","))
-
-        // Добавляем трек в базу данных, если его там нет
         val trackEntity = PlaylistTrackEntity(
             trackId = track.trackId,
             trackName = track.trackName,
@@ -41,13 +34,10 @@ class PlayListRepositoryImpl(
             previewUrl = track.previewUrl
         )
         playlistTrackDao.insertTrack(trackEntity)
-
-        // Обновляем количество треков
         playListDao.updateTrackCount(playlistId, updatedTrackIds.size)
     }
 
     override suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long) {
-        // Удаляем связь трека с плейлистом
         playListDao.removeTrackFromPlaylist(playlistId, trackId)
     }
 
@@ -63,10 +53,7 @@ class PlayListRepositoryImpl(
         val playlistEntity = playlist.toEntity()
         playListDao.updatePlaylist(playlistEntity)
 
-        // Очищаем старые треки
         playListDao.clearTracksFromPlaylist(playlist.id)
-
-        // Добавляем новые связи между плейлистом и треками
         val crossRefs = playlist.toTrackCrossRefs()
         crossRefs.forEach { playListDao.addTrackToPlaylist(it) }
     }
@@ -74,8 +61,6 @@ class PlayListRepositoryImpl(
     override suspend fun getPlaylistById(id: Long): Playlist? {
         val playlistEntity = playListDao.getPlaylistById(id) ?: return null
         val trackIds = playListDao.getTrackIdsForPlaylist(id)
-
-        // Если список trackIds пуст, возвращаем пустой список
         val tracks = if (trackIds.isNotEmpty()) {
             trackDao.getTracksByIds(trackIds).map { it.toDomain() }
         } else {
@@ -88,8 +73,6 @@ class PlayListRepositoryImpl(
     override suspend fun getAllPlaylists(): List<Playlist> {
         return playListDao.getAllPlaylists().map { entity ->
             val trackIds = playListDao.getTrackIdsForPlaylist(entity.playlistId)
-
-            // Если trackIds пуст, просто возвращаем пустой список треков
             val tracks = if (trackIds.isNotEmpty()) {
                 trackDao.getTracksByIds(trackIds).map { it.toDomain() }
             } else {

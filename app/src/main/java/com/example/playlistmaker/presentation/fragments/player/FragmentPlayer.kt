@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.playlistmaker.GlideUtils
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.BottomSheetPlaylistsBinding
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
@@ -20,6 +22,7 @@ import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import jp.wasabeef.glide.transformations.internal.Utils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -161,10 +164,12 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         binding.durationValue.text = formatTrackTime(track.trackTimeMillis.toLong())
 
         val artworkUrl = track.getCoverArtwork()
+        val cornerRadius = GlideUtils.dpToPx(8f, requireContext())
+
         Glide.with(requireContext())
             .load(artworkUrl)
             .placeholder(R.drawable.image_placeholder)
-            .apply(RequestOptions.circleCropTransform())
+            .apply(RequestOptions().transform(RoundedCorners(cornerRadius)))
             .into(binding.cover)
     }
 
@@ -213,15 +218,18 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         return String.format(FORMAT_TIME_TS, minutes, seconds)
     }
 
-    private fun showSnackBar(message: String) {
-        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
-        val textView =
-            snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        val typeface = ResourcesCompat.getFont(requireContext(), R.font.ys_display_regular)
-        textView.setTextSize(14f)
-        textView.setTypeface(typeface)
-        snackbar.show()
+    private fun showSnackBar(message: String?) {
+        message?.let {
+            val snackbar = Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
+            val textView =
+                snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+            val typeface = ResourcesCompat.getFont(requireContext(), R.font.ys_display_regular)
+            textView.setTextSize(14f)
+            textView.setTypeface(typeface)
+            snackbar.show()
+        }
     }
+
 
     companion object {
         const val PATTERN_DATE_FORMAT = "yyyy"

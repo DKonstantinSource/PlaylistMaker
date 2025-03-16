@@ -1,11 +1,15 @@
 package com.example.playlistmaker.presentation.fragments.media_library.playlist.add_playlist
 
+import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -15,6 +19,7 @@ import com.example.playlistmaker.PhotoPickerUtil
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentPlayListAdd : Fragment() {
@@ -44,7 +49,24 @@ class FragmentPlayListAdd : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlaylistAddBinding.inflate(inflater, container, false)
+
+        libraryViewModel.lastCreatedPlaylistName.observe(viewLifecycleOwner) { message ->
+            showSnackBar(message)
+        }
+
         return binding.root
+    }
+
+    private fun showSnackBar(message: String?) {
+        message?.let {
+            val snackbar = Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
+            val textView =
+                snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+            val typeface = ResourcesCompat.getFont(requireContext(), R.font.ys_display_regular)
+            textView.setTextSize(14f)
+            textView.setTypeface(typeface)
+            snackbar.show()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,13 +123,13 @@ class FragmentPlayListAdd : Fragment() {
             trackCount = 0
         )
         libraryViewModel.createPlaylist(playlist)
-        Toast.makeText(context, "Плейлист \"$name\" создан", Toast.LENGTH_SHORT).show()
+        showSnackBar("Плейлист \"$name\" создан")
         findNavController().navigateUp()
     }
 
     private fun handleBackPress() {
         if (isDataModified()) {
-            showConfirmExitDialog()
+            confirmDialog()
         } else {
             findNavController().navigateUp()
         }
@@ -119,16 +141,23 @@ class FragmentPlayListAdd : Fragment() {
                 coverImagePath != null
     }
 
-    private fun showConfirmExitDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setPositiveButton("Завершить") { _, _ ->
+    private fun confirmDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.askCancelRequset)
+            .setMessage(R.string.askUnsavedDate)
+            .setNeutralButton(R.string.decline, null)
+            .setNegativeButton(R.string.cancel) { _, _ ->
                 findNavController().navigateUp()
             }
-            .setNegativeButton("Отмена", null)
             .show()
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+            ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

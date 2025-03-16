@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -46,7 +47,6 @@ class FragmentPlaylist : Fragment() {
             findNavController().navigate(R.id.fragmentPlayListAdd)
         }
 
-
     }
 
 
@@ -56,6 +56,7 @@ class FragmentPlaylist : Fragment() {
             layoutManager = GridLayoutManager(context, 2)
             addItemDecoration(PlaylistItemDecoration(16, 8))
             adapter = playlistAdapter
+
         }
     }
 

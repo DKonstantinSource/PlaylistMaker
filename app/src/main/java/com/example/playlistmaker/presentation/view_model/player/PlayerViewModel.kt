@@ -41,11 +41,8 @@ class PlayerViewModel(
     private val _playlists = MutableLiveData<List<Playlist>>()
     val playlists: LiveData<List<Playlist>> get() = _playlists
 
-    private val _addTrackStatus = MutableLiveData<String>()
-    val addTrackStatus: LiveData<String> get() = _addTrackStatus
-
-    private val _trackStatus = MutableLiveData<String>()
-    val trackStatus: LiveData<String> get() = _trackStatus
+    private val _addTrackStatus = MutableLiveData<String?>()
+    val addTrackStatus: LiveData<String?> get() = _addTrackStatus
 
 
     init {
@@ -62,13 +59,35 @@ class PlayerViewModel(
     fun addTrackToPlaylist(track: Track, playlistId: Long) {
         viewModelScope.launch {
             try {
+                val playlist = playlistInteractor.getPlaylistById(playlistId)
+                val playlistName = playlist?.name ?: "Неизвестный плейлист"
+
+                val exists =
+                    trackAddToPlaylistInteractor.isTrackInPlaylist(playlistId, track.trackId)
+                if (exists) {
+                    _addTrackStatus.postValue("Трек уже добавлен в плейлист \"$playlistName\".")
+                    clearAddTrackStatusAfterDelay()
+                    return@launch
+                }
+
                 trackAddToPlaylistInteractor.addTrackToPlaylist(track, playlistId)
-                _trackStatus.postValue("Трек добавлен в плейлист")
+                _addTrackStatus.postValue("Добавлено в плейлист \"$playlistName\"")
+                refreshPlaylists()
+                clearAddTrackStatusAfterDelay()
             } catch (e: Exception) {
-                _trackStatus.postValue("Ошибка при добавлении трека")
+                _addTrackStatus.postValue("Ошибка при добавлении трека")
+                clearAddTrackStatusAfterDelay()
             }
         }
     }
+
+    private fun clearAddTrackStatusAfterDelay() {
+        viewModelScope.launch {
+            delay(1000)
+            _addTrackStatus.postValue(null)
+        }
+    }
+
     //TODO Валера скоро настанет твоё время =)
 //    fun removeTrackFromPlaylist(playlistId: Int, trackId: Long) {
 //        viewModelScope.launch {
@@ -81,13 +100,6 @@ class PlayerViewModel(
 //        }
 //    }
 
-    fun checkTrackInPlaylist(playlistId: Long, trackId: Long) {
-        viewModelScope.launch {
-            val exists = trackAddToPlaylistInteractor.isTrackInPlaylist(playlistId, trackId)
-            _trackStatus.postValue(if (exists) "Трек уже в плейлисте" else "Трек отсутствует")
-        }
-    }
-
 
     private var timerJob: Job? = null
     private var playerState = PlayerState.DEFAULT
@@ -95,13 +107,9 @@ class PlayerViewModel(
 
     fun refreshPlaylists() {
         viewModelScope.launch {
-            val playlists = playlistInteractor.getAllPlaylists().map { playlist ->
-                playlist.copy(trackCount = playlist.tracks.size)
-            }
-            _playlists.value = playlists
+            _playlists.value = playlistInteractor.getAllPlaylists()
         }
     }
-
 
 
     fun setTrack(track: Track) {
@@ -118,6 +126,7 @@ class PlayerViewModel(
             }
         }
     }
+
 
     fun onFavoriteClicked() {
         val track = _trackInfo.value ?: return
@@ -136,7 +145,6 @@ class PlayerViewModel(
                     "FavoriteTrack",
                     "Track ${track.trackName} ${if (isCurrentlyFavorite) "removed from" else "added to"} favorites"
                 )
-
             } catch (e: Exception) {
                 Log.e("FavoriteTrack", "Error updating favorite status for ${track.trackName}", e)
             }

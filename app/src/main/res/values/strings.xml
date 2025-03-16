@@ -69,4 +69,10 @@
     <string name="trackNotAdded" translatable="false">Трек уже добавлен в плейлист %1$s</string>
     <string name="trackAdded" translatable="false">Добавлено в плейлист %1$s</string>
 
+
+    <string name="askCancelRequset">"Завершить создание плейлиста?"</string>
+    <string name="askUnsavedDate">"Все несохраненные данные будут потеряны"</string>
+    <string name="cancel">"Завершить"</string>
+    <string name="decline">"Отмена"</string>
+
 </resources>
