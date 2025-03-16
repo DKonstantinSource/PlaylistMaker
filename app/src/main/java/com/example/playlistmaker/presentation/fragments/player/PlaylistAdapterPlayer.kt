@@ -49,6 +49,8 @@ class PlaylistAdapterPlayer(
             itemView.setOnClickListener { onPlaylistClick(playlist) }
         }
     }
+
+
 }
 
 class PlaylistDiffCallback : DiffUtil.ItemCallback<Playlist>() {
@@ -59,4 +61,6 @@ class PlaylistDiffCallback : DiffUtil.ItemCallback<Playlist>() {
     override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
         return oldItem == newItem
     }
+
+
 }

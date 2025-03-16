@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.db.playlist.track
+package com.example.playlistmaker.data.db.playlist.track_add_playlist
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -12,4 +12,8 @@ interface PlaylistTrackDao {
 
     @Query("SELECT * FROM playlist_track_entity WHERE trackId = :trackId")
     suspend fun getTrackById(trackId: Int): PlaylistTrackEntity?
+
+    @Query("DELETE FROM playlist_tracks_cross WHERE playlistId = :playlistId AND trackId = :trackId")
+    suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long)
+
 }

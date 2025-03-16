@@ -8,9 +8,10 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.playlistmaker.data.db.playlist.PlaylistDao
 import com.example.playlistmaker.data.db.playlist.PlaylistEntity
-import com.example.playlistmaker.data.db.playlist.PlaylistTrackCrossRef
-import com.example.playlistmaker.data.db.playlist.track.PlaylistTrackDao
-import com.example.playlistmaker.data.db.playlist.track.PlaylistTrackEntity
+import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackCrossRef
+import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackCrossRefDao
+import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackDao
+import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackEntity
 import com.example.playlistmaker.data.db.track.TrackDao
 import com.example.playlistmaker.data.db.track.TrackEntity
 
@@ -29,6 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun playlistDao(): PlaylistDao
     abstract fun trackDao(): TrackDao
     abstract fun playlistTrackDao(): PlaylistTrackDao
+    abstract fun playlistTrackCrossRefDao(): PlaylistTrackCrossRefDao
 
     companion object {
         @Volatile

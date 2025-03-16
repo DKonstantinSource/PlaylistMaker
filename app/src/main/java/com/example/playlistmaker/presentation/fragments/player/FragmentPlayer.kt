@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -99,15 +100,18 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         }
 
         bottomSheetBinding.buttonNewListBottomSheet.setOnClickListener {
-            // Логика создания нового плейлиста
+            findNavController().navigate(R.id.action_fragment_Player_to_fragmentPlayListAdd)
         }
+
+
     }
 
     private fun setupRecyclerView() {
         playlistAdapter = PlaylistAdapterPlayer { playlist ->
             val track = viewModel.trackInfo.value ?: return@PlaylistAdapterPlayer
-            viewModel.addTrackToPlaylist(track, playlist)
+            viewModel.addTrackToPlaylist(track, playlist.id)
         }
+
 
         bottomSheetBinding.rvPlaylists.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -174,6 +178,10 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         binding.favoriteButton.setImageResource(
             if (isFavorite) R.drawable.favorit_is_clicked_icon else R.drawable.image_favorite_track_unclicked
         )
+    }
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshPlaylists()
     }
 
     override fun onPause() {

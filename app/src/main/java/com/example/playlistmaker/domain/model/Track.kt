@@ -4,7 +4,7 @@ import java.io.Serializable
 import java.util.Date
 
 data class Track(
-    val trackId: Int,
+    val trackId: Long,
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: Int,

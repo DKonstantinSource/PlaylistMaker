@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class TrackEntity(
     @PrimaryKey
     @ColumnInfo(name = "track_id")
-    val trackId: Int,
+    val trackId: Long,
 
     @ColumnInfo(name = "track_name")
     val trackName: String,

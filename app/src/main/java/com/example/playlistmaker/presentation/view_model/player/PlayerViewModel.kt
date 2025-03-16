@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.Constants.DEFAULT_TIME_PLAYER
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.api.PlaylistInteractor
+import com.example.playlistmaker.domain.api.TrackAddToPlaylistInteractor
 import com.example.playlistmaker.domain.impl.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.model.PlayerState
 import com.example.playlistmaker.domain.model.Playlist
@@ -21,7 +22,8 @@ import kotlinx.coroutines.withContext
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
-    private val playlistInteractor: PlaylistInteractor
+    private val playlistInteractor: PlaylistInteractor,
+    private val trackAddToPlaylistInteractor: TrackAddToPlaylistInteractor,
 ) : ViewModel() {
 
     private val _trackInfo = MutableLiveData<Track>()
@@ -42,21 +44,47 @@ class PlayerViewModel(
     private val _addTrackStatus = MutableLiveData<String>()
     val addTrackStatus: LiveData<String> get() = _addTrackStatus
 
+    private val _trackStatus = MutableLiveData<String>()
+    val trackStatus: LiveData<String> get() = _trackStatus
+
 
     init {
         refreshPlaylists()
     }
 
-
-    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
-        if (playlist.tracks.any { it.trackId == track.trackId }) {
-            _addTrackStatus.postValue("Трек уже в плейлисте \"${playlist.name}\"")
-            return
-        }
-
+    fun removeTrackFromPlaylist(playlistId: Long, trackId: Long) {
         viewModelScope.launch {
-            playlistInteractor.addTrackToPlaylist(track, playlist)
-            _addTrackStatus.postValue("Трек добавлен в плейлист \"${playlist.name}\"")
+            playlistInteractor.removeTrackFromPlaylist(playlistId, trackId)
+        }
+    }
+
+
+    fun addTrackToPlaylist(track: Track, playlistId: Long) {
+        viewModelScope.launch {
+            try {
+                trackAddToPlaylistInteractor.addTrackToPlaylist(track, playlistId)
+                _trackStatus.postValue("Трек добавлен в плейлист")
+            } catch (e: Exception) {
+                _trackStatus.postValue("Ошибка при добавлении трека")
+            }
+        }
+    }
+    //TODO Валера скоро настанет твоё время =)
+//    fun removeTrackFromPlaylist(playlistId: Int, trackId: Long) {
+//        viewModelScope.launch {
+//            try {
+//                trackAddToPlaylistInteractor.removeTrackFromPlaylist(playlistId, trackId)
+//                _trackStatus.postValue("Трек удалён из плейлиста")
+//            } catch (e: Exception) {
+//                _trackStatus.postValue("Ошибка при удалении трека")
+//            }
+//        }
+//    }
+
+    fun checkTrackInPlaylist(playlistId: Long, trackId: Long) {
+        viewModelScope.launch {
+            val exists = trackAddToPlaylistInteractor.isTrackInPlaylist(playlistId, trackId)
+            _trackStatus.postValue(if (exists) "Трек уже в плейлисте" else "Трек отсутствует")
         }
     }
 
@@ -67,9 +95,13 @@ class PlayerViewModel(
 
     fun refreshPlaylists() {
         viewModelScope.launch {
-            _playlists.value = playlistInteractor.getAllPlaylists()
+            val playlists = playlistInteractor.getAllPlaylists().map { playlist ->
+                playlist.copy(trackCount = playlist.tracks.size)
+            }
+            _playlists.value = playlists
         }
     }
+
 
 
     fun setTrack(track: Track) {
@@ -79,10 +111,10 @@ class PlayerViewModel(
         checkIfFavorite(track.trackId)
     }
 
-    private fun checkIfFavorite(trackId: Int) {
+    private fun checkIfFavorite(trackId: Long) {
         viewModelScope.launch {
             favoriteTracksInteractor.getFavoriteTrackIds().collect { favoriteIds ->
-                _isFavorite.postValue(favoriteIds.contains(trackId))
+                _isFavorite.postValue(favoriteIds.contains(trackId.toInt()))
             }
         }
     }

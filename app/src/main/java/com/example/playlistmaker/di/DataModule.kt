@@ -12,7 +12,7 @@ val dataModule = module {
 
     viewModel { SearchViewModel(get(), get()) }
 
-    viewModel { PlayerViewModel(get(), get(), get()) }
+    viewModel { PlayerViewModel(get(), get(), get(), get()) }
 
     viewModel { LibraryViewModel(get(), get()) }
     viewModel { SettingsViewModel(get()) }

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackCrossRef
 
 
 @Dao
@@ -25,7 +26,7 @@ interface PlaylistDao {
     suspend fun addTrackToPlaylist(crossRef: PlaylistTrackCrossRef)
 
     @Query("DELETE FROM playlist_tracks_cross WHERE playlistId = :playlistId AND trackId = :trackId")
-    suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Int)
+    suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long)
 
     @Query("DELETE FROM playlist_table")
     suspend fun clearPlaylists()
@@ -38,5 +39,10 @@ interface PlaylistDao {
 
     @Query("UPDATE playlist_table SET tracks = :updatedTracks, trackCount = trackCount + 1 WHERE playlistId = :playlistId")
     suspend fun updatePlaylistTracks(playlistId: Long, updatedTracks: String)
+
+    @Query("UPDATE playlist_table SET trackCount = :count WHERE playlistId = :playlistId")
+    suspend fun updateTrackCount(playlistId: Long, count: Int)
+
+
 
 }

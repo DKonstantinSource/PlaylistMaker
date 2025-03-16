@@ -23,7 +23,12 @@ class PlaylistInteractorImpl(private val playlistRepository: PlayListRepository)
     override suspend fun getAllPlaylists(): List<Playlist> {
         return playlistRepository.getAllPlaylists()
     }
-    override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
-        playlistRepository.addTrackToPlaylist(track, playlist)
+    override suspend fun addTrackToPlaylist(track: Track, playlistId: Long) {
+        playlistRepository.addTrackToPlaylist(track, playlistId)
     }
+
+    override suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long) {
+        playlistRepository.removeTrackFromPlaylist(playlistId, trackId)
+    }
+
 }
