@@ -22,7 +22,7 @@ val repositoryModule = module {
 
     single<FavoriteTracksRepository> { FavoriteTracksRepositoryImpl(get()) }
     single<FavoriteTracksInteractor> { FavoriteTracksInteractor(get()) }
-    single<PlayListRepository> { PlayListRepositoryImpl(get(), get(), get()) }
+    single<PlayListRepository> { PlayListRepositoryImpl(get(), get(), get(), get()) }
     single<PlaylistInteractor> { PlaylistInteractorImpl(get()) }
 
     single<TrackAddToPlaylistRepository> { TrackAddToPlaylistRepositoryImpl(get(), get()) }

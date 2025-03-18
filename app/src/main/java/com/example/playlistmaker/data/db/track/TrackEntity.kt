@@ -38,7 +38,7 @@ data class TrackEntity(
     val previewUrl: String?,
 
     @ColumnInfo(name = "is_favorit")
-    val isFavorit: Boolean = true,
+    val isFavorit: Boolean,
 
     @ColumnInfo(name = "timestamp")
     val timestamp: Long = System.currentTimeMillis()

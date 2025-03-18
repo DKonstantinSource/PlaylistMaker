@@ -1,6 +1,7 @@
 package com.example.playlistmaker.data.impl
 
 import com.example.playlistmaker.data.db.playlist.PlaylistDao
+import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackCrossRefDao
 import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackDao
 import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackEntity
 import com.example.playlistmaker.data.db.track.TrackDao
@@ -14,7 +15,8 @@ import com.example.playlistmaker.mapper.PlayListMapper.toTrackCrossRefs
 class PlayListRepositoryImpl(
     private val playListDao: PlaylistDao,
     private val trackDao: TrackDao,
-    private val playlistTrackDao: PlaylistTrackDao
+    private val playlistTrackDao: PlaylistTrackDao,
+    private val playlistTrackCrossRefDao: PlaylistTrackCrossRefDao
 ) : PlayListRepository {
 
     override suspend fun addTrackToPlaylist(track: Track, playlistId: Long) {
@@ -55,16 +57,25 @@ class PlayListRepositoryImpl(
         playListDao.insertPlaylist(playlistEntity)
 
         val crossRefs = playlist.toTrackCrossRefs()
-        crossRefs.forEach { playListDao.addTrackToPlaylist(it) }
+        crossRefs.forEach { playlistTrackCrossRefDao.insertCrossRef(it) }
+
+        // Обновить количество треков
+        playListDao.updateTrackCount(playlist.id, playlist.tracks.size)
     }
+
 
     override suspend fun updatePlaylist(playlist: Playlist) {
         val playlistEntity = playlist.toEntity()
         playListDao.updatePlaylist(playlistEntity)
 
         playListDao.clearTracksFromPlaylist(playlist.id)
+
+        // Вставить новые связи между треками и плейлистом
         val crossRefs = playlist.toTrackCrossRefs()
-        crossRefs.forEach { playListDao.addTrackToPlaylist(it) }
+        crossRefs.forEach { playlistTrackCrossRefDao.insertCrossRef(it) }
+
+        // Обновить количество треков
+        playListDao.updateTrackCount(playlist.id, playlist.tracks.size)
     }
 
     override suspend fun getPlaylistById(id: Long): Playlist? {
@@ -80,15 +91,21 @@ class PlayListRepositoryImpl(
     }
 
     override suspend fun getAllPlaylists(): List<Playlist> {
-        return playListDao.getAllPlaylists().map { entity ->
-            val trackIds = playListDao.getTrackIdsForPlaylist(entity.playlistId)
+        val playlists = playListDao.getAllPlaylists()
+
+        return playlists.map { playlistEntity ->
+            val trackIds =
+                playlistTrackCrossRefDao.getTrackIdsForPlaylist(playlistEntity.playlistId)
+
             val tracks = if (trackIds.isNotEmpty()) {
                 trackDao.getTracksByIds(trackIds).map { it.toDomain() }
             } else {
                 emptyList()
             }
 
-            entity.toDomainModel(tracks)
+            // Преобразуем в доменный объект с правильным количеством треков
+            playlistEntity.toDomainModel(tracks)
         }
     }
+
 }

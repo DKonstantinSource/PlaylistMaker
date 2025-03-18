@@ -57,7 +57,7 @@ class FavoriteTracksRepositoryImpl(private val trackDao: TrackDao) : FavoriteTra
             }
     }
 
-    override fun getFavoriteTrackIds(): Flow<List<Int>> {
+    override fun getFavoriteTrackIds(): Flow<List<Long>> {
         return trackDao.getTrackIds()
     }
 }

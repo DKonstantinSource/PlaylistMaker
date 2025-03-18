@@ -122,7 +122,7 @@ class PlayerViewModel(
     private fun checkIfFavorite(trackId: Long) {
         viewModelScope.launch {
             favoriteTracksInteractor.getFavoriteTrackIds().collect { favoriteIds ->
-                _isFavorite.postValue(favoriteIds.contains(trackId.toInt()))
+                _isFavorite.postValue(favoriteIds.contains(trackId))
             }
         }
     }

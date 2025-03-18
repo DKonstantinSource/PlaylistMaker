@@ -19,7 +19,7 @@ class FavoriteTracksInteractor(private val repository: FavoriteTracksRepository)
         return repository.getFavoriteTracks()
     }
 
-    fun getFavoriteTrackIds(): Flow<List<Int>> {
+    fun getFavoriteTrackIds(): Flow<List<Long>> {
         return repository.getFavoriteTrackIds()
     }
 }

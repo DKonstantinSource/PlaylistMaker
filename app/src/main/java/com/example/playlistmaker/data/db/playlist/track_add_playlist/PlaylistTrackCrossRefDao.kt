@@ -16,4 +16,7 @@ interface PlaylistTrackCrossRefDao {
 
     @Query("SELECT COUNT(*) FROM playlist_tracks_cross WHERE playlistId = :playlistId AND trackId = :trackId")
     suspend fun isTrackInPlaylist(playlistId: Long, trackId: Long): Boolean
+
+    @Query("SELECT trackId FROM playlist_tracks_cross WHERE playlistId = :playlistId")
+    suspend fun getTrackIdsForPlaylist(playlistId: Long): List<Long>
 }
