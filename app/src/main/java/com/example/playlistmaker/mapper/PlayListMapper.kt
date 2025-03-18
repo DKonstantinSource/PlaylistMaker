@@ -8,6 +8,7 @@ import com.google.gson.Gson
 
 object PlayListMapper {
 
+    // Преобразование PlaylistEntity в Playlist
     fun PlaylistEntity.toDomainModel(tracks: List<Track>): Playlist {
         return Playlist(
             id = this.playlistId,
@@ -19,7 +20,7 @@ object PlayListMapper {
         )
     }
 
-
+    // Преобразование Playlist в PlaylistEntity
     fun Playlist.toEntity(): PlaylistEntity {
         return PlaylistEntity(
             playlistId = this.id,
@@ -31,6 +32,7 @@ object PlayListMapper {
         )
     }
 
+    // Преобразование Playlist в список PlaylistTrackCrossRef
     fun Playlist.toTrackCrossRefs(): List<PlaylistTrackCrossRef> {
         return this.tracks.map { track ->
             PlaylistTrackCrossRef(
@@ -39,5 +41,4 @@ object PlayListMapper {
             )
         }
     }
-
 }

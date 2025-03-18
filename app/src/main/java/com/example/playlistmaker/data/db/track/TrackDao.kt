@@ -23,6 +23,6 @@ interface TrackDao {
     fun getTrackIds(): Flow<List<Int>>
 
     @Query("SELECT * FROM favorite_tracks WHERE track_id IN (:trackIds)")
-    suspend fun getTracksByIds(trackIds: List<Int>): List<TrackEntity>
+    suspend fun getTracksByIds(trackIds: List<Long>): List<TrackEntity>
 
 }

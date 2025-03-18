@@ -32,7 +32,7 @@ interface PlaylistDao {
     suspend fun clearPlaylists()
 
     @Query("SELECT trackId FROM playlist_tracks_cross WHERE playlistId = :playlistId")
-    suspend fun getTrackIdsForPlaylist(playlistId: Long): List<Int>
+    suspend fun getTrackIdsForPlaylist(playlistId: Long): List<Long>
 
     @Query("DELETE FROM playlist_tracks_cross WHERE playlistId = :playlistId")
     suspend fun clearTracksFromPlaylist(playlistId: Long)
