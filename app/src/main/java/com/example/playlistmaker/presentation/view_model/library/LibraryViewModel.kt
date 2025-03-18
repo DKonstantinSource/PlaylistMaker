@@ -69,6 +69,7 @@ class LibraryViewModel(
     fun loadPlaylists() {
         viewModelScope.launch {
             _playlists.value = playlistInteractor.getAllPlaylists()
+
         }
     }
 

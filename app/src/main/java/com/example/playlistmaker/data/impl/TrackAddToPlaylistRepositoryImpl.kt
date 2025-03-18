@@ -23,10 +23,18 @@ class TrackAddToPlaylistRepositoryImpl(
             trackId = track.trackId,
             trackName = track.trackName,
             artistName = track.artistName,
-            previewUrl = track.previewUrl
+            trackTimeMillis = track.trackTimeMillis,
+            artworkUrl100 = track.artworkUrl100,
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate?.time,
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl,
+            isFavorite = track.isFavorite,
         )
         playlistTrackDao.insertTrack(trackEntity)
     }
+
 
     override suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long) {
         appDatabase.playlistTrackCrossRefDao().deleteTrackFromPlaylist(playlistId, trackId)

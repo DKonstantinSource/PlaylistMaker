@@ -14,7 +14,7 @@ data class Track(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String?,
-    var isFavorite: Boolean = false,
+    var isFavorite: Boolean,
 ) : Serializable {
     fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 }
