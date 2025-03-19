@@ -1,22 +1,16 @@
 package com.example.playlistmaker.presentation.fragments.media_library.playlist.playlist_fragment
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
-import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentPlaylist : Fragment() {
@@ -51,14 +45,13 @@ class FragmentPlaylist : Fragment() {
 
 
     private fun setupRecyclerView() {
+        val spacing = resources.getDimensionPixelSize(R.dimen.card_margin_horizontal8dp)
         playlistAdapter = PlaylistAdapter()
-        binding.recycleViewPlayList.apply {
-            layoutManager = GridLayoutManager(context, 2)
-            addItemDecoration(PlaylistItemDecoration(16, 8))
-            adapter = playlistAdapter
-
-        }
+        binding.recycleViewPlayList.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recycleViewPlayList.adapter = playlistAdapter
+        binding.recycleViewPlayList.addItemDecoration(HorizontalSpacingItemDecoration(spacing))
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     private fun observePlaylists() {
@@ -66,7 +59,7 @@ class FragmentPlaylist : Fragment() {
             val hasPlaylists = playlists.isNotEmpty()
 
             if (hasPlaylists) {
-                binding.recycleList.visibility = View.VISIBLE
+                binding.recycleViewPlayList.visibility = View.VISIBLE
                 binding.buttonNewList.visibility = View.VISIBLE
 
                 binding.emptyPlayListImage.visibility = View.GONE

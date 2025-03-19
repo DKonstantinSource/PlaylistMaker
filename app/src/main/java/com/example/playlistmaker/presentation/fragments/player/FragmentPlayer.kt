@@ -19,10 +19,10 @@ import com.example.playlistmaker.databinding.BottomSheetPlaylistsBinding
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.presentation.ui.host.HostActivity
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import jp.wasabeef.glide.transformations.internal.Utils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -54,6 +54,8 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as? HostActivity)?.setBottomNavigationVisibility(false)
 
         val isFavorite = arguments?.getBoolean(IS_FAVORITE, false) ?: false
         updateFavoriteButton(isFavorite)
@@ -203,6 +205,7 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.cleanup()
+        (activity as? HostActivity)?.setBottomNavigationVisibility(true)
         mediaPlayerInteractorImpl.stop()
     }
 

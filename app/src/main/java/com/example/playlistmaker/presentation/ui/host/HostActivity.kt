@@ -3,6 +3,7 @@ package com.example.playlistmaker.presentation.ui.host
 import android.os.Bundle
 import android.Manifest
 import android.os.Build
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -11,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
 import pub.devrel.easypermissions.EasyPermissions
 import com.example.playlistmaker.databinding.ActivityHostBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HostActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var binding: ActivityHostBinding
@@ -52,6 +54,20 @@ class HostActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             )
         }
     }
+
+    fun setBottomNavigationVisibility(isVisible: Boolean) {
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val divider = findViewById<View>(R.id.divider)
+
+        if (isVisible) {
+            bottomNavigationView.visibility = View.VISIBLE
+            divider.visibility = View.VISIBLE
+        } else {
+            bottomNavigationView.visibility = View.GONE
+            divider.visibility = View.GONE
+        }
+    }
+
 
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistItemBinding
 import com.example.playlistmaker.domain.model.Playlist
@@ -32,12 +33,22 @@ class PlaylistAdapter :
             binding.playListCount.text = "${playlist.trackCount} треков"
 
             val imagePath = playlist.imagePath
-            Glide.with(binding.playlistCoverImage.context)
-                .load(imagePath)
-                .placeholder(R.drawable.image_placeholder)
-                .error(R.drawable.image_placeholder)
+
+            Glide.with(itemView)
+                .load(if (imagePath.isNullOrEmpty()) R.drawable.empty_placeholder_big else imagePath)
+                .apply(
+                    if (imagePath.isNullOrEmpty() || imagePath.isBlank()) {
+                        RequestOptions().centerInside()
+                    } else {
+                        RequestOptions().centerCrop()
+                    }
+                )
+                .placeholder(R.drawable.empty_placeholder_big)
+                .error(R.drawable.empty_placeholder_big)
                 .into(binding.playlistCoverImage)
         }
+
+
     }
 
     class PlaylistDiffCallback : DiffUtil.ItemCallback<Playlist>() {

@@ -4,15 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="6dp"
     tools:context=".presentation.fragments.media_library.playlist.playlist_fragment.FragmentPlaylist"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <LinearLayout
+        android:id="@+id/title_mediaList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
+        android:padding="10dp"
         style="@style/smallContainerSetting">
 
 
@@ -35,8 +36,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="62dp"
-        android:layout_weight="1"
-        tools:ignore="ObsoleteLayoutParam" />
+        app:layout_constraintTop_toBottomOf="@id/title_mediaList"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </FrameLayout>

@@ -17,6 +17,7 @@ import com.example.playlistmaker.databinding.FragmentPlaylistAddBinding
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.PhotoPickerUtil
 import com.example.playlistmaker.R
+import com.example.playlistmaker.presentation.ui.host.HostActivity
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -31,25 +32,36 @@ class FragmentPlayListAdd : Fragment() {
 
     private var coverImagePath: String? = null
 
-    private val activeColor by lazy { requireContext().getColor(R.color.border_on_focus) }
-    private val defaultColor by lazy { requireContext().getColor(R.color.border_edit_text) }
+    private val activeColor by lazy { requireContext().getColor(R.color.border_on_focus_button) }
+    private val defaultColor by lazy { requireContext().getColor(R.color.border_edit_text_button) }
 
     private val selectImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
                 coverImagePath = PhotoPickerUtil.copyImageToAppStorage(requireContext(), uri)
+
                 binding.imageNewPlaylist.setImageURI(uri)
                 binding.buttonImageAdd.visibility = View.GONE
                 updateUIState()
+                binding.imageNewPlaylist.background = null
+                binding.imageNewPlaylist.shapeAppearanceModel =
+                    binding.imageNewPlaylist.shapeAppearanceModel
+                        .toBuilder()
+                        .setAllCorners(
+                            com.google.android.material.shape.CornerFamily.ROUNDED,
+                            8 * resources.displayMetrics.density
+                        )
+                        .build()
             }
         }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlaylistAddBinding.inflate(inflater, container, false)
-
+        (activity as? HostActivity)?.setBottomNavigationVisibility(false)
         libraryViewModel.lastCreatedPlaylistName.observe(viewLifecycleOwner) { message ->
             showSnackBar(message)
         }
@@ -83,7 +95,7 @@ class FragmentPlayListAdd : Fragment() {
             savePlaylist()
         }
 
-        binding.buttonBackAddPlaylist.setOnClickListener {
+        binding.backButton.setOnClickListener {
             handleBackPress()
         }
 
@@ -92,15 +104,23 @@ class FragmentPlayListAdd : Fragment() {
         }
     }
 
+
     private fun updateUIState() {
         val titleNotEmpty = !binding.titleName.text.isNullOrBlank()
         binding.saveNewPlayList.isEnabled = titleNotEmpty
+
+        val descriptionNotEmpty = !binding.playlistDescription.text.isNullOrBlank()
+
         binding.saveNewPlayList.backgroundTintList =
             ColorStateList.valueOf(if (titleNotEmpty) activeColor else defaultColor)
 
         binding.titleName.backgroundTintList =
             ColorStateList.valueOf(if (titleNotEmpty) activeColor else defaultColor)
+
+        binding.playlistDescription.backgroundTintList =
+            ColorStateList.valueOf(if (descriptionNotEmpty) activeColor else defaultColor)
     }
+
 
     private fun savePlaylist() {
         val name = binding.titleName.text?.toString()?.trim()
@@ -156,11 +176,15 @@ class FragmentPlayListAdd : Fragment() {
             ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
 
     }
-
+    override fun onResume() {
+        super.onResume()
+        updateUIState()
+    }
 
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        (activity as? HostActivity)?.setBottomNavigationVisibility(true)
     }
 }
