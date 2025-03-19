@@ -45,4 +45,8 @@ class TrackAddToPlaylistRepositoryImpl(
         return appDatabase.playlistTrackCrossRefDao().isTrackInPlaylist(playlistId, trackId)
     }
 
+    override suspend fun getCurrentlyCountTrack(playlistId: Long): Int {
+        return appDatabase.playlistTrackCrossRefDao().getTrackCountInPlaylist(playlistId)
+    }
+
 }

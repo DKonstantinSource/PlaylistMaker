@@ -19,4 +19,9 @@ class TrackAddToPlaylistInteractorImpl(
     override suspend fun isTrackInPlaylist(playlistId: Long, trackId: Long): Boolean {
         return trackAddToPlaylistRepository.isTrackInPlaylist(playlistId, trackId)
     }
+
+    override suspend fun getCurrentlyCountTrack(playlistId: Long): Int {
+        return trackAddToPlaylistRepository.getCurrentlyCountTrack(playlistId)
+    }
+
 }

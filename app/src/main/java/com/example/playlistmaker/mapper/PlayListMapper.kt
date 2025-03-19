@@ -2,23 +2,23 @@ package com.example.playlistmaker.mapper
 
 import com.example.playlistmaker.data.db.playlist.PlaylistEntity
 import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackCrossRef
+import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackEntity
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import com.google.gson.Gson
 
 object PlayListMapper {
 
-    fun PlaylistEntity.toDomainModel(tracks: List<Track>): Playlist {
+    fun PlaylistEntity.toDomainModel(tracks: List<Track>, trackCount: Int): Playlist {
         return Playlist(
             id = this.playlistId,
             name = this.name,
-            description = this.description,
-            imagePath = this.imagePath,
+            description = this.description ?: "",
+            imagePath = this.imagePath ?: "",
             tracks = tracks,
-            trackCount = tracks.size
+            trackCount = trackCount
         )
     }
-
 
     fun Playlist.toEntity(): PlaylistEntity {
         return PlaylistEntity(
@@ -39,5 +39,4 @@ object PlayListMapper {
             )
         }
     }
-
 }

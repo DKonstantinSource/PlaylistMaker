@@ -58,11 +58,8 @@ class PlayListRepositoryImpl(
 
         val crossRefs = playlist.toTrackCrossRefs()
         crossRefs.forEach { playlistTrackCrossRefDao.insertCrossRef(it) }
-
-        // Обновить количество треков
         playListDao.updateTrackCount(playlist.id, playlist.tracks.size)
     }
-
 
     override suspend fun updatePlaylist(playlist: Playlist) {
         val playlistEntity = playlist.toEntity()
@@ -70,11 +67,9 @@ class PlayListRepositoryImpl(
 
         playListDao.clearTracksFromPlaylist(playlist.id)
 
-        // Вставить новые связи между треками и плейлистом
         val crossRefs = playlist.toTrackCrossRefs()
         crossRefs.forEach { playlistTrackCrossRefDao.insertCrossRef(it) }
 
-        // Обновить количество треков
         playListDao.updateTrackCount(playlist.id, playlist.tracks.size)
     }
 
@@ -87,7 +82,7 @@ class PlayListRepositoryImpl(
             emptyList()
         }
 
-        return playlistEntity.toDomainModel(tracks)
+        return playlistEntity.toDomainModel(tracks, tracks.size)
     }
 
     override suspend fun getAllPlaylists(): List<Playlist> {
@@ -102,10 +97,9 @@ class PlayListRepositoryImpl(
             } else {
                 emptyList()
             }
+            val trackCount = trackIds.size
 
-            // Преобразуем в доменный объект с правильным количеством треков
-            playlistEntity.toDomainModel(tracks)
+            playlistEntity.toDomainModel(tracks, trackCount)
         }
     }
-
 }
