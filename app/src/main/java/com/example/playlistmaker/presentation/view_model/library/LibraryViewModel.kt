@@ -1,24 +1,58 @@
 package com.example.playlistmaker.presentation.view_model.library
 
-import android.util.Log
 import androidx.lifecycle.*
+import com.example.playlistmaker.domain.api.PlaylistInteractor
 import com.example.playlistmaker.domain.impl.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import kotlinx.coroutines.launch
 
-class LibraryViewModel(private val favoriteTracksInteractor: FavoriteTracksInteractor) :
-    ViewModel() {
+class LibraryViewModel(
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor
+) : ViewModel() {
 
     private val _tracks = MutableLiveData<List<Track>>()
     val tracks: LiveData<List<Track>> = _tracks
 
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> = _playlists
 
     private val _selectedTrack = MutableLiveData<Track?>()
     val selectedTrack: LiveData<Track?> get() = _selectedTrack
 
+    private val _playlistCreated = MutableLiveData<Boolean>()
+    val playlistCreated: LiveData<Boolean> get() = _playlistCreated
+
+    private val _lastCreatedPlaylistName = MutableLiveData<String?>()
+    val lastCreatedPlaylistName: LiveData<String?> get() = _lastCreatedPlaylistName
+
+
+
+
     init {
         loadFavoriteTracks()
+        loadPlaylists()
     }
+
+
+    fun createPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.createPlaylist(playlist)
+            loadPlaylists()
+            _lastCreatedPlaylistName.postValue(playlist.name)
+            _playlistCreated.postValue(true)
+        }
+    }
+
+
+    fun updatePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.updatePlaylist(playlist)
+            loadPlaylists()
+        }
+    }
+
 
     fun clearSelectedTrack() {
         _selectedTrack.value = null
@@ -27,10 +61,15 @@ class LibraryViewModel(private val favoriteTracksInteractor: FavoriteTracksInter
     fun loadFavoriteTracks() {
         viewModelScope.launch {
             favoriteTracksInteractor.getFavoriteTracks().collect { favoriteTracks ->
-
-            _tracks.value = favoriteTracks
-                Log.d("LibraryViewModel", "Loaded tracks: ${favoriteTracks.size}")
+                _tracks.value = favoriteTracks
             }
+        }
+    }
+
+    fun loadPlaylists() {
+        viewModelScope.launch {
+            _playlists.value = playlistInteractor.getAllPlaylists()
+
         }
     }
 

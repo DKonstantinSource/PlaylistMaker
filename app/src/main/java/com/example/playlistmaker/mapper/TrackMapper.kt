@@ -17,6 +17,7 @@ object TrackMapper {
             primaryGenreName = dataTrack.primaryGenreName,
             country = dataTrack.country,
             previewUrl = dataTrack.previewUrl ?: "null",
+            isFavorite = dataTrack.isFavorite
         )
     }
 }

@@ -7,8 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.Constants.DEFAULT_TIME_PLAYER
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.api.PlaylistInteractor
+import com.example.playlistmaker.domain.api.TrackAddToPlaylistInteractor
 import com.example.playlistmaker.domain.impl.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.model.PlayerState
+import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,7 +21,9 @@ import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
-    private val favoriteTracksInteractor: FavoriteTracksInteractor
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor,
+    private val trackAddToPlaylistInteractor: TrackAddToPlaylistInteractor,
 ) : ViewModel() {
 
     private val _trackInfo = MutableLiveData<Track>()
@@ -33,8 +38,79 @@ class PlayerViewModel(
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> get() = _isFavorite
 
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> get() = _playlists
+
+    private val _addTrackStatus = MutableLiveData<String?>()
+    val addTrackStatus: LiveData<String?> get() = _addTrackStatus
+
+
+    init {
+        refreshPlaylists()
+    }
+
+    fun removeTrackFromPlaylist(playlistId: Long, trackId: Long) {
+        viewModelScope.launch {
+            playlistInteractor.removeTrackFromPlaylist(playlistId, trackId)
+        }
+    }
+
+
+    fun addTrackToPlaylist(track: Track, playlistId: Long) {
+        viewModelScope.launch {
+            try {
+                val playlist = playlistInteractor.getPlaylistById(playlistId)
+                val playlistName = playlist?.name ?: "Неизвестный плейлист"
+
+                val exists =
+                    trackAddToPlaylistInteractor.isTrackInPlaylist(playlistId, track.trackId)
+                if (exists) {
+                    _addTrackStatus.postValue("Трек уже добавлен в плейлист \"$playlistName\".")
+                    clearAddTrackStatusAfterDelay()
+                    return@launch
+                }
+
+                trackAddToPlaylistInteractor.addTrackToPlaylist(track, playlistId)
+                _addTrackStatus.postValue("Добавлено в плейлист \"$playlistName\"")
+                refreshPlaylists()
+                clearAddTrackStatusAfterDelay()
+            } catch (e: Exception) {
+                _addTrackStatus.postValue("Ошибка при добавлении трека")
+                clearAddTrackStatusAfterDelay()
+            }
+        }
+    }
+
+    private fun clearAddTrackStatusAfterDelay() {
+        viewModelScope.launch {
+            delay(1000)
+            _addTrackStatus.postValue(null)
+        }
+    }
+
+    //TODO Валера скоро настанет твоё время =)
+//    fun removeTrackFromPlaylist(playlistId: Int, trackId: Long) {
+//        viewModelScope.launch {
+//            try {
+//                trackAddToPlaylistInteractor.removeTrackFromPlaylist(playlistId, trackId)
+//                _trackStatus.postValue("Трек удалён из плейлиста")
+//            } catch (e: Exception) {
+//                _trackStatus.postValue("Ошибка при удалении трека")
+//            }
+//        }
+//    }
+
+
     private var timerJob: Job? = null
     private var playerState = PlayerState.DEFAULT
+
+    //TODO точка запроса репозитория
+    fun refreshPlaylists() {
+        viewModelScope.launch {
+            _playlists.value = playlistInteractor.getAllPlaylists()
+        }
+    }
+
 
     fun setTrack(track: Track) {
         if (_trackInfo.value == track) return
@@ -43,13 +119,14 @@ class PlayerViewModel(
         checkIfFavorite(track.trackId)
     }
 
-    private fun checkIfFavorite(trackId: Int) {
+    private fun checkIfFavorite(trackId: Long) {
         viewModelScope.launch {
             favoriteTracksInteractor.getFavoriteTrackIds().collect { favoriteIds ->
                 _isFavorite.postValue(favoriteIds.contains(trackId))
             }
         }
     }
+
 
     fun onFavoriteClicked() {
         val track = _trackInfo.value ?: return
@@ -68,7 +145,6 @@ class PlayerViewModel(
                     "FavoriteTrack",
                     "Track ${track.trackName} ${if (isCurrentlyFavorite) "removed from" else "added to"} favorites"
                 )
-
             } catch (e: Exception) {
                 Log.e("FavoriteTrack", "Error updating favorite status for ${track.trackName}", e)
             }

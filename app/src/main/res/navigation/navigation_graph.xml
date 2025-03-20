@@ -8,7 +8,12 @@
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.presentation.fragments.search.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+
+        <action
+            android:id="@+id/action_searchFragment_to_fragmentPlayer"
+            app:destination="@id/fragmentPlayer" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsFragmentScreen"
@@ -18,8 +23,28 @@
 
     <fragment
         android:id="@+id/libraryTitleFragment"
-        android:name="com.example.playlistmaker.presentation.fragments.media_library.FragmentsHostLibrary"
+        android:name="com.example.playlistmaker.presentation.fragments.media_library.tab_layout.FragmentsHostLibrary"
         android:label="fragment_library"
-        tools:layout="@layout/fragment_library_title" />
+        tools:layout="@layout/fragment_library_title">
 
+        <action
+            android:id="@+id/action_libraryTitleFragment_to_fragmentPlayer"
+            app:destination="@id/fragmentPlayer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentPlayListAdd"
+        android:name="com.example.playlistmaker.presentation.fragments.media_library.playlist.add_playlist.FragmentPlayListAdd"
+        android:label="fragment_playlist_add"
+        tools:layout="@layout/fragment_playlist_add" />
+
+    <fragment
+        android:id="@+id/fragmentPlayer"
+        android:name="com.example.playlistmaker.presentation.fragments.player.FragmentPlayer"
+        android:label="fragment_player"
+        tools:layout="@layout/fragment_player">
+        <action
+            android:id="@+id/action_fragment_Player_to_fragmentPlayListAdd"
+            app:destination="@id/fragmentPlayListAdd" />
+    </fragment>
 </navigation>

@@ -1,14 +1,12 @@
 package com.example.playlistmaker.data.impl
 
-import com.example.playlistmaker.data.db.TrackDao
-import com.example.playlistmaker.data.db.TrackEntity
+import com.example.playlistmaker.data.db.track.TrackDao
+import com.example.playlistmaker.data.db.track.TrackEntity
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.repository.FavoriteTracksRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
 import java.util.Date
-
 
 fun Track.toEntity() = TrackEntity(
     trackId = trackId,
@@ -21,6 +19,7 @@ fun Track.toEntity() = TrackEntity(
     primaryGenreName = primaryGenreName,
     country = country,
     previewUrl = previewUrl,
+    isFavorit = isFavorite,
     timestamp = System.currentTimeMillis()
 )
 
@@ -34,23 +33,22 @@ fun TrackEntity.toDomain() = Track(
     releaseDate = releaseDate?.let { Date(it) },
     primaryGenreName = primaryGenreName,
     country = country,
-    previewUrl = previewUrl
+    previewUrl = previewUrl,
+    isFavorite = isFavorit,
+
 )
 
 class FavoriteTracksRepositoryImpl(private val trackDao: TrackDao) : FavoriteTracksRepository {
 
-
     override suspend fun addTrackToFavorites(track: Track) {
-        val trackEntity = track.toEntity()
+        val trackEntity = track.copy(isFavorite = true).toEntity()
         trackDao.insertTrack(trackEntity)
     }
 
-    // Удаление трека из избранного
     override suspend fun removeTrackFromFavorites(track: Track) {
-        val trackEntity = track.toEntity()
+        val trackEntity = track.copy(isFavorite = false).toEntity()
         trackDao.deleteTrack(trackEntity)
     }
-
 
     override fun getFavoriteTracks(): Flow<List<Track>> {
         return trackDao.getTracks()
@@ -59,10 +57,7 @@ class FavoriteTracksRepositoryImpl(private val trackDao: TrackDao) : FavoriteTra
             }
     }
 
-
-    override fun getFavoriteTrackIds(): Flow<List<Int>> {
+    override fun getFavoriteTrackIds(): Flow<List<Long>> {
         return trackDao.getTrackIds()
     }
 }
-
-

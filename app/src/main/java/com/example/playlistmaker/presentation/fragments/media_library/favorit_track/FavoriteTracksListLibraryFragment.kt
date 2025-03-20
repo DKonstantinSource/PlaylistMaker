@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.fragments.media_library
+package com.example.playlistmaker.presentation.fragments.media_library.favorit_track
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentTracksListLibraryBinding
-import com.example.playlistmaker.presentation.fragments.media_library.adapter.FavoriteTrackAdapter
+import com.example.playlistmaker.presentation.fragments.media_library.favorit_track.adapter.FavoriteTrackAdapter
+import com.example.playlistmaker.presentation.fragments.player.FragmentPlayer
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
-import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -54,10 +56,15 @@ class FavoriteTracksListLibraryFragment : Fragment() {
             track?.let {
                 if (isClickable) {
                     isClickable = false
-                    val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
-                        putExtra(PlayerActivity.TRACK_DATA, it)
+
+                    val bundle = Bundle().apply {
+                        putSerializable(FragmentPlayer.TRACK_DATA, it)
                     }
-                    startActivity(intent)
+
+                    findNavController().navigate(
+                        R.id.action_libraryTitleFragment_to_fragmentPlayer,
+                        bundle
+                    )
 
                     lifecycleScope.launch {
                         delay(CLICK_DEBOUNCE_DELAY)
@@ -80,6 +87,7 @@ class FavoriteTracksListLibraryFragment : Fragment() {
             }
         }
     }
+
 
     override fun onPause() {
         super.onPause()

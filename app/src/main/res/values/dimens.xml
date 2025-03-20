@@ -16,6 +16,15 @@
     <dimen name="track_footer_description">14sp</dimen>
     <dimen name="content_description_footer">13sp</dimen>
 
+    <dimen name="size8dp">8dp</dimen>
+    <dimen name="size6dp">6dp</dimen>
+
+    <dimen name="size48dp">6dp</dimen>
+    <dimen name="size345dp">8dp</dimen>
+    <dimen name="size0">6dp</dimen>
+
+    <dimen name="card_margin_horizontal8dp">8dp</dimen>
+    <dimen name="card_margin_vertical8dp">8dp</dimen>
 
     <dimen name="marginSettings">12dp</dimen>
 </resources>

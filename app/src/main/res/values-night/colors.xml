@@ -3,4 +3,9 @@
     <color name="switch_thumb_color">#9FBBF3</color>
     <color name="switch_track_color">#3772E7</color>
     <color name="top_border_bottom_navigation">#E6E8EB</color>
+    <color name="border_edit_text">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="border_edit_text_button">#AEAFB4</color>
+    <color name="border_on_focus_button">#3772E7</color>
 </resources>

@@ -5,6 +5,10 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -16,9 +20,6 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PlaylistMaker">
 
-        <activity
-            android:name=".presentation.ui.player.PlayerActivity"
-            android:exported="false" />
         <activity
             android:name=".presentation.ui.host.HostActivity"
             android:exported="true"

@@ -15,8 +15,37 @@
         <item name="thumbColor">@color/switch_thumb_dark</item>
         <item name="colorOnSurfaceVariant">@color/bottom_nav_item_color_night</item>
         <item name="colorTertiaryFixed">#E6E8EB</item>
+        <item name="colorPrimaryFixedDim">#FFFFFF</item>
+
+        <item name="alertDialogTheme">@style/CustomMaterialDialog</item>
 
     </style>
+
+    <style name="CustomMaterialDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/DialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DialogButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/DialogButtonStyle</item>
+    </style>
+
+    <style name="DialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="buttonBarPositiveButtonStyle">
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/colorWhiteText</item>
+    </style>
+
+    <style name="buttonBarNegativeButtonStyle">
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/colorWhiteText</item>
+    </style>
+
+
+    <style name="Theme.MyAppPlaylistMaker" parent="Base.Theme.PlaylistMaker">
+        <item name="snackbarStyle">@style/Widget.App.CustomSnackbar</item>
+    </style>
+
     <style name="title">
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">#FFFFFF</item>
@@ -25,5 +54,6 @@
         <item name="android:background">#80FF0000</item>
         <item name="android:alpha">0</item>
     </style>
+
 
 </resources>
