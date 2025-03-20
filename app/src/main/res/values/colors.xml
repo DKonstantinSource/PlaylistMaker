@@ -34,4 +34,5 @@
     <color name="snackbarTextColor">@color/colorWhiteText</color>
 
     <color name="yp_blue">#3772E7</color>
+    <color name="border_edit_text">#FFFFFF</color>
 </resources>
