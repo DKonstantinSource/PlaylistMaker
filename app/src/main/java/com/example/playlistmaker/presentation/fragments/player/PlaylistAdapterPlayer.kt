@@ -45,6 +45,7 @@ class PlaylistAdapterPlayer(
             } else {
                 playlistImage.setImageResource(R.drawable.image_placeholder)
             }
+
             itemView.setOnClickListener { onPlaylistClick(playlist) }
         }
     }

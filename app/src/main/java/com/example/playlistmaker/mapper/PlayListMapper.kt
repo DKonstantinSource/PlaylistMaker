@@ -2,7 +2,6 @@ package com.example.playlistmaker.mapper
 
 import com.example.playlistmaker.data.db.playlist.PlaylistEntity
 import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackCrossRef
-import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackEntity
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import com.google.gson.Gson

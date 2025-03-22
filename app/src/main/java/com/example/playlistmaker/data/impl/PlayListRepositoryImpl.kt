@@ -1,5 +1,6 @@
 package com.example.playlistmaker.data.impl
 
+import android.util.Log
 import com.example.playlistmaker.data.db.playlist.PlaylistDao
 import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackCrossRefDao
 import com.example.playlistmaker.data.db.playlist.track_add_playlist.PlaylistTrackDao
@@ -74,16 +75,26 @@ class PlayListRepositoryImpl(
     }
 
     override suspend fun getPlaylistById(id: Long): Playlist? {
-        val playlistEntity = playListDao.getPlaylistById(id) ?: return null
+        val playlistEntity = playListDao.getPlaylistById(id) ?: run {
+            Log.e("DEBUG_TRACKS", "Playlist not found for id: $id")
+            return null
+        }
+        Log.d("DEBUG_TRACKS", "Playlist found: $playlistEntity")
+
         val trackIds = playListDao.getTrackIdsForPlaylist(id)
+        Log.d("DEBUG_TRACKS", "Track IDs for playlist: $trackIds")
+
         val tracks = if (trackIds.isNotEmpty()) {
             trackDao.getTracksByIds(trackIds).map { it.toDomain() }
         } else {
             emptyList()
         }
 
+        Log.d("DEBUG_TRACKS", "Tracks: $tracks")
+
         return playlistEntity.toDomainModel(tracks, tracks.size)
     }
+
 
     override suspend fun getAllPlaylists(): List<Playlist> {
         val playlists = playListDao.getAllPlaylists()
@@ -101,5 +112,9 @@ class PlayListRepositoryImpl(
 
             playlistEntity.toDomainModel(tracks, trackCount)
         }
+    }
+
+    override suspend fun deletePlaylist(playlistId: Long) {
+        playlistTrackCrossRefDao.deleteByPlaylistId(playlistId)
     }
 }

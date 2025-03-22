@@ -10,5 +10,7 @@ interface PlayListRepository {
     suspend fun getAllPlaylists(): List<Playlist>
     suspend fun addTrackToPlaylist(track: Track, playlist: Long)
     suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long)
+    suspend fun deletePlaylist(playlistId: Long)
+
 }
 

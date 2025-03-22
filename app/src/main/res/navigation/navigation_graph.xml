@@ -30,6 +30,10 @@
         <action
             android:id="@+id/action_libraryTitleFragment_to_fragmentPlayer"
             app:destination="@id/fragmentPlayer" />
+
+        <action
+            android:id="@+id/action_libraryTitleFragment_to_fragmentEnterPlaylist"
+            app:destination="@id/fragmentEnterPlaylist" />
     </fragment>
 
     <fragment
@@ -43,8 +47,25 @@
         android:name="com.example.playlistmaker.presentation.fragments.player.FragmentPlayer"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player">
+
         <action
             android:id="@+id/action_fragment_Player_to_fragmentPlayListAdd"
             app:destination="@id/fragmentPlayListAdd" />
     </fragment>
+
+    <fragment
+        android:id="@+id/fragmentEnterPlaylist"
+        android:name="com.example.playlistmaker.presentation.fragments.media_library.playlist.playlist_fragment.enter.FragmentEnterPlaylist"
+        android:label="Playlist"
+        tools:layout="@layout/fragment_enter_playlist">
+        <action
+            android:id="@+id/action_fragmentEnterPlaylist_to_audioPlayerFragment"
+            app:destination="@id/fragmentPlayer">
+            <argument
+                android:name="trackId"
+                app:argType="long" />
+        </action>
+
+    </fragment>
+
 </navigation>

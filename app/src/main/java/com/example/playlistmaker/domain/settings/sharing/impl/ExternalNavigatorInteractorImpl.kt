@@ -19,4 +19,8 @@ class ExternalNavigatorInteractorImpl(
     override fun openSupport() {
         externalNavigator.openSupport()
     }
+
+    override fun sharePlaylistApp(string: String) {
+        externalNavigator.sharePlaylistApp(string)
+    }
 }

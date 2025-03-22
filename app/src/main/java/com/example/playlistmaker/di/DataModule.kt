@@ -14,6 +14,6 @@ val dataModule = module {
 
     viewModel { PlayerViewModel(get(), get(), get(), get()) }
 
-    viewModel { LibraryViewModel(get(), get()) }
+    viewModel { LibraryViewModel(get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
 }

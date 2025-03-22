@@ -22,4 +22,7 @@ interface PlaylistTrackCrossRefDao {
 
     @Query("SELECT COUNT(*) FROM playlist_tracks_cross WHERE playlistId = :playlistId")
     suspend fun getTrackCountInPlaylist(playlistId: Long): Int
+
+    @Query("DELETE FROM playlist_tracks_cross WHERE playlistId = :playlistId")
+    suspend fun deleteByPlaylistId(playlistId: Long)
 }
