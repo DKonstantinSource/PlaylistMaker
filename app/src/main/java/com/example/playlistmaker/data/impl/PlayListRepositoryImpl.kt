@@ -12,6 +12,9 @@ import com.example.playlistmaker.domain.repository.PlayListRepository
 import com.example.playlistmaker.mapper.PlayListMapper.toDomainModel
 import com.example.playlistmaker.mapper.PlayListMapper.toEntity
 import com.example.playlistmaker.mapper.PlayListMapper.toTrackCrossRefs
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 class PlayListRepositoryImpl(
     private val playListDao: PlaylistDao,
@@ -65,13 +68,6 @@ class PlayListRepositoryImpl(
     override suspend fun updatePlaylist(playlist: Playlist) {
         val playlistEntity = playlist.toEntity()
         playListDao.updatePlaylist(playlistEntity)
-
-        playListDao.clearTracksFromPlaylist(playlist.id)
-
-        val crossRefs = playlist.toTrackCrossRefs()
-        crossRefs.forEach { playlistTrackCrossRefDao.insertCrossRef(it) }
-
-        playListDao.updateTrackCount(playlist.id, playlist.tracks.size)
     }
 
     override suspend fun getPlaylistById(id: Long): Playlist? {
@@ -79,7 +75,7 @@ class PlayListRepositoryImpl(
             Log.e("DEBUG_TRACKS", "Playlist not found for id: $id")
             return null
         }
-        Log.d("DEBUG_TRACKS", "Playlist found: $playlistEntity")
+        Log.d("DEBUG_TRACKS", "Playlist foud: $playlistEntity")
 
         val trackIds = playListDao.getTrackIdsForPlaylist(id)
         Log.d("DEBUG_TRACKS", "Track IDs for playlist: $trackIds")
@@ -115,6 +111,10 @@ class PlayListRepositoryImpl(
     }
 
     override suspend fun deletePlaylist(playlistId: Long) {
-        playlistTrackCrossRefDao.deleteByPlaylistId(playlistId)
+        withContext(Dispatchers.IO) {
+            playlistTrackCrossRefDao.deleteByPlaylistId(playlistId)
+            playListDao.deletePlaylistById(playlistId)
+
+        }
     }
 }

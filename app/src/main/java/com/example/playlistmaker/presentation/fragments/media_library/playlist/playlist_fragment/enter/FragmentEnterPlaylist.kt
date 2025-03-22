@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -21,6 +22,7 @@ import com.example.playlistmaker.databinding.BottomSheetEnterPlaylistEditBinding
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.settings.sharing.api.ExternalNavigatorInteractor
+import com.example.playlistmaker.presentation.fragments.player.FragmentPlayer
 import com.example.playlistmaker.presentation.ui.host.HostActivity
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -44,7 +46,6 @@ class FragmentEnterPlaylist : Fragment() {
 
     private val viewModel: LibraryViewModel by viewModel()
     private lateinit var adapter: PlaylistEnterOnAdapter
-    private val trackList = mutableListOf<Track>()
     private var trackTimeAndCount: String = ""
     private var playlistId: Long? = null
 
@@ -89,14 +90,34 @@ class FragmentEnterPlaylist : Fragment() {
             updatePlaylistInfo(playlist)
             viewModel.loadTracksForPlaylist(playlist.id)
         }
-
         binding.backButton.setOnClickListener {
             findNavController().navigateUp()
         }
 
-        binding.enterPlaylistHamburgerButton.setOnClickListener { toggleEditBottomSheet() }
+        binding.enterPlaylistHamburgerButton.setOnClickListener {
+            viewModel.currentPlaylist.value?.let { playlist ->
+                updatePlaylistInfoBottomSheet(playlist)
+                toggleEditBottomSheet()
+            }
+        }
 
-        binding.enterPlaylistShareButton.setOnClickListener { sharePlaylist() }
+        bottomSheetBindingEdit.deletePlaylistBottomSheet.setOnClickListener {
+            showDeletePlaylistDialog()
+        }
+
+        bottomSheetBindingEdit.shareButtonEnterPlaylist.setOnClickListener {
+            Log.d("ShareButton", "Share button clicked look =)")
+            sharePlaylist()
+        }
+
+
+        bottomSheetBindingEdit.editPlaylist.setOnClickListener {
+            val playlistId = viewModel.currentPlaylist.value!!.id
+            val bundle = Bundle().apply {
+                putLong("playlistId", playlistId)
+            }
+            findNavController().navigate(R.id.fragmentPlayListAdd, bundle)
+        }
 
 
 
@@ -105,48 +126,43 @@ class FragmentEnterPlaylist : Fragment() {
             trackTimeAndCount = formatTrackTimeAndCount(tracks)
             binding.enterSumTimePlaylistAndCount.text = trackTimeAndCount
         }
-
         viewModel.currentPlaylist.observe(viewLifecycleOwner) { playlist ->
             viewModel.loadTracksForPlaylist(playlist!!.id)
         }
     }
 
-    private fun updatePlaylistInfoBottomSheet(playlist: Playlist) {
-        binding.enterPlaylistName.text = playlist.name ?: ""
-        binding.enterDescriptionPlaylist.text = playlist.description ?: ""
-        binding.enterSumTimePlaylistAndCount.text = trackTimeAndCount
 
-        val imagePath = playlist.imagePath
-        Glide.with(binding.enterImagePlaylist.context)
-            .load(imagePath)
-            .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(2)))  // Закругление 2px
-            .into(binding.enterImagePlaylist)
+    private fun formatTrackCount(tracks: List<Track>): String {
+        return "${tracks.size} треков"
     }
 
-    private fun toggleBottomSheet() {
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetBindingOnCreate.root)
-        val editBottomSheetBehavior =
-            BottomSheetBehavior.from(binding.bottomSheetEnterPlaylistEdit.root)
+    private fun updatePlaylistInfoBottomSheet(playlist: Playlist) {
+        bottomSheetBindingEdit.playlistNameBottomSheet.text = playlist.name
+        bottomSheetBindingEdit.playlistCountBottomSheet.text = formatTrackCount(playlist.tracks)
 
-        val currentState = bottomSheetBehavior.state
-        if (currentState == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            editBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        } else {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            editBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+        val imagePath = playlist.imagePath
+        Glide.with(bottomSheetBindingEdit.playlistImageBottomSheet.context)
+            .load(imagePath)
+            .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(2)))
+            .into(bottomSheetBindingEdit.playlistImageBottomSheet)
     }
 
     private fun sharePlaylist() {
+        val playlist = viewModel.currentPlaylist.value
+        if (playlist == null || playlist.tracks.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.emptyTrackSend, Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val shareText = getPlaylistShareText()
         externalNavigatorInteractor.sharePlaylistApp(shareText)
     }
 
+
     private fun deletePlaylist() {
         val playlistId = playlistId ?: return
         viewModel.deletePlaylist(playlistId)
-        onDestroy()
+        findNavController().navigateUp()
     }
 
     private fun getPlaylistShareText(): String {
@@ -184,16 +200,41 @@ class FragmentEnterPlaylist : Fragment() {
         bottomSheetBehaviorEdit =
             BottomSheetBehavior.from(bottomSheetBindingEdit.root as View).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
+                addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        val overlay = binding.root.findViewById<View>(R.id.overlay_playlist_track)
+                        when (newState) {
+                            BottomSheetBehavior.STATE_EXPANDED -> {
+                                overlay.visibility = View.VISIBLE
+                            }
+
+                            BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_COLLAPSED -> {
+                                overlay.visibility = View.GONE
+                            }
+                        }
+                    }
+
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        //TODO Not now , Valera!
+                    }
+                })
             }
+
+        binding.root.findViewById<View>(R.id.overlay_playlist_track).setOnClickListener {
+            bottomSheetBehaviorEdit.state = BottomSheetBehavior.STATE_HIDDEN
+            binding.root.findViewById<View>(R.id.overlay_playlist_track).visibility = View.GONE
+        }
     }
 
     private fun toggleEditBottomSheet() {
-        bottomSheetBehaviorEdit.state =
-            if (bottomSheetBehaviorEdit.state == BottomSheetBehavior.STATE_EXPANDED) {
-                BottomSheetBehavior.STATE_HIDDEN
-            } else {
-                BottomSheetBehavior.STATE_EXPANDED
-            }
+        val overlay = binding.root.findViewById<View>(R.id.overlay_playlist_track)
+        if (bottomSheetBehaviorEdit.state == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehaviorEdit.state = BottomSheetBehavior.STATE_HIDDEN
+            overlay.visibility = View.GONE
+        } else {
+            bottomSheetBehaviorEdit.state = BottomSheetBehavior.STATE_EXPANDED
+            overlay.visibility = View.VISIBLE
+        }
     }
 
     private fun setupRecyclerView() {
@@ -206,9 +247,15 @@ class FragmentEnterPlaylist : Fragment() {
     }
 
     private fun onTrackClicked(track: Track) {
-        // Действие при клике на трек
-    }
+        val bundle = Bundle().apply {
+            putSerializable(FragmentPlayer.TRACK_DATA, track)
+        }
 
+        findNavController().navigate(
+            R.id.action_fragmentEnterPlaylist_to_fragmentPlayer,
+            bundle
+        )
+    }
     private fun onTrackLongClicked(track: Track) {
         showDeleteTrackDialog(track)
     }
@@ -289,8 +336,14 @@ class FragmentEnterPlaylist : Fragment() {
         (activity as? HostActivity)?.setBottomNavigationVisibility(true)
     }
 
+    override fun onResume() {
+        (activity as? HostActivity)?.setBottomNavigationVisibility(false)
+        super.onResume()
+    }
+
     companion object {
         private const val PLAYLIST_ID_KEY = "playlist_id"
+        private const val TRACK_DATA = "TRACK_DATA"
 
         fun newInstance(playlistId: Long): FragmentEnterPlaylist {
             return FragmentEnterPlaylist().apply {

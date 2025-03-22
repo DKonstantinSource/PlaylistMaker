@@ -8,6 +8,7 @@ import com.example.playlistmaker.domain.impl.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class LibraryViewModel(
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
@@ -47,9 +48,25 @@ class LibraryViewModel(
         loadPlaylists()
     }
 
+
+    fun updatePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.updatePlaylist(playlist)
+            loadPlaylists()
+        }
+    }
+
     fun deletePlaylist(playlistId: Long) {
         viewModelScope.launch {
-            playlistInteractor.deletePlaylist(playlistId)
+            try {
+                playlistInteractor.deletePlaylist(playlistId)
+            } catch (e: CancellationException) {
+                Log.e("DeletePlaylist", "Job was cancelled: ${e.message}")
+            } catch (e: Exception) {
+                Log.e("DeletePlaylist", "Error: ${e.message}")
+            }
+            //TODO now dat stay , but if all work on UI flow , delete message
+
         }
     }
 
@@ -84,7 +101,7 @@ class LibraryViewModel(
                 Log.d(
                     "DEBUG_TRACKS",
                     "Loaded playlist: $playlist"
-                )  // Лог, чтобы проверить, что плейлист загружается
+                )
             }
             _currentPlaylist.postValue(playlist)
             _tracks.postValue(playlist?.tracks)

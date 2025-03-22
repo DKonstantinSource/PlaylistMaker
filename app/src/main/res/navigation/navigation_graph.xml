@@ -40,7 +40,11 @@
         android:id="@+id/fragmentPlayListAdd"
         android:name="com.example.playlistmaker.presentation.fragments.media_library.playlist.add_playlist.FragmentPlayListAdd"
         android:label="fragment_playlist_add"
-        tools:layout="@layout/fragment_playlist_add" />
+        tools:layout="@layout/fragment_playlist_add">
+        <argument
+            android:name="playlistId"
+            app:argType="long" />
+    </fragment>
 
     <fragment
         android:id="@+id/fragmentPlayer"
@@ -63,6 +67,18 @@
             app:destination="@id/fragmentPlayer">
             <argument
                 android:name="trackId"
+                app:argType="long" />
+        </action>
+
+        <action
+            android:id="@+id/action_fragmentEnterPlaylist_to_fragmentPlayer"
+            app:destination="@id/fragmentPlayer" />
+
+        <action
+            android:id="@+id/action_fragmentEnterPlaylist_to_fragmentPlayListAdd"
+            app:destination="@id/fragmentPlayListAdd">
+            <argument
+                android:name="playlistId"
                 app:argType="long" />
         </action>
 
