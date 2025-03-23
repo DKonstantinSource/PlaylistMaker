@@ -91,7 +91,7 @@ class LibraryViewModel(
         Log.d(
             "DEBUG_TRACKS",
             "Trying to load playlist with ID: $playlistId"
-        )  // Лог для проверки, что метод вызывается
+        )
         viewModelScope.launch {
             _isLoading.postValue(true)
             val playlist = playlistInteractor.getPlaylistById(playlistId)

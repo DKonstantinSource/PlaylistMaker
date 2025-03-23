@@ -104,6 +104,12 @@ class FragmentPlayListAdd : Fragment() {
                         fillPlaylistFields(it)
                     }
                 }
+
+
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+                    handleBackPress()
+                }
+
             }
         }
 
@@ -148,6 +154,7 @@ class FragmentPlayListAdd : Fragment() {
             handleBackPress()
         }
     }
+
 
     private fun fillPlaylistFields(playlist: Playlist) {
         binding.titleName.setText(playlist.name)
@@ -223,10 +230,20 @@ class FragmentPlayListAdd : Fragment() {
     }
 
     private fun isDataModified(): Boolean {
-        return !binding.titleName.text.isNullOrEmpty() ||
-                !binding.playlistDescription.text.isNullOrEmpty() ||
-                coverImagePath != null
+        return currentPlaylist?.let { original ->
+            val titleChanged = binding.titleName.text.toString().trim() != original.name
+            val descriptionChanged =
+                binding.playlistDescription.text.toString().trim() != (original.description ?: "")
+            val coverChanged = coverImagePath != original.imagePath
+
+            titleChanged || descriptionChanged || coverChanged
+        } ?: (
+                !binding.titleName.text.isNullOrEmpty() ||
+                        !binding.playlistDescription.text.isNullOrEmpty() ||
+                        coverImagePath != null
+                )
     }
+
 
     private fun confirmDialog() {
         val dialog = MaterialAlertDialogBuilder(requireContext())

@@ -48,6 +48,7 @@ class FragmentEnterPlaylist : Fragment() {
     private lateinit var adapter: PlaylistEnterOnAdapter
     private var trackTimeAndCount: String = ""
     private var playlistId: Long? = null
+    private var isPlaylistShared = false
 
     private val externalNavigatorInteractor: ExternalNavigatorInteractor by inject()
 
@@ -79,6 +80,10 @@ class FragmentEnterPlaylist : Fragment() {
         )
         setupBottomSheets()
         setupRecyclerView()
+
+
+
+
         viewModel.loadPlaylist(playlistId ?: 0L)
 
         viewModel.currentPlaylist.observe(viewLifecycleOwner) { playlist ->
@@ -104,7 +109,9 @@ class FragmentEnterPlaylist : Fragment() {
         bottomSheetBindingEdit.deletePlaylistBottomSheet.setOnClickListener {
             showDeletePlaylistDialog()
         }
-
+        binding.enterPlaylistShareButton.setOnClickListener {
+            sharePlaylist()
+        }
         bottomSheetBindingEdit.shareButtonEnterPlaylist.setOnClickListener {
             Log.d("ShareButton", "Share button clicked look =)")
             sharePlaylist()
@@ -123,6 +130,15 @@ class FragmentEnterPlaylist : Fragment() {
 
         viewModel.tracks.observe(viewLifecycleOwner) { tracks ->
             adapter.updateTracks(tracks)
+
+            if (tracks.size > 0) {
+                bottomSheetBindingOnCreate.recycleViewEnterPlaylist.visibility = View.VISIBLE
+                bottomSheetBindingOnCreate.emptyTextViewEnterPlaylist.visibility = View.GONE
+            } else {
+                bottomSheetBindingOnCreate.recycleViewEnterPlaylist.visibility = View.GONE
+                bottomSheetBindingOnCreate.emptyTextViewEnterPlaylist.visibility = View.VISIBLE
+            }
+
             trackTimeAndCount = formatTrackTimeAndCount(tracks)
             binding.enterSumTimePlaylistAndCount.text = trackTimeAndCount
         }
@@ -156,7 +172,19 @@ class FragmentEnterPlaylist : Fragment() {
 
         val shareText = getPlaylistShareText()
         externalNavigatorInteractor.sharePlaylistApp(shareText)
+        isPlaylistShared = true
     }
+
+
+    override fun onPause() {
+        super.onPause()
+//        if (isPlaylistShared) {
+//            findNavController().navigateUp()
+//        }
+    }
+
+
+
 
 
     private fun deletePlaylist() {
@@ -244,7 +272,9 @@ class FragmentEnterPlaylist : Fragment() {
 
         bottomSheetBindingOnCreate.recycleViewEnterPlaylist.layoutManager = layoutManager
         bottomSheetBindingOnCreate.recycleViewEnterPlaylist.adapter = adapter
+
     }
+
 
     private fun onTrackClicked(track: Track) {
         val bundle = Bundle().apply {
@@ -286,8 +316,8 @@ class FragmentEnterPlaylist : Fragment() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Удалить трек?")
             .setMessage("Вы уверены, что хотите удалить трек из плейлиста?")
-            .setNegativeButton("Отмена") { dialog, _ -> dialog.dismiss() }
-            .setNeutralButton("Удалить") { _, _ -> deleteTrackFromPlaylist(track) }
+            .setNegativeButton("Нет") { dialog, _ -> dialog.dismiss() }
+            .setNeutralButton("Да") { _, _ -> deleteTrackFromPlaylist(track) }
             .show()
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
@@ -299,8 +329,8 @@ class FragmentEnterPlaylist : Fragment() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Удалить плейлист?")
             .setMessage("Вы уверены, что хотите удалить этот плейлист?")
-            .setNegativeButton("Отмена") { dialog, _ -> dialog.dismiss() }
-            .setNeutralButton("Удалить") { _, _ -> deletePlaylist() }
+            .setNegativeButton("Нет") { dialog, _ -> dialog.dismiss() }
+            .setNeutralButton("Да") { _, _ -> deletePlaylist() }
             .show()
 
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
