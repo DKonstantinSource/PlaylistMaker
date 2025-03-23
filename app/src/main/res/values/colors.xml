@@ -35,4 +35,8 @@
 
     <color name="yp_blue">#3772E7</color>
     <color name="border_edit_text">#FFFFFF</color>
+
+    <color name="enter_playlist_background">#E6E8EB</color>
+
+    <color name="ic_handle_color">#E6E8EB</color>
 </resources>

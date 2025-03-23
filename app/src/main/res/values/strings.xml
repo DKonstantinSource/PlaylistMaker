@@ -75,4 +75,13 @@
     <string name="cancel">"Завершить"</string>
     <string name="decline">"Отмена"</string>
 
+    <string name="share">Поделиться</string>
+    <string name="editPlaylistInformation">Редактировать информацию</string>
+    <string name="deletePlaylist">Удалить плейлист</string>
+
+    <string name="save">Сохранить</string>
+    <string name="edit">Редактировать</string>
+
+    <string name="emptyTrackSend">В данном плейлисте нет треков для отправки</string>
+    <string name="emptyListTrackEnterPlaylist">В плэйлисте нету трэков</string>
 </resources>

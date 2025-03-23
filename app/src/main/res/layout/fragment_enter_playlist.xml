@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    tools:context=".presentation.fragments.player.FragmentPlayer">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/enter_playlist_background">
+
+        <FrameLayout
+            android:id="@+id/header_and_image_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <ImageView
+                android:id="@+id/enterImagePlaylist"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="1:1"
+                android:background="@drawable/empty_placeholder_big" />
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_back_button_enter_playlist"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/back_arrow_button"
+                android:layout_gravity="top|start" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/enterPlaylistName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:paddingStart="16dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="@color/colorBlackText"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/header_and_image_container"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Thunderstruck Will Come" />
+
+        <TextView
+            android:id="@+id/enterDescriptionPlaylist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingStart="16dp"
+            android:fontFamily="@font/ys_display_regular"
+            android:textColor="@color/colorBlackText"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/enterPlaylistName"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="AC/DC forever STAR" />
+
+        <TextView
+            android:id="@+id/enterSumTimePlaylistAndCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingStart="16dp"
+            android:fontFamily="@font/ys_display_regular"
+            android:textColor="@color/colorBlackText"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/enterDescriptionPlaylist"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="00:45 • 10 tracks" />
+
+        <ImageButton
+            android:id="@+id/enterPlaylistShareButton"
+            android:layout_marginTop="16dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ic_share_button"
+            android:contentDescription="share_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/enterSumTimePlaylistAndCount"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
+            android:id="@+id/enterPlaylistHamburgerButton"
+            android:layout_marginTop="16dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ic_hamburger_button"
+            android:contentDescription="hamburger_button"
+            app:layout_constraintStart_toEndOf="@+id/enterPlaylistShareButton"
+            app:layout_constraintTop_toBottomOf="@+id/enterSumTimePlaylistAndCount"
+            tools:ignore="HardcodedText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/overlay_playlist_track"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/bottom_sheet_enter_playlist"
+        layout="@layout/bottom_sheet_enter_playlist" />
+
+    <include
+        android:id="@+id/bottom_sheet_enter_playlist_edit"
+        layout="@layout/bottom_sheet_enter_playlist_edit" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

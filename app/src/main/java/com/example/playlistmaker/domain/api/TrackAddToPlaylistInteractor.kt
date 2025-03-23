@@ -7,4 +7,5 @@ interface TrackAddToPlaylistInteractor {
     suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long)
     suspend fun isTrackInPlaylist(playlistId: Long, trackId: Long): Boolean
     suspend fun getCurrentlyCountTrack(playlistId: Long): Int
+    suspend fun getTracksForPlaylist(playlistId: Long): List<Track>
 }

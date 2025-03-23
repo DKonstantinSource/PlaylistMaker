@@ -24,4 +24,8 @@ class TrackAddToPlaylistInteractorImpl(
         return trackAddToPlaylistRepository.getCurrentlyCountTrack(playlistId)
     }
 
+    override suspend fun getTracksForPlaylist(playlistId: Long): List<Track> {
+        return trackAddToPlaylistRepository.getTracksForPlaylist(playlistId)
+    }
+
 }

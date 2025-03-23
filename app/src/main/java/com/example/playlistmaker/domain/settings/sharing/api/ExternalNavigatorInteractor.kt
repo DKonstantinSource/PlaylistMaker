@@ -4,4 +4,5 @@ interface ExternalNavigatorInteractor {
     fun shareApp()
     fun openTermsOfUse()
     fun openSupport()
+    fun sharePlaylistApp(string: String)
 }

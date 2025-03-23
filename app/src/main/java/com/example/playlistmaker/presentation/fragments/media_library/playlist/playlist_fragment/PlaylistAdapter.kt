@@ -13,8 +13,9 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistItemBinding
 import com.example.playlistmaker.domain.model.Playlist
 
-class PlaylistAdapter :
+class PlaylistAdapter(private val onItemClick: (Long) -> Unit) :
     ListAdapter<Playlist, PlaylistAdapter.PlaylistViewHolder>(PlaylistDiffCallback()) {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         val binding =
@@ -31,18 +32,25 @@ class PlaylistAdapter :
     inner class PlaylistViewHolder(private val binding: PlaylistItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.root.setOnClickListener {
+                val playlist = getItem(adapterPosition)
+                onItemClick(playlist.id)
+            }
+        }
+
         fun bind(playlist: Playlist) {
             binding.playlistName.text = playlist.name
             binding.playListCount.text = "${playlist.trackCount} треков"
 
             val imagePath = playlist.imagePath
-            val cornerRadius = GlideUtils.dpToPx(8f, itemView.context) // Конвертируем dp в px
+            val cornerRadius = GlideUtils.dpToPx(8f, itemView.context)
 
             Glide.with(itemView)
                 .load(if (imagePath.isNullOrEmpty()) R.drawable.empty_placeholder_big else imagePath)
                 .apply(
                     RequestOptions()
-                        .transform(RoundedCorners(cornerRadius)) // Добавляем закругление углов
+                        .transform(RoundedCorners(cornerRadius))
                         .also {
                             if (imagePath.isNullOrEmpty() || imagePath.isBlank()) {
                                 it.centerInside()

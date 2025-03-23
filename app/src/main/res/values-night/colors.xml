@@ -8,4 +8,8 @@
 
     <color name="border_edit_text_button">#AEAFB4</color>
     <color name="border_on_focus_button">#3772E7</color>
+
+    <color name="enter_playlist_background">#E6E8EB</color>
+
+    <color name="ic_handle_color">#FFFFFF</color>
 </resources>

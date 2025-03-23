@@ -13,6 +13,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.playlistmaker.databinding.FragmentPlaylistAddBinding
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.PhotoPickerUtil
@@ -29,8 +30,9 @@ class FragmentPlayListAdd : Fragment() {
     private val binding get() = _binding!!
 
     private val libraryViewModel: LibraryViewModel by viewModel()
-
+    private var playlistId: Long = 0L
     private var coverImagePath: String? = null
+    private var currentPlaylist: Playlist? = null
 
     private val activeColor by lazy { requireContext().getColor(R.color.border_on_focus_button) }
     private val defaultColor by lazy { requireContext().getColor(R.color.border_edit_text_button) }
@@ -39,6 +41,10 @@ class FragmentPlayListAdd : Fragment() {
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
                 coverImagePath = PhotoPickerUtil.copyImageToAppStorage(requireContext(), uri)
+                Glide.with(this)
+                    .load(coverImagePath)
+                    .placeholder(R.drawable.image_placeholder)
+                    .into(binding.imageNewPlaylist)
 
                 binding.imageNewPlaylist.setImageURI(uri)
                 binding.buttonImageAdd.visibility = View.GONE
@@ -84,6 +90,54 @@ class FragmentPlayListAdd : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        arguments?.let {
+            playlistId = it.getLong("playlistId")
+            if (playlistId != 0L) {
+                binding.saveNewPlayList.text = getString(R.string.save)
+                binding.titleAddPlaylist.text = getString(R.string.edit)
+                binding.buttonImageAdd.visibility = View.GONE
+                libraryViewModel.loadPlaylist(playlistId)
+                libraryViewModel.currentPlaylist.observe(viewLifecycleOwner) { playlist ->
+                    playlist?.let {
+                        currentPlaylist = it
+                        fillPlaylistFields(it)
+                    }
+                }
+
+
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+                    handleBackPress()
+                }
+
+            }
+        }
+
+
+        binding.saveNewPlayList.setOnClickListener {
+            val name = binding.titleName.text.toString().trim()
+            val description = binding.playlistDescription.text.toString().trim()
+
+            if (playlistId != 0L && currentPlaylist != null) {
+                val updatedImagePath = coverImagePath ?: currentPlaylist!!.imagePath
+
+                val updatedPlaylist = currentPlaylist!!.copy(
+                    name = name,
+                    description = description,
+                    imagePath = updatedImagePath
+                )
+                libraryViewModel.updatePlaylist(updatedPlaylist)
+            } else {
+                savePlaylist()
+            }
+
+            findNavController().navigateUp()
+        }
+
+
+
+
+        libraryViewModel.loadPlaylist(playlistId)
         binding.titleName.addTextChangedListener { updateUIState() }
         binding.playlistDescription.addTextChangedListener { updateUIState() }
 
@@ -91,9 +145,6 @@ class FragmentPlayListAdd : Fragment() {
             selectImageLauncher.launch("image/*")
         }
 
-        binding.saveNewPlayList.setOnClickListener {
-            savePlaylist()
-        }
 
         binding.backButton.setOnClickListener {
             handleBackPress()
@@ -102,6 +153,18 @@ class FragmentPlayListAdd : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             handleBackPress()
         }
+    }
+
+
+    private fun fillPlaylistFields(playlist: Playlist) {
+        binding.titleName.setText(playlist.name)
+        binding.playlistDescription.setText(playlist.description ?: "")
+        coverImagePath = playlist.imagePath
+
+        Glide.with(this)
+            .load(coverImagePath)
+            .placeholder(R.drawable.image_placeholder)
+            .into(binding.imageNewPlaylist)
     }
 
 
@@ -122,7 +185,7 @@ class FragmentPlayListAdd : Fragment() {
     }
 
 
-    private fun savePlaylist() {
+    private fun savePlaylist(existingPlaylist: Playlist? = null) {
         val name = binding.titleName.text?.toString()?.trim()
         val description = binding.playlistDescription.text?.toString()?.trim() ?: ""
 
@@ -134,7 +197,11 @@ class FragmentPlayListAdd : Fragment() {
         val defaultImagePath =
             "android.resource://${requireContext().packageName}/${R.drawable.image_placeholder}"
 
-        val playlist = Playlist(
+        val playlist = existingPlaylist?.copy(
+            name = name,
+            description = description,
+            imagePath = coverImagePath ?: existingPlaylist.imagePath
+        ) ?: Playlist(
             id = 0,
             name = name,
             description = description,
@@ -142,8 +209,15 @@ class FragmentPlayListAdd : Fragment() {
             tracks = emptyList(),
             trackCount = 0
         )
-        libraryViewModel.createPlaylist(playlist)
-        showSnackBar("Плейлист \"$name\" создан")
+
+        if (existingPlaylist != null) {
+            libraryViewModel.updatePlaylist(playlist)
+            showSnackBar("Плейлист \"$name\" обновлен")
+        } else {
+            libraryViewModel.createPlaylist(playlist)
+            showSnackBar("Плейлист \"$name\" создан")
+        }
+
         findNavController().navigateUp()
     }
 
@@ -156,10 +230,20 @@ class FragmentPlayListAdd : Fragment() {
     }
 
     private fun isDataModified(): Boolean {
-        return !binding.titleName.text.isNullOrEmpty() ||
-                !binding.playlistDescription.text.isNullOrEmpty() ||
-                coverImagePath != null
+        return currentPlaylist?.let { original ->
+            val titleChanged = binding.titleName.text.toString().trim() != original.name
+            val descriptionChanged =
+                binding.playlistDescription.text.toString().trim() != (original.description ?: "")
+            val coverChanged = coverImagePath != original.imagePath
+
+            titleChanged || descriptionChanged || coverChanged
+        } ?: (
+                !binding.titleName.text.isNullOrEmpty() ||
+                        !binding.playlistDescription.text.isNullOrEmpty() ||
+                        coverImagePath != null
+                )
     }
+
 
     private fun confirmDialog() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
