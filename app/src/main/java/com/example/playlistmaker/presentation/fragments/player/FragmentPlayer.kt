@@ -74,9 +74,6 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
             binding.currentTrackTime.text = time
         }
 
-        viewModel.isPlayingLiveData.observe(viewLifecycleOwner) { isPlaying ->
-            updatePlayButton(isPlaying)
-        }
 
         viewModel.isFavorite.observe(viewLifecycleOwner) { isFavorite ->
             updateFavoriteButton(isFavorite)
@@ -94,6 +91,11 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
         }
+
+        viewModel.isPlayingLiveData.observe(viewLifecycleOwner) { isPlaying ->
+            binding.playButton.setPlaying(isPlaying)
+        }
+
 
         binding.favoriteButton.setOnClickListener {
             viewModel.onFavoriteClicked()
@@ -173,12 +175,6 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
             .placeholder(R.drawable.image_placeholder)
             .apply(RequestOptions().transform(RoundedCorners(cornerRadius)))
             .into(binding.cover)
-    }
-
-    private fun updatePlayButton(isPlaying: Boolean) {
-        binding.playButton.setBackgroundResource(
-            if (isPlaying) R.drawable.image_button_pause else R.drawable.image_play_button
-        )
     }
 
     private fun updateFavoriteButton(isFavorite: Boolean) {

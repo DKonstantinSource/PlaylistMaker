@@ -39,4 +39,10 @@
     <color name="enter_playlist_background">#E6E8EB</color>
 
     <color name="ic_handle_color">#E6E8EB</color>
+
+    <color name="circle_color">#1A1B22</color>
+    <color name="icon_color">#FFFFFF</color>
+
+    <color name="circle_color_play">#1A1B22</color>
+    <color name="icon_color_play">#FFFFFF</color>
 </resources>

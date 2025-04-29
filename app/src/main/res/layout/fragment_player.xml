@@ -104,14 +104,14 @@
                     app:layout_constraintStart_toEndOf="@id/startBorder"
                     app:layout_constraintTop_toTopOf="@id/playButton" />
 
-                <ImageButton
+                <com.example.playlistmaker.presentation.custom_view.PlaybackButtonView
                     android:id="@+id/playButton"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_marginTop="30dp"
-                    android:background="@drawable/image_play_button"
                     android:contentDescription="@string/play"
-                    android:backgroundTint="?attr/colorOnSecondary"
+                    app:playIcon="@drawable/image_play_button"
+                    app:pauseIcon="@drawable/image_button_pause"
                     app:layout_constraintEnd_toStartOf="@id/favoriteButton"
                     app:layout_constraintStart_toEndOf="@id/buttonAddCollection"
                     app:layout_constraintTop_toBottomOf="@+id/artistName" />

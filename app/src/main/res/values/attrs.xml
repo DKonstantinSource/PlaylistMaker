@@ -2,4 +2,12 @@
 <resources>
     <attr name="snackbarBackground" format="color" />
     <attr name="snackbarTextColor" format="color" />
+
+    <declare-styleable name="PlaybackButtonView">
+        <attr name="playIcon" format="reference" />
+        <attr name="pauseIcon" format="reference" />
+    </declare-styleable>
+
+
 </resources>
+

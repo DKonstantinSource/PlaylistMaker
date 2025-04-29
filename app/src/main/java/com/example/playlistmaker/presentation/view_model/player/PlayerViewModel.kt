@@ -88,23 +88,9 @@ class PlayerViewModel(
         }
     }
 
-    //TODO Валера скоро настанет твоё время =)
-//    fun removeTrackFromPlaylist(playlistId: Int, trackId: Long) {
-//        viewModelScope.launch {
-//            try {
-//                trackAddToPlaylistInteractor.removeTrackFromPlaylist(playlistId, trackId)
-//                _trackStatus.postValue("Трек удалён из плейлиста")
-//            } catch (e: Exception) {
-//                _trackStatus.postValue("Ошибка при удалении трека")
-//            }
-//        }
-//    }
-
-
     private var timerJob: Job? = null
     private var playerState = PlayerState.DEFAULT
 
-    //TODO точка запроса репозитория
     fun refreshPlaylists() {
         viewModelScope.launch {
             _playlists.value = playlistInteractor.getAllPlaylists()
@@ -158,7 +144,6 @@ class PlayerViewModel(
     private fun preparePlayer(track: Track) {
         val songBridge = track.previewUrl
         if (!songBridge.isNullOrEmpty()) {
-            Log.d("MediaPlayerImpl", "Preparing MediaPlayer for track: ${track.trackName}")
             mediaPlayerInteractor.execute(track)
             mediaPlayerInteractor.setOnTrackCompleteListener { onTrackCompleted() }
             playerState = PlayerState.PREPARED
@@ -167,7 +152,6 @@ class PlayerViewModel(
 
 
     fun playbackControl() {
-        Log.d("MediaPlayerImpl", "playbackControl() called - state: $playerState")
         when (playerState) {
             PlayerState.PLAYING -> pausePlayer()
             PlayerState.PREPARED, PlayerState.PAUSED -> startPlayer()
@@ -193,14 +177,9 @@ class PlayerViewModel(
     private fun startCountdown() {
         stopCountdown()
         timerJob = viewModelScope.launch(Dispatchers.Main) {
-            Log.d("MediaPlayerImpl", "Waiting track to start ")
-
             while (!mediaPlayerInteractor.isPlaying()) {
                 delay(100)
             }
-
-            Log.d("MediaPlayerImpl", "startCountdown-- started - track is playing and so god")
-
             while (mediaPlayerInteractor.isPlaying()) {
                 val currentPositionMillis = mediaPlayerInteractor.getCurrentPosition()
                 val minutes = (currentPositionMillis / 1000) / 60
@@ -209,21 +188,17 @@ class PlayerViewModel(
                 _currentTrackTime.postValue(formattedTime)
                 delay(300)
             }
-
-            Log.d("MediaPlayerImpl", "Timer stopped, if that, OMG RESOLVE ")
         }
     }
 
 
     private fun stopCountdown() {
-        Log.d("MediaPlayerImpl", "stopCountdown() called")
         timerJob?.cancel()
         timerJob = null
     }
 
 
     private fun onTrackCompleted() {
-        Log.d("MediaPlayerImpl", "Track completed event received")
         stopCountdown()
         _currentTrackTime.postValue(DEFAULT_TIME_PLAYER)
         _isPlayingLiveData.value = false
