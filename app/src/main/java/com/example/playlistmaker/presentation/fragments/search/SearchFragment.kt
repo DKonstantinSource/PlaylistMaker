@@ -85,7 +85,7 @@ class SearchFragment : Fragment() {
                     isClickable = false
 
                     val bundle = Bundle().apply {
-                        putSerializable(FragmentPlayer.TRACK_DATA, it)
+                        putParcelable(FragmentPlayer.TRACK_DATA, it)
                         putBoolean(IS_FAVORITE, it.isFavorite)
                     }
 

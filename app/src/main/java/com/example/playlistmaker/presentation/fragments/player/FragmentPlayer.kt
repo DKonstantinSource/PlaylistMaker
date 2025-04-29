@@ -3,7 +3,6 @@ package com.example.playlistmaker.presentation.fragments.player
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
@@ -76,20 +75,23 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         val isFavorite = arguments?.getBoolean(IS_FAVORITE, false) ?: false
         updateFavoriteButton(isFavorite)
 
-        val track = arguments?.getSerializable(TRACK_DATA) as? Track
+        val track = arguments?.getParcelable(TRACK_DATA) as? Track
         track?.let {
             viewModel.setTrack(it)
             updateUI(it)
         }
 
-        val intent = Intent(requireContext(), AudioPlayerService::class.java)
+        val intent = Intent(requireContext(), AudioPlayerService::class.java).apply {
+            putExtra("track", track)
+        }
         requireContext().bindService(intent, createServiceConnection(), Context.BIND_AUTO_CREATE)
+
 
 
         setupBottomSheet()
         setupRecyclerView()
         observeState()
-
+        bindServiceToAudioPlayer()
         viewModel.currentTrackTime.observe(viewLifecycleOwner) { time ->
             binding.currentTrackTime.text = time
         }
@@ -109,7 +111,6 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         }
 
         binding.playButton.setOnClickListener {
-//            viewModel.playbackControl()
             observeService()
             audioService?.togglePlayback()
 
@@ -143,10 +144,12 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
                 if (service is AudioPlayerService.AudioPlayerBinder) {
                     audioService = service.getService()
                     isBound = true
+
                     val track = viewModel.trackInfo.value
                     if (track != null) {
                         audioService?.preparePlayer(track)
                     }
+
                     observeService()
                 }
             }
@@ -157,6 +160,17 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
             }
         }
     }
+
+    private fun bindServiceToAudioPlayer() {
+        val track = viewModel.trackInfo.value
+        val intent = Intent(requireContext(), AudioPlayerService::class.java).apply {
+            putExtra("track", track)
+        }
+
+        requireContext().bindService(intent, createServiceConnection(), Context.BIND_AUTO_CREATE)
+    }
+
+
 
     private var isObservingService = false
 
@@ -259,7 +273,6 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
     override fun onPause() {
         super.onPause()
         if (audioService?.getIsPlaying()?.value == true) {
-//            audioService?.showNotification()
             audioService?.showNotificationIfPlaying()
         }
     }

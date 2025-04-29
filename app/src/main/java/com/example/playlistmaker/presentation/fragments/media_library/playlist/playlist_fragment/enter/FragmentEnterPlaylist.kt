@@ -278,7 +278,7 @@ class FragmentEnterPlaylist : Fragment() {
 
     private fun onTrackClicked(track: Track) {
         val bundle = Bundle().apply {
-            putSerializable(FragmentPlayer.TRACK_DATA, track)
+            putParcelable(FragmentPlayer.TRACK_DATA, track)
         }
 
         findNavController().navigate(

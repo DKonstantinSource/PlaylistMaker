@@ -51,7 +51,12 @@ class AudioPlayerService : Service(), AudioPlayerServiceInterface {
         fun getService(): AudioPlayerServiceInterface = this@AudioPlayerService
     }
 
-    override fun onBind(intent: Intent): IBinder = binder
+    override fun onBind(intent: Intent): IBinder {
+        intent.getParcelableExtra<Track>("track")?.let {
+            currentTrack = it
+        }
+        return binder
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -106,7 +111,6 @@ class AudioPlayerService : Service(), AudioPlayerServiceInterface {
                 it.start()
                 _isPlaying.value = true
                 updateHandler.post(updateRunnable)
-//                showNotificationIfPlaying()
             }
         }
     }
@@ -143,7 +147,6 @@ class AudioPlayerService : Service(), AudioPlayerServiceInterface {
 
         startForeground(1, notification)
     }
-
 
     override fun showNotificationIfPlaying() {
         if (_isPlaying.value) {
