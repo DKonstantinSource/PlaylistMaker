@@ -8,9 +8,14 @@ class ScreenReceiver : BroadcastReceiver() {
     var playbackCallback: ((Boolean) -> Unit)? = null
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        when (intent?.action) {
+            Intent.ACTION_SCREEN_OFF -> {
+                playbackCallback?.invoke(true)
+            }
 
-        if (intent?.action == Intent.ACTION_SCREEN_OFF) {
-            playbackCallback?.invoke(true)
+            Intent.ACTION_USER_PRESENT -> {
+                playbackCallback?.invoke(false)
+            }
         }
     }
 }
