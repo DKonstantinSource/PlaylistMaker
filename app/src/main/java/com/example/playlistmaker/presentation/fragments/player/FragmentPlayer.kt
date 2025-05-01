@@ -1,6 +1,11 @@
 package com.example.playlistmaker.presentation.fragments.player
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +13,7 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -19,10 +25,13 @@ import com.example.playlistmaker.databinding.BottomSheetPlaylistsBinding
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.presentation.fragments.player.service.AudioPlayerService
+import com.example.playlistmaker.presentation.fragments.player.service.AudioPlayerServiceInterface
 import com.example.playlistmaker.presentation.ui.host.HostActivity
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -42,6 +51,12 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var playlistAdapter: PlaylistAdapterPlayer
 
+    private var audioService: AudioPlayerServiceInterface? = null
+    private var serviceConnection: ServiceConnection? = null
+    private var isBound = false
+
+    private val screenReceiver = ScreenReceiver()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -60,16 +75,23 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         val isFavorite = arguments?.getBoolean(IS_FAVORITE, false) ?: false
         updateFavoriteButton(isFavorite)
 
-        val track = arguments?.getSerializable(TRACK_DATA) as? Track
+        val track = arguments?.getParcelable(TRACK_DATA) as? Track
         track?.let {
             viewModel.setTrack(it)
             updateUI(it)
         }
 
+        val intent = Intent(requireContext(), AudioPlayerService::class.java).apply {
+            putExtra("track", track)
+        }
+        requireContext().bindService(intent, createServiceConnection(), Context.BIND_AUTO_CREATE)
+
+
+
         setupBottomSheet()
         setupRecyclerView()
         observeState()
-
+        bindServiceToAudioPlayer()
         viewModel.currentTrackTime.observe(viewLifecycleOwner) { time ->
             binding.currentTrackTime.text = time
         }
@@ -89,11 +111,14 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
         }
 
         binding.playButton.setOnClickListener {
-            viewModel.playbackControl()
+            observeService()
+            audioService?.togglePlayback()
+
         }
 
         viewModel.isPlayingLiveData.observe(viewLifecycleOwner) { isPlaying ->
             binding.playButton.setPlaying(isPlaying)
+
         }
 
 
@@ -112,6 +137,62 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
 
 
     }
+
+    private fun createServiceConnection(): ServiceConnection {
+        return object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                if (service is AudioPlayerService.AudioPlayerBinder) {
+                    audioService = service.getService()
+                    isBound = true
+
+                    val track = viewModel.trackInfo.value
+                    if (track != null) {
+                        audioService?.preparePlayer(track)
+                    }
+
+                    observeService()
+                }
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {
+                audioService = null
+                isBound = false
+            }
+        }
+    }
+
+    private fun bindServiceToAudioPlayer() {
+        val track = viewModel.trackInfo.value
+        val intent = Intent(requireContext(), AudioPlayerService::class.java).apply {
+            putExtra("track", track)
+        }
+
+        requireContext().bindService(intent, createServiceConnection(), Context.BIND_AUTO_CREATE)
+    }
+
+
+
+    private var isObservingService = false
+
+    private fun observeService() {
+        if (isObservingService) return
+        isObservingService = true
+
+        lifecycleScope.launch {
+            audioService?.getIsPlaying()?.collect { isPlaying ->
+                binding.playButton.setPlaying(isPlaying)
+            }
+        }
+
+        lifecycleScope.launch {
+            audioService?.getCurrentTime()?.collect { time ->
+                binding.currentTrackTime.text = time
+            }
+        }
+    }
+
+
+
 
     private fun setupRecyclerView() {
         playlistAdapter = PlaylistAdapterPlayer { playlist ->
@@ -184,22 +265,37 @@ class FragmentPlayer : Fragment(R.layout.fragment_player) {
     }
     override fun onResume() {
         super.onResume()
+        audioService?.hideNotification()
         viewModel.refreshPlaylists()
+        binding.playButton.setPlaying(audioService?.getIsPlaying()?.value == true)
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.pausePlayer()
+        if (audioService?.getIsPlaying()?.value == true) {
+            audioService?.showNotificationIfPlaying()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        audioService?.stop()
+        if (isBound && serviceConnection != null) {
+            requireContext().unbindService(serviceConnection!!)
+            isBound = false
+        }
         _binding = null
         _bottomSheetBinding = null
+
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
+
+        audioService?.stop()
+        _binding = null
+        _bottomSheetBinding = null
         viewModel.cleanup()
         (activity as? HostActivity)?.setBottomNavigationVisibility(true)
         mediaPlayerInteractorImpl.stop()

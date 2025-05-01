@@ -151,46 +151,6 @@ class PlayerViewModel(
     }
 
 
-    fun playbackControl() {
-        when (playerState) {
-            PlayerState.PLAYING -> pausePlayer()
-            PlayerState.PREPARED, PlayerState.PAUSED -> startPlayer()
-            PlayerState.DEFAULT -> {}
-        }
-    }
-
-    private fun startPlayer() {
-        if (playerState != PlayerState.PREPARED && playerState != PlayerState.PAUSED) return
-        mediaPlayerInteractor.play()
-        startCountdown()
-        playerState = PlayerState.PLAYING
-        _isPlayingLiveData.postValue(true)
-    }
-
-    fun pausePlayer() {
-        mediaPlayerInteractor.pause()
-        stopCountdown()
-        playerState = PlayerState.PAUSED
-        _isPlayingLiveData.postValue(false)
-    }
-
-    private fun startCountdown() {
-        stopCountdown()
-        timerJob = viewModelScope.launch(Dispatchers.Main) {
-            while (!mediaPlayerInteractor.isPlaying()) {
-                delay(100)
-            }
-            while (mediaPlayerInteractor.isPlaying()) {
-                val currentPositionMillis = mediaPlayerInteractor.getCurrentPosition()
-                val minutes = (currentPositionMillis / 1000) / 60
-                val seconds = (currentPositionMillis / 1000) % 60
-                val formattedTime = String.format("%02d:%02d", minutes, seconds)
-                _currentTrackTime.postValue(formattedTime)
-                delay(300)
-            }
-        }
-    }
-
 
     private fun stopCountdown() {
         timerJob?.cancel()

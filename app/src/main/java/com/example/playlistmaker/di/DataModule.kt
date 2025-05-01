@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.presentation.fragments.player.service.AudioPlayerService
+import com.example.playlistmaker.presentation.fragments.player.service.AudioPlayerServiceInterface
 import com.example.playlistmaker.presentation.view_model.library.LibraryViewModel
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
 import com.example.playlistmaker.presentation.view_model.search.SearchViewModel
@@ -16,4 +18,6 @@ val dataModule = module {
 
     viewModel { LibraryViewModel(get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
+
+    single<AudioPlayerServiceInterface> { AudioPlayerService() }
 }
