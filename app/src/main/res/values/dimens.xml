@@ -26,5 +26,5 @@
     <dimen name="card_margin_horizontal8dp">8dp</dimen>
     <dimen name="card_margin_vertical8dp">8dp</dimen>
 
-    <dimen name="marginSettings">12dp</dimen>
+    <dimen name="marginSettings12dp">12dp</dimen>
 </resources>

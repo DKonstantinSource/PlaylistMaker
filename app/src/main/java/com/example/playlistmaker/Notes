@@ -1,4 +1,0 @@
-
- <item name="bottomSheetDialogTheme">@style/bottom_sheet</item>
-        <item name="bottomSheetDragHandleStyle">@style/bottom_sheet</item>
-        <item name="bottomSheetStyle">@style/bottom_sheet</item>

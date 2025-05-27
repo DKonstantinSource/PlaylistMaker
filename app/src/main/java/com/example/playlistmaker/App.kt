@@ -31,4 +31,5 @@ class App : Application() {
         }
         settingsInteractor.setTheme(settingsInteractor.getTheme())
     }
+
 }
