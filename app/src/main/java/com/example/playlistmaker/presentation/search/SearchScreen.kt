@@ -76,62 +76,18 @@ fun SearchScreen(
                 color = MaterialTheme.colorScheme.onBackground
             ),
             modifier = Modifier
-                .padding(top = 10.dp, bottom = 12.dp)
+                .padding(top = 10.dp, bottom = 16.dp)
                 .align(Alignment.Start)
         )
 
-        TextField(
-            value = query,
-            onValueChange = {
-                onQueryChange(it)
-            },
+        CustomSearchBar(
+            query = query,
+            onQueryChange = onQueryChange,
+            onClearQuery = onClearQuery,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
-                .focusRequester(focusRequester),
-            placeholder = { Text(stringResource(R.string.searchText)) },
-            singleLine = true,
-            trailingIcon = {
-                if (query.isNotEmpty()) {
-                    IconButton(onClick = {
-                        onClearQuery()
-                        focusManager.clearFocus()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Очистить"
-                        )
-                    }
-                }
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.searchText)
-                )
-            },
-            shape = MaterialTheme.shapes.medium,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
-            textStyle = TextStyle(
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.tertiary
-            ),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    onSearch(query)
-                    focusManager.clearFocus()
-                }
-            )
         )
+
 
         Spacer(modifier = Modifier.height(16.dp))
 

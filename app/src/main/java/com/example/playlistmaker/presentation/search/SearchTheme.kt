@@ -19,6 +19,7 @@ private val LightSearchColors = lightColorScheme(
     secondary = Color(0xFFFFFFFF), //TextButton
     onPrimary = Color(0xFFE6E8EB), //Text field Background
     tertiary = Color(0xFF1A1B22), //Text Field
+    surfaceTint = Color(0xFFAEAFB4), //Icon Tint search field
 )
 
 private val DarkSearchColors = darkColorScheme(
@@ -30,6 +31,7 @@ private val DarkSearchColors = darkColorScheme(
     secondary = Color(0xFF1A1B22), //TextButton
     onPrimary = Color(0xFFFFFFFF), //Text field Background
     tertiary = Color(0xFF1A1B22),  //Text Field
+    surfaceTint = Color(0xFF1A1B22), //Icon Tint search field
 )
 
 private val SearchTypography = Typography(
