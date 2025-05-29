@@ -6,9 +6,8 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.playlistmaker.presentation.fragments.search.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search">
+        android:name="com.example.playlistmaker.presentation.search.SearchFragment"
+        android:label="fragment_search">
 
         <action
             android:id="@+id/action_searchFragment_to_fragmentPlayer"
@@ -17,13 +16,12 @@
 
     <fragment
         android:id="@+id/settingsFragmentScreen"
-        android:name="com.example.playlistmaker.presentation.fragments.settings.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        android:name="com.example.playlistmaker.presentation.settings.SettingsFragment"
+        android:label="fragment_settings" />
 
     <fragment
         android:id="@+id/libraryTitleFragment"
-        android:name="com.example.playlistmaker.presentation.fragments.media_library.tab_layout.FragmentsHostLibrary"
+        android:name="com.example.playlistmaker.presentation.library.FragmentsHostLibrary"
         android:label="fragment_library"
         tools:layout="@layout/fragment_library_title">
 
@@ -34,6 +32,9 @@
         <action
             android:id="@+id/action_libraryTitleFragment_to_fragmentEnterPlaylist"
             app:destination="@id/fragmentEnterPlaylist" />
+        <action
+            android:id="@+id/action_libraryTitleFragment_to_fragmentPlayListAdd"
+            app:destination="@id/fragmentPlayListAdd" />
     </fragment>
 
     <fragment
@@ -62,7 +63,8 @@
         android:name="com.example.playlistmaker.presentation.fragments.media_library.playlist.playlist_fragment.enter.FragmentEnterPlaylist"
         android:label="Playlist"
         tools:layout="@layout/fragment_enter_playlist">
-        <action
+
+    <action
             android:id="@+id/action_fragmentEnterPlaylist_to_audioPlayerFragment"
             app:destination="@id/fragmentPlayer">
             <argument
@@ -81,7 +83,6 @@
                 android:name="playlistId"
                 app:argType="long" />
         </action>
-
     </fragment>
 
 </navigation>

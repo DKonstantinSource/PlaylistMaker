@@ -6,13 +6,14 @@ import com.example.playlistmaker.presentation.view_model.library.LibraryViewMode
 import com.example.playlistmaker.presentation.view_model.player.PlayerViewModel
 import com.example.playlistmaker.presentation.view_model.search.SearchViewModel
 import com.example.playlistmaker.presentation.view_model.settings.SettingsViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 
 val dataModule = module {
 
-    viewModel { SearchViewModel(get(), get()) }
+    viewModel { SearchViewModel(get(), get(), androidContext()) }
 
     viewModel { PlayerViewModel(get(), get(), get(), get()) }
 

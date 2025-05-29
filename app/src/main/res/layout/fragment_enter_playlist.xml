@@ -27,7 +27,8 @@
                 android:layout_height="360dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintDimensionRatio="1:1"
-                android:background="@drawable/empty_placeholder_big" />
+                android:background="@drawable/empty_placeholder_big"
+                tools:ignore="ContentDescription" />
 
             <ImageButton
                 android:id="@+id/backButton"

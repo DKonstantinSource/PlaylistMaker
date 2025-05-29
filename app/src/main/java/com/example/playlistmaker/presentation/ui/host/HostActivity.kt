@@ -28,6 +28,7 @@ class HostActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         binding = ActivityHostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
         navController = navHostFragment.navController
@@ -38,29 +39,6 @@ class HostActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
 
     }
-
-
-//    private fun createTestNotification() {
-//        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val channel = NotificationChannel(
-//                "channel_id",
-//                "Test Channel",
-//                NotificationManager.IMPORTANCE_HIGH
-//            )
-//            notificationManager.createNotificationChannel(channel)
-//        }
-//
-//        val notification = NotificationCompat.Builder(this, "channel_id")
-//            .setSmallIcon(R.drawable.ic_launcher_foreground)
-//            .setContentTitle("Тест уведомление")
-//            .setContentText("Пробуем отправить уведомление")
-//            .setPriority(NotificationCompat.PRIORITY_HIGH)
-//            .build()
-//
-//        notificationManager.notify(1, notification)
-//    }
 
 
     private fun requestPermissions() {
