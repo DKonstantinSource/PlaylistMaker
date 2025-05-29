@@ -4,8 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,13 +95,14 @@ fun CustomSearchBar(
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Clear,
+                        painter = painterResource(id = R.drawable.ic_cross_16x16),
                         contentDescription = stringResource(R.string.clearHistory),
                         modifier = Modifier.size(16.dp),
                         tint = colors.surfaceTint
                     )
                 }
             }
+
         }
     }
 }

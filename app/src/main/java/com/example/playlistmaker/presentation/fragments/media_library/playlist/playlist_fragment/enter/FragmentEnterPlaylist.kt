@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -144,6 +146,23 @@ class FragmentEnterPlaylist : Fragment() {
         }
         viewModel.currentPlaylist.observe(viewLifecycleOwner) { playlist ->
             viewModel.loadTracksForPlaylist(playlist!!.id)
+        }
+
+        setupBottomSheetHeight()
+
+    }
+
+    private fun setupBottomSheetHeight() {
+        binding.root.post {
+            val screenHeightPx = resources.displayMetrics.heightPixels
+            val bottomOfButton = binding.enterPlaylistShareButton.bottom
+            val paddingPx = (32 * resources.displayMetrics.density).toInt()
+            val peekHeight = screenHeightPx - bottomOfButton - paddingPx
+            bottomSheetBehaviorOnCreate.apply {
+                maxHeight = screenHeightPx
+                this.peekHeight = peekHeight
+                state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 
